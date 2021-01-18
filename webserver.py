@@ -1,6 +1,7 @@
 from flask import Flask
 
-from Modules.Delete_Module.delete_batchid import TestView
+from Modules.config_view import *
+from Modules.db_view import *
 
 
 class FlaskAppWrapper(object):
@@ -14,4 +15,5 @@ class FlaskAppWrapper(object):
         self.app.run()
 
     def register_views(self):
-        TestView.register(self.app)
+        PostgresView.register(self.app)
+        ConfigView.register(self.app)

@@ -16,20 +16,20 @@
     <link href="https://cdn.datatables.net/select/1.1.2/css/select.dataTables.min.css" rel="stylesheet" type="text/css">
     <script>
         $(document).ready(function () {
-            var oTable = $('#batchtable').DataTable({
+            var oTable = $('#database_table').DataTable({
                 dom: 'Bfrtip',
                 buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
             });
             $('#triggertable').DataTable();
-            $('#batchtable tbody').on('click', 'tr', function () {
+            $('#database_table tbody').on('click', 'tr', function () {
                 $(this).toggleClass('selected');
             });
             $("#btnName").on("click", function () {
                 var oAll = [];
-                $('#batchtable tbody tr.selected').each(function () {
+                $('#database_table tbody tr.selected').each(function () {
                     var pos = oTable.row(this).index();
                     var row = oTable.row(pos).data();
-                    var id_name = row[1];
+                    var id_name = row[5];
                     oAll.push(id_name);
                 });
                 var conf = confirm("Do you want to delete the folowing Names? \n" + oAll);
@@ -39,7 +39,7 @@
                 if (conf == true) {
                     $.ajax({
                         type: "POST",
-                        url: "/delete_batch_name_array_postgres",
+                        url: "delete_batch_name_array",
                         data: { 'data': JSON.stringify(oAll) }
                     });
                     location.reload();
@@ -47,7 +47,7 @@
             });
             $("#btnID").on("click", function () {
                 var oAll = [];
-                $('#batchtable tbody tr.selected').each(function () {
+                $('#database_table tbody tr.selected').each(function () {
                     var pos = oTable.row(this).index();
                     var row = oTable.row(pos).data();
                     console.log(row);
@@ -61,7 +61,7 @@
                 if (conf == true) {
                     $.ajax({
                         type: "POST",
-                        url: "/delete_batchid_array_postgres",
+                        url: "delete_batch_id_array",
                         data: { 'data': JSON.stringify(oAll) }
                     });
                     location.reload();
@@ -69,7 +69,7 @@
             });
             $("#btnbetweenids").on("click", function () {
                 var oAll = [];
-                $('#batchtable tbody tr.selected').each(function () {
+                $('#database_table tbody tr.selected').each(function () {
                     var pos = oTable.row(this).index();
                     var row = oTable.row(pos).data();
                     var id_name = row[0];
@@ -83,7 +83,7 @@
                     if (conf == true) {
                         $.ajax({
                             type: "POST",
-                            url: "/delete_between_ids_postgres",
+                            url: "delete_between_ids",
                             data: { 'data': JSON.stringify(oAll) }
                         });
                         location.reload();
@@ -101,9 +101,11 @@
 
 
 
+
+
     </script>
 </head>
-<table class="display DataTable" id="batchtable" style="width:100%">
+<table class="display DataTable" id="database_table" style="width:100%">
     <thead>
     <tr>
         {% for name in column_names %}
@@ -122,5 +124,7 @@
 
     </tbody>
 </table>
-
+<button id="btnID" type="button">Delete By ID</button>
+<button id="btnName" type="button">Delete By Name</button>
+<button id="btnbetweenids" type="button">Delete between min and max id</button>
 {% endblock %}

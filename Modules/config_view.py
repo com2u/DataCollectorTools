@@ -27,3 +27,13 @@ class ConfigView(FlaskView):
         file = open("parameters.json", "w")
         json.dump(data, file)
         return redirect("/config")
+
+    @route('/resetconfigvalues', methods=['POST'])
+    def reset_config_values(self):
+        file = open("parameters.json", "r")
+        data = json.load(file)
+        for parameter in ['postgres_url', 'postgres_user', 'postgres_pw', 'postgres_db', 'limit_table_length']:
+            data[parameter] = data["standart_" + parameter]
+        file = open("parameters.json", "w")
+        json.dump(data, file)
+        return redirect("/config")

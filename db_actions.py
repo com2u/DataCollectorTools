@@ -27,13 +27,13 @@ class PostgersqlDBManagement:
         return self.engine.execute(f"DELETE FROM {table_name} WHERE {column} IN {str(tuple(condition))}")
 
     def delete_single_value(self, table_name, column, condition):
-        return self.engine.execute(f"DELETE FROM {table_name} WHERE {column}='{condition}'")
+        return self.engine.execute(f"DELETE FROM {table_name} WHERE {column}='{condition[0]}'")
 
     def delete(self, tablename, column, condition):
         if condition is tuple or list:
-            return self.delete_array(tablename, column, condition)
-        else:
-            return self.delete_single_value(tablename, column, condition)
+            if len(condition) > 1:
+                return self.delete_array(tablename, column, condition)
+        return self.delete_single_value(tablename, column, condition)
 
 
 class SQLiteDBManagement(PostgersqlDBManagement):

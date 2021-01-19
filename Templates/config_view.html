@@ -6,7 +6,7 @@
   border: 2px solid red;
   overflow-x:auto;
   overflow-y:auto;">
-    <form action="saveconfigvalues/" method="post">
+    <form>
         <table style="margin-left: auto; margin-right: auto;">
             <thead>
             <tr>
@@ -43,7 +43,10 @@
             </tr>
             <tr>
                 <td>
-                    <button type="submit">Save my values</button>
+                    <button formaction="saveconfigvalues" formmethod="POST" type="submit">Save my values</button>
+                </td>
+                <td>
+                    <button formaction="resetconfigvalues" formmethod="POST" type="submit">Reset my values</button>
                 </td>
             </tr>
             </tbody>

@@ -5,10 +5,7 @@ from sqlalchemy.ext.automap import automap_base
 
 class PostgersqlDBManagement:
     def __init__(self, username, password, url, dbname):
-        self.engine = create_engine('postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=username,
-                                                                                          pw=password,
-                                                                                          url=url,
-                                                                                          db=dbname))
+        self.engine = create_engine(f'postgresql+psycopg2://{username}:{password}@{url}/{dbname}')
         self.metadata = MetaData()
         self.metadata.reflect(self.engine)
         self.Base = automap_base(metadata=self.metadata)
@@ -27,7 +24,9 @@ class PostgersqlDBManagement:
         return self.engine.execute(f"DELETE FROM {table_name} WHERE {column} IN {str(tuple(condition))}")
 
     def delete_single_value(self, table_name, column, condition):
-        return self.engine.execute(f"DELETE FROM {table_name} WHERE {column}='{condition[0]}'")
+        return self.engine.execute(
+            "DELETE FROM {table_name} WHERE {column}='{condition[0]}'".format(table_name=table_name, column=column,
+                                                                              condition=condition))
 
     def delete(self, tablename, column, condition):
         if condition is tuple or list:
@@ -37,8 +36,9 @@ class PostgersqlDBManagement:
 
 
 class SQLiteDBManagement(PostgersqlDBManagement):
-    def __init__(self, path_to_sqlite_db):
-        self.engine = create_engine(f"sqlite+pysqlite:///{path_to_sqlite_db}")
+    def __init__(self, path_to_first_sqlite_db, path_to_second_sqlite_db):
+        self.engine = create_engine(f"sqlite+pysqlite:///{path_to_first_sqlite_db}")
+        self.engine.execute(f"ATTACH DATABASE'{path_to_second_sqlite_db}' AS second_db")
         self.metadata = MetaData()
         self.metadata.reflect(self.engine)
         self.Base = automap_base(metadata=self.metadata)

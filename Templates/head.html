@@ -1,0 +1,102 @@
+{% block content %}
+<link href="{{ url_for('static',filename='styles/DataTables/datatables.min.css')}}" rel="stylesheet" type="text/css"/>
+
+<script src="{{ url_for('static',filename='styles/DataTables/datatables.min.js')}}" type="text/javascript"></script>
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js" type="text/javascript"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.flash.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" type="text/javascript"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js" type="text/javascript"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.print.min.js" type="text/javascript"></script>
+<script src="https://cdn.datatables.net/select/1.1.2/js/dataTables.select.min.js" type="text/javascript"></script>
+<link href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.datatables.net/select/1.1.2/css/select.dataTables.min.css" rel="stylesheet" type="text/css">
+<script>
+
+    $(document).ready(function () {
+        var oTable = $('table.display').DataTable({
+            dom: 'Bfrtip',
+            buttons: [{extend:'copy',
+        text: '<img src="data:image/png;base64,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"></img>'}, 'csv', 'excel', 'pdf', 'print']
+        });
+        $('#database_table tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#btnName").on("click", function () {
+            var oAll = [];
+            $('#database_table tbody tr.selected').each(function () {
+                var pos = oTable.row(this).index();
+                var row = oTable.row(pos).data();
+                var id_name = row[5];
+                oAll.push(id_name);
+            });
+            var conf = confirm("Do you want to delete the folowing Names? \n" + oAll);
+            if (conf == false) {
+                alert("No Data has been Deleted")
+            }
+            if (conf == true) {
+                $.ajax({
+                    type: "POST",
+                    url: "delete_batch_name_array",
+                    data: { 'data': JSON.stringify(oAll) }
+                });
+                location.reload();
+            }
+        });
+        $("#btnID").on("click", function () {
+            var oAll = [];
+            $('#database_table tbody tr.selected').each(function () {
+                var pos = oTable.row(this).index();
+                var row = oTable.row(pos).data();
+                console.log(row);
+                var id_name = row[0];
+                oAll.push(id_name);
+            });
+            var conf = confirm("Do you want to delete the folowing IDs? \n" + oAll);
+            if (conf == false) {
+                alert("No Data has been Deleted")
+            }
+            if (conf == true) {
+                $.ajax({
+                    type: "POST",
+                    url: "delete_batch_id_array",
+                    data: { 'data': JSON.stringify(oAll) }
+                });
+                location.reload();
+            }
+        });
+        $("#btnbetweenids").on("click", function () {
+            var oAll = [];
+            $('#database_table tbody tr.selected').each(function () {
+                var pos = oTable.row(this).index();
+                var row = oTable.row(pos).data();
+                var id_name = row[0];
+                oAll.push(id_name);
+            });
+            if (oAll.length > 1) {
+                var conf = confirm("Do you want to delete the batches between the following IDs? \n" + oAll);
+                if (conf == false) {
+                    alert("No Data has been Deleted")
+                }
+                if (conf == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "delete_between_ids",
+                        data: { 'data': JSON.stringify(oAll) }
+                    });
+                    location.reload();
+                }
+            }
+            else {
+                alert("Please select 2 or more Values")
+            }
+        });
+
+    });
+</script>
+-->
+{% endblock %}

@@ -36,9 +36,8 @@ class PostgersqlDBManagement:
 
 
 class SQLiteDBManagement(PostgersqlDBManagement):
-    def __init__(self, path_to_first_sqlite_db, path_to_second_sqlite_db):
-        self.engine = create_engine(f"sqlite+pysqlite:///{path_to_first_sqlite_db}")
-        self.engine.execute(f"ATTACH DATABASE'{path_to_second_sqlite_db}' AS second_db")
+    def __init__(self, path_to_sqlite_db):
+        self.engine = create_engine(f"sqlite+pysqlite:///{path_to_sqlite_db}")
         self.metadata = MetaData()
         self.metadata.reflect(self.engine)
         self.Base = automap_base(metadata=self.metadata)

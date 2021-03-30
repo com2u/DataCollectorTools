@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+
+{% extends "index.html" %}
+{% block body %}
+{% import 'includes/table.html' as tables%}
+{{ tables.table_with_buttons(id=table_name, db_name= db_name, column_names= column_names , table= table ) }}
+{% endblock %}

@@ -1,10 +1,11 @@
-.idea/
-SQLiteDBs/
+.vscode
+SQLiteDBs
+client_secrets.json
 parameters.json
+dummyparameters.json
 __pycache__/
 *.py[cod]
 *$py.class
-
 # C extensions
 *.so
 

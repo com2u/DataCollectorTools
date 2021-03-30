@@ -1,0 +1,137 @@
+{% macro table_with_buttons(id="databasetable",db_name="", column_names=[], table=[] )%}
+<script>
+    $(document).ready(function () {
+        var oTable = $("#{{id}}").DataTable({
+            "dom": '<"Buttons"B>lrtip',
+            colReorder: false,
+            buttons: [
+                'copy', 'excel', 'pdf'
+            ]
+        });
+        $('#{{id}} tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        function getSelected() {
+            var selected = [];
+            $('#{{id}} tbody tr.selected').each(function () {
+                var pos = oTable.row(this).index();
+                var row = oTable.row(pos).data();
+                selected.push(row);
+            });
+            return selected;
+        }
+
+        $("#btnName{{id}}").on("click", function () {
+            var oAll = getSelected();
+            var ids_names = [];
+            for (var i = 0; i < oAll.length; i++) {
+                var row = oAll[i];
+                var id_name = row[5];
+                ids_names.push(id_name);
+            }
+            var conf = confirm("Do you want to delete the folowing Names? \n" + ids_names);
+            if (conf == true) {
+                $.ajax({
+                    type: "POST",
+                    url: "/my/{{db_name}}/delete_batch_name_array",
+                    data: { 'data': JSON.stringify(ids_names) },
+                    success: function () {
+                        var oAll = getSelected();
+                        var ids_names = [];
+                        for (var i = 0; i < oAll.length; i++) {
+                            var row = oAll[i];
+                            var id_name = row[5];
+                            ids_names.push(id_name);
+                        }
+                        var unique_id_names = ids_names.filter(onlyUnique)
+                        console.log(unique_id_names);
+                        for (var i = 0; i < unique_id_names.length; i++) {
+                            var indexes = oTable
+                                .rows()
+                                .indexes()
+                                .filter(function (value, index) {
+                                    return unique_id_names[i] === oTable.row(value).data()[5];
+                                });
+                            oTable.rows(indexes).remove().draw();
+                        }
+                    }
+                });
+            }
+        });
+
+        $("#btnID{{id}}").on("click", function () {
+            var oAll = getSelected();
+            var ids_names = [];
+            for (var i = 0; i < oAll.length; i++) {
+                var row = oAll[i];
+                var id_name = row[0];
+                ids_names.push(id_name);
+            }
+            var conf = confirm("Do you want to delete the folowing IDs? \n" + ids_names);
+            if (conf == true) {
+                $.ajax({
+                    type: "POST",
+                    url: "/my/{{db_name}}/delete_batch_id_array",
+                    data: { 'data': JSON.stringify(ids_names) },
+                    success: function () {
+                        oTable
+                            .rows('.selected')
+                            .remove()
+                            .draw();
+                    }
+                });
+            }
+        });
+
+        function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        }
+
+
+
+
+        $("#btnbetweenids{{id}}").on("click", function () {
+            var oAll = getSelected();
+            if (oAll.length > 1) {
+                var conf = confirm("Do you want to delete the batches between the following IDs? \n" + oAll);
+                if (conf == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "delete_between_ids",
+                        data: { 'data': JSON.stringify(oAll) }
+                    });
+                    location.reload();
+                }
+            }
+            else {
+                alert("Please select 2 or more Values")
+            }
+        });
+    });
+
+
+</script>
+<table class="display" id="{{id}}">
+    <thead>
+    <tr>
+        {% for name in column_names %}
+        <th> {{ name }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for table_object in table %}
+    <tr>
+        {% for name in column_names %}
+        <td> {{ table_object[name] }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+<button id="btnID{{id}}" type="button">Delete By ID</button>
+<button id="btnName{{id}}" type="button">Delete By Name</button>
+<button id="btnbetweenids{{id}}" type="button">Delete between min and max id</button>
+<div class="copy"></div>
+{% endmacro %}

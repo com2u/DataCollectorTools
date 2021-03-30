@@ -21,12 +21,16 @@ class PostgersqlDBManagement:
         return self.engine.execute(f"SELECT * FROM {table_name}")
 
     def delete_array(self, table_name, column, condition):
-        return self.engine.execute(f"DELETE FROM {table_name} WHERE {column} IN {str(tuple(condition))}")
+        return self.engine.execute(f"DELETE FROM {table_name} WHERE {table_name}.{column} IN {str(tuple(condition))}")
 
     def delete_single_value(self, table_name, column, condition):
         return self.engine.execute(
-            "DELETE FROM {table_name} WHERE {column}='{condition[0]}'".format(table_name=table_name, column=column,
-                                                                              condition=condition))
+            f"DELETE FROM {table_name} WHERE {table_name}.{column}='{condition[0]}'")
+
+    def delete_since_time(self, table_name, timestamp):
+        print(f"DELETE FROM {table_name} WHERE timestamp >= '{timestamp}'")
+        return self.engine.execute(
+            f"DELETE FROM {table_name} WHERE {table_name}.timestamp>'{timestamp}'")
 
     def delete(self, tablename, column, condition):
         if condition is tuple or list:

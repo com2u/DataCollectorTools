@@ -1,0 +1,17 @@
+decorator
+Flask
+Flask-Classful
+Flask-Login
+flask-oidc
+Flask-SQLAlchemy
+keycloak
+oauth2client
+oauthlib
+psycopg2
+python-dotenv
+requests
+SQLAlchemy
+Werkzeug
+six
+itsdangerous
+mechanize

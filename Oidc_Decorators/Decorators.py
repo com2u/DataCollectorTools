@@ -5,7 +5,7 @@ from flask import redirect, url_for, flash
 from flask.helpers import make_response
 
 from Oidc_Decorators import oidc
-
+from LoggingHandler import logger
 
 def require_keycloak_role(roles):
     """
@@ -34,11 +34,14 @@ def require_keycloak_role(roles):
             if oidc.validate_token(raw_access_token) and (user_id == access_token_id):
                 for role in roles:
                     if role in access_token['realm_access']['roles']:
+                        logger.info('Rolle erfolgreich im AccessToken des aktuellen Benutzers. Zugang zur Seite erlaubt')
                         return view_func(*args, **kwargs)
                 else:
+                    logger.warning('Unauthorized User! Zugang zur Seite verweigert')
                     flash('Unauthorized!', 'danger')
                     return redirect(url_for('dash.dashboard')) 
-            else:
+            else: 
+                logger.warning('Token invalid!')
                 flash('Invalid Token!', 'danger')
                 return redirect(url_for('dash.dashboard'))
         return decorated

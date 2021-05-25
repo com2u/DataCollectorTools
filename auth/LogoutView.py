@@ -3,16 +3,12 @@ import os
 import json
 from base64 import urlsafe_b64encode
 from flask import current_app
-from itsdangerous import JSONWebSignatureSerializer
 from six.moves.urllib.parse import urlencode
-import re
-import mechanize
-import requests
 
 from selenium import webdriver
 
-
 from Oidc_Decorators import oidc
+from LoggingHandler import logger
 
 auth = Blueprint('auth', __name__, template_folder='templates')
 
@@ -21,6 +17,7 @@ auth = Blueprint('auth', __name__, template_folder='templates')
 def logout():
     oidc.logout()
     session.clear()
+    logger.info('Erfolgreicher Logout des Benutzers!')
     return redirect('http://localhost:8080/auth/realms/Application1/protocol/openid-connect/logout?redirect_uri=http://localhost:5000/')
 
 @auth.route('/dummy_login', methods= ['GET', 'POST'])

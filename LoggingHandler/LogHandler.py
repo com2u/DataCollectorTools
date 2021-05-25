@@ -72,10 +72,10 @@ class SVLog:
         requests.post(BASE, json={'method': method,
                                   'arguments': args}, verify=True)
 
-    def basicConfig(self, **kwargs):
+    def basicConfig(self, *args, **kwargs):
         method = 'basicConfig'
         requests.post(BASE, json={'method': method,
-                                  'arguments': kwargs}, verify=True)
+                                  'arguments': [args, kwargs]}, verify=True)
 
     def disable(self, level):
         method = 'disable'

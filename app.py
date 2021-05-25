@@ -13,7 +13,6 @@ def init_app():
         from auth.LogoutView import auth
         from Home.DashboardView import dash
         from LoggingHandler.LogView import log
-       
         
         # Register Blueprints
         app.register_blueprint(start)
@@ -23,12 +22,26 @@ def init_app():
 
         return app
 
-
 def init_oidc():
     oidc = OpenIDConnect(current_app)
     return oidc
 
+def init_logger():
+    from LoggingHandler.LogHandler import SVLog
+    NickModul = SVLog()
+
+    logger = NickModul.getLogger('Flask_DBTool')
+    logger.setLevel(10)
+
+    ch = NickModul.StreamHandler()
+    ch.setLevel(10)
+
+    formatter = NickModul.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    return logger
+
 
 if __name__ == "__main__":
     app = init_app()
-    app.run()
+    app.run(port=5000)

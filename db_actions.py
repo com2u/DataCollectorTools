@@ -2,6 +2,7 @@ from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 
+from LoggingHandler import logger
 
 class PostgersqlDBManagement:
     def __init__(self, username, password, url, dbname):
@@ -28,7 +29,8 @@ class PostgersqlDBManagement:
             f"DELETE FROM {table_name} WHERE {table_name}.{column}='{condition[0]}'")
 
     def delete_since_time(self, table_name, timestamp):
-        print(f"DELETE FROM {table_name} WHERE timestamp >= '{timestamp}'")
+        #print(f"DELETE FROM {table_name} WHERE timestamp >= '{timestamp}'")
+        logger.info(f"DELETE FROM {table_name} WHERE timestamp >= '{timestamp}'")
         return self.engine.execute(
             f"DELETE FROM {table_name} WHERE {table_name}.timestamp>'{timestamp}'")
 

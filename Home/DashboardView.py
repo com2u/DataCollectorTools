@@ -6,6 +6,7 @@ from flask import Blueprint, flash, render_template, request
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 
 from Oidc_Decorators import oidc
+from LoggingHandler import logger
 
 dash = Blueprint('dash', __name__,  static_folder='/static', static_url_path="/pages-static",
                  template_folder='templates')
@@ -22,11 +23,13 @@ def dashboard():
 
             flash('Welcome %s' % oidc.user_getfield(
                 'preferred_username'), 'success')
+            logger.info('Erfolgreicher Aufruf der Startseite!')
             return render_template('main.html')
 
         else:
             session.clear()
             oidc.logout()
+            logger.info('Erfolgreicher Logout')
             return redirect('http://localhost:8080/auth/realms/Application1/protocol/openid-connect/logout?redirect_uri=http://localhost:5000/')
 
     return redirect(url_for('start.Startscreen'))
@@ -48,14 +51,6 @@ def page_2():
     return render_template('Page2.html')
 
 
-@dash.route('/my/KeycloakAdminPage')
-@oidc.require_login
-@require_keycloak_role(["Admin"])
-def page_admin():
-    flash('Authorized!', 'success')
-    return render_template('PageAdmin.html')
-
-
 @dash.route('/my/Postgres', methods=["GET", "POST"])
 @oidc.require_login
 @require_keycloak_role(["User", "Admin"])
@@ -65,6 +60,7 @@ def page_postgres():
         data = json.load(file)
         database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
                                           url=data["postgres_url"], dbname=data["postgres_db"])
+    logger.info('Visualisierung der Postgres Datenbank')
     return render_template("table_view.html", table_name=table_name, db_name="Postgres",
                            column_names=database.get_table_columns(table_name),
                            table=database.get_table(table_name))
@@ -81,6 +77,7 @@ def delete_from_table_by_id_postgres():
                                           url=data["postgres_url"], dbname=data["postgres_db"])
     database.delete(tablename=table_name, column="batch_inspectionid",
                     condition=ast.literal_eval(request.form.get('data')))
+    logger.info('Postgres_Datenbank: Delete Batch ID Array')
     return "True"
 
 
@@ -95,6 +92,7 @@ def delete_from_table_by_name_postgres():
                                           url=data["postgres_url"], dbname=data["postgres_db"])
     database.delete(tablename=table_name, column="batchname",
                     condition=ast.literal_eval(request.form.get('data')))
+    logger.info('Postgres_Datenbank: Delete Batch Name Array')
     return "True"
 
 
@@ -106,6 +104,7 @@ def page_sqlite():
     with open("parameters.json") as file:
         data = json.load(file)
         database = SQLiteDBManagement(path_to_sqlite_db=data["sqlite_path"])
+    logger.info('Visualisierung der SQLite Datenbank')
     return render_template("table_view.html", table_name=table_name, db_name="SQLite",
                            column_names=database.get_table_columns(table_name),
                            table=database.get_table(table_name))
@@ -121,6 +120,7 @@ def delete_from_table_by_id_sqlite():
         database = SQLiteDBManagement(path_to_sqlite_db=data["sqlite_path"])
     database.delete(tablename=table_name, column="batch_inspectionid",
                     condition=ast.literal_eval(request.form.get('data')))
+    logger.info('SQLite_Datenbank: Delete Batch ID Array')
     return "True"
 
 
@@ -134,4 +134,5 @@ def delete_from_table_by_name_sqlite():
         database = SQLiteDBManagement(path_to_sqlite_db=data["sqlite_path"])
     database.delete(tablename=table_name, column="batchname",
                     condition=ast.literal_eval(request.form.get('data')))
+    logger.info('SQLite_Datenbank: Delete Batch Name Array')
     return "True"

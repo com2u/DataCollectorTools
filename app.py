@@ -31,4 +31,4 @@ def init_oidc():
 
 if __name__ == "__main__":
     app = init_app()
-    app.run()
+    app.run(host="0.0.0.0")

@@ -15,3 +15,4 @@ class Config:
     OIDC_SCOPES = ['openid', 'email', 'profile']
     OIDC_INTROSPECTION_AUTH_METHOD = 'client_secret_post'
     OIDC_CLOCK_SKEW = 560
+    TEMPLATES_AUTO_RELOAD = True

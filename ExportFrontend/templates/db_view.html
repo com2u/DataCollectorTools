@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% import 'table.html' as tables%}
+{% block content %}
+<script>
+    $(document).ready(function () {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        });
+    });
+    function toProcess() {
+        location.href = "{{url_for('export.page_process')}}".concat(location.search);
+    }
+</script>
+<div>
+    <ul id="myTabs" class="nav nav-tabs" role="tablist">
+        {% for single_table in alltables %}
+        <li>
+            {% if single_table.table_name == alltables[0].table_name %}
+            <a class="nav-link active" href="#tab-{{single_table.table_name}}" data-toggle="tab" role="tab"
+                aria-controls="home" aria-selected="true">{{ single_table.table_name}}</a>
+            {% elif single_table.table_name != alltables[0].table_name %}
+            <a class="nav-link" href="#tab-{{single_table.table_name}}" data-toggle="tab" role="tab"
+                aria-controls="profile" aria-selected="false">{{ single_table.table_name}}</a>
+            {% endif %}
+
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="tab-content">
+        {% for single_table in alltables %}
+        {% if single_table.table_name == alltables[0].table_name %}
+        <div class="tab-pane fade show active" id="tab-{{ single_table.table_name }}">
+            {% elif single_table.table_name != alltables[0].table_name %}
+            <div class="tab-pane fade" id="tab-{{ single_table.table_name }}">
+                {% endif %}
+                {{ tables.ajax_table(table_name=single_table.table_name, parameters=single_table.parameters)}}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div style="float: right">
+        <button onclick="toProcess()" class="btn btn-primary mb-2">Process Data</button>
+    </div>
+</div>
+{% endblock %}

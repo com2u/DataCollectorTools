@@ -14,6 +14,7 @@ def init_app():
         from Home.DashboardView import dash
         from LoggingHandler.LogView import log
         from Table.Table import table_interface
+        from Export.Export import export_interface
        
         
         # Register Blueprints
@@ -22,6 +23,7 @@ def init_app():
         app.register_blueprint(dash)
         app.register_blueprint(log)
         app.register_blueprint(table_interface)
+        app.register_blueprint(export_interface)
 
         return app
 

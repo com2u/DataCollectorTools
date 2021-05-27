@@ -38,8 +38,13 @@ class DBManagement:
     def get_table_columns(self, table_name):
         return self.engine.execute(f"SELECT * FROM {table_name} LIMIT 0").keys()
 
-    def get_table_column_values(self, table_name, column_name):
-        return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} GROUP BY {column_name}")]
+    def get_table_column_values(self, table_name, column_name, filter=None):
+         if "_" in filter:
+            del filter["_"]
+         if filter != {}:
+            return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} {self.__condition_filter_to_string(filter)} GROUP BY {column_name}")]
+         if filter == {}:
+            return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} GROUP BY {column_name}")]
 
     def get_table(self, table_name, filter=None):
         filter = dict(filter)

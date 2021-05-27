@@ -28,7 +28,7 @@ def get_table_columns(table_name):
 @table_interface.route("/column/<table_name>/<column_name>", methods=["GET"])
 def get_column_content(table_name, column_name):
     database = get_db_instance()
-    return jsonify(database.get_table_column_values(table_name, column_name))
+    return jsonify(database.get_table_column_values(table_name, column_name, filter=request.values.to_dict()))
 
 
 @table_interface.route("/rows/<table_name>", methods=["GET", "DELETE"])

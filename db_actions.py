@@ -39,6 +39,7 @@ class DBManagement:
         return self.engine.execute(f"SELECT * FROM {table_name} LIMIT 0").keys()
 
     def get_table_column_values(self, table_name, column_name, filter=None):
+         filter = dict(filter)
          if "_" in filter:
             del filter["_"]
          if filter != {}:

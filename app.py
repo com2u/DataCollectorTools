@@ -13,6 +13,7 @@ def init_app():
         from auth.LogoutView import auth
         from Home.DashboardView import dash
         from LoggingHandler.LogView import log
+        from Table.Table import table_interface
        
         
         # Register Blueprints
@@ -20,6 +21,7 @@ def init_app():
         app.register_blueprint(auth)
         app.register_blueprint(dash)
         app.register_blueprint(log)
+        app.register_blueprint(table_interface)
 
         return app
 

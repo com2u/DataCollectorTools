@@ -5,6 +5,10 @@ import json
 export = Blueprint(
     'export', __name__, url_prefix="/export", template_folder='templates')
 
+@export.route('/')
+def export_index():
+    return render_template("export_index.html")
+
 
 @export.route('/alltables')
 def alltables():
@@ -19,7 +23,7 @@ def alltables():
         alltables.append({
             "table_name": str(i)
         })
-    return render_template("db_view.html", alltables=alltables)
+    return render_template("view.html", alltables=alltables)
 
 
 @export.route('/filter', methods=["GET", "POST"])
@@ -48,7 +52,7 @@ def page_view():
             "table_name": str(table_name),
             "parameters": req
         })
-    return render_template("db_view.html", alltables=alltables)
+    return render_template("view.html", alltables=alltables)
 
 
 @export.route('/process', methods=["GET", "POST"])

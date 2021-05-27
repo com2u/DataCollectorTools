@@ -17,7 +17,7 @@
 
     function toView() {
         var str = $( "form" ).serialize();
-        location.href = "{{url_for('page_view')}}?".concat(str);
+        location.href = "{{url_for('export.page_view')}}?".concat(str);
     }
 </script>
 <h1 style="color:blue;">

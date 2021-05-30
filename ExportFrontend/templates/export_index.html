@@ -1,0 +1,48 @@
+<html>
+<style>
+.koerber_logo {
+    height: 80%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+.container {
+    position: relative;
+}
+
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+</style>
+<head>
+    {% if title %}
+    <title>{{ title }} - DB-Tools</title>
+    {% else %}
+    <title>Welcome to DB-Tools</title>
+    {% endif %}
+    {% include 'head.html' %}
+</head>
+
+<body>
+<div>
+
+    <img alt="Körber Logo" class="koerber_logo"
+         src="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.svg')}}" style="">
+</div>
+<div class="container" style="height: 20%;">
+    <div class="center">
+        <a type="button" href="{{url_for('export.page_filter')}}" class="btn btn-primary">Filter Page</a>
+        <a type="button" href="{{url_for('config_interface.page_config')}}" class="btn btn-outline-primary">Config</a>
+        <a type="button" href="{{url_for('dash.dashboard')}}" class="btn btn-outline-primary">Dashboard</a>
+    </div>
+</div>
+</body>
+
+</html>

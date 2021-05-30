@@ -27,7 +27,7 @@ def dashboard():
         else:
             session.clear()
             oidc.logout()
-            return redirect('http://localhost:8080/auth/realms/Application1/protocol/openid-connect/logout?redirect_uri=http://localhost:5000/')
+            return redirect('http://localhost:8080/auth/realms/Application1/protocol/openid-connect/logout?redirect_uri=http://127.0.0.1:5000/my')
 
     return redirect(url_for('start.Startscreen'))
 

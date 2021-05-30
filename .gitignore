@@ -1,4 +1,5 @@
 .vscode
+parameters.json
 SQLiteDBs
 client_secrets.json
 parameters.json

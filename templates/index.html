@@ -26,15 +26,17 @@
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="/my/Page1">Page1</a></li>
-                        <li><a href="/my/Page2">Page2</a></li>
-                        <li><a href="/my/KeycloakAdminPage">Admin</a></li>
-                        <li><a href="/my/Postgres">Postgres</a></li>
-                        <li><a href="/my/SQLite">SQLite</a></li>
+                        <li><a href="{{url_for('dash.page_1')}}">Page1</a></li>
+                        <li><a href="{{url_for('dash.page_2')}}">Page2</a></li>
+                        <li><a href="{{url_for('dash.page_admin')}}">Admin</a></li>
+                        <li><a href="{{url_for('dash.page_postgres')}}">Postgres</a></li>
+                        <li><a href="{{url_for('dash.page_sqlite')}}">SQLite</a></li>
+                        <li><a href="{{url_for('config_interface.page_config')}}">DB-Config</a></li>
+                        <li><a href="{{url_for('export.export_index')}}">Export</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="http://localhost:8080/auth/realms/Application1/account/">Account</a></li>
-                        <li><a href="/logout">Logout</a></li>
+                        <li><a href="http://localhost:8080/auth/realms/DBTools/account/">Account</a></li>
+                        <li><a href="{{url_for('auth.logout')}}">Logout</a></li>
                     </ul>
                 </div>
                 <!--/.nav-collapse-->

@@ -143,6 +143,8 @@
                     "colReorder": true,
                     "responsive": true,
                     "processing": true,
+                    "orderMuli": true,
+                    "select": true,
                     "buttons": [
                         {
                             extend: 'collection',
@@ -156,7 +158,7 @@
                                 { extend: 'print', className: 'btn btn-secondary mb-2' },
                             ]
                         },
-
+                        { extend: 'searchBuilder', className: 'btn btn-secondary mb-2' }
                     ],
                     "search": {
                         "regex": true

@@ -21,7 +21,7 @@ auth = Blueprint('auth', __name__, template_folder='templates')
 def logout():
     oidc.logout()
     session.clear()
-    return redirect('http://localhost:8080/auth/realms/Application1/protocol/openid-connect/logout?redirect_uri=http://localhost:5000/')
+    return redirect('http://localhost:8080/auth/realms/DBTools/protocol/openid-connect/logout?redirect_uri=http://localhost:5000/')
 
 @auth.route('/dummy_login', methods= ['GET', 'POST'])
 def dummy_login():

@@ -11,7 +11,7 @@ from Oidc_Decorators import oidc
 dash = Blueprint('dash', __name__,  static_folder='/static', static_url_path="/pages-static",
                  template_folder='templates')
 
-@dash.route('/my/', methods=['POST', 'GET'])
+@dash.route('/home/', methods=['POST', 'GET'])
 @oidc.require_login
 def dashboard():
     if oidc.user_loggedin:
@@ -20,7 +20,7 @@ def dashboard():
     return redirect(url_for('start.Startscreen'))
 
 
-@dash.route('/my/Postgres', methods=["GET", "POST"])
+@dash.route('/home/Postgres', methods=["GET", "POST"])
 @oidc.require_login
 @require_keycloak_role(["User", "Admin"])
 def page_postgres():
@@ -34,7 +34,7 @@ def page_postgres():
                            table=database.get_table(table_name))
 
 
-@dash.route("/my/Postgres/delete_batch_id_array", methods=["POST"])
+@dash.route("/home/Postgres/delete_batch_id_array", methods=["POST"])
 @oidc.require_login
 @require_keycloak_role(["User", "Admin"])
 def delete_from_table_by_id_postgres():
@@ -48,7 +48,7 @@ def delete_from_table_by_id_postgres():
     return "True"
 
 
-@dash.route("/my/Postgres/delete_batch_name_array", methods=["POST"])
+@dash.route("/home/Postgres/delete_batch_name_array", methods=["POST"])
 @oidc.require_login
 @require_keycloak_role(["User", "Admin"])
 def delete_from_table_by_name_postgres():
@@ -62,7 +62,7 @@ def delete_from_table_by_name_postgres():
     return "True"
 
 
-@dash.route('/my/SQLite', methods=["GET", "POST"])
+@dash.route('/home/SQLite', methods=["GET", "POST"])
 @oidc.require_login
 @require_keycloak_role(["User", "Admin"])
 def page_sqlite():
@@ -75,7 +75,7 @@ def page_sqlite():
                            table=database.get_table(table_name))
 
 
-@dash.route("/my/SQLite/delete_batch_id_array", methods=["POST"])
+@dash.route("/home/SQLite/delete_batch_id_array", methods=["POST"])
 @oidc.require_login
 @require_keycloak_role(["User", "Admin"])
 def delete_from_table_by_id_sqlite():
@@ -88,7 +88,7 @@ def delete_from_table_by_id_sqlite():
     return "True"
 
 
-@dash.route("/my/SQLite/delete_batch_name_array", methods=["POST"])
+@dash.route("/home/SQLite/delete_batch_name_array", methods=["POST"])
 @oidc.require_login
 @require_keycloak_role(["User", "Admin"])
 def delete_from_table_by_name_sqlite():

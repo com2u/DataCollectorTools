@@ -58,20 +58,21 @@
         </div>
     </nav>
 
-    <div class="mainDiv">
-        <div class="ConatinerLeft">
-            <div class="containerPicture">
-                <!-- This is the container for the picture of Koerber -->
+    <div style= "height: auto; width:auto; text-align:center">
+        <div style="height: auto; width:50%; display: inline-block; margin-top: 5%">
+                <img alt="Körber Logo" class="koerber_logo"
+                    src="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.svg')}}" >
+        </div>
+        <div>
+            <div style="width:auto; height: 18%; text-align: center; display: inline-block; margin-top: 1%">
+                <a type="button" href="{{url_for('export.page_filter')}}" class="btn btn-primary">Filter your Data</a>
+            </div>
+            <div style="width:auto; height: 18%; text-align: center; display: inline-block; margin-top: 1%">
+                <a type="button" href="{{url_for('config_interface.page_config')}}" class="btn btn-outline-primary">Set the
+                    Configurations for the Database</a>
             </div>
         </div>
-        <div class="ConatinerRight">
-            <div class="containerText">
-                <!-- This is the container for the picture of Koerber -->
-            </div>
-            <div class="containerConfiguration">
-                <!-- This is the container for the picture of Koerber -->
-            </div>
-        </div>
+        
     </div>
 
 </body>

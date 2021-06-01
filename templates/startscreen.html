@@ -83,7 +83,7 @@
         nav ul li span:nth-child(4) {
             --n: 4;
         }
-        </style>
+        </style>        
         
     </head>
     <body>
@@ -103,8 +103,18 @@
             <ul>
                 <li>
                     <span></span><span></span><span></span><span></span>
-                    <a href="/dummy_login" style="text-decoration: none">Dummy Login</a>
+                    <a href="" style="text-decoration: none">View</a>
                 </li>
+            </ul>
+            <ul>
+                <form action="/my" method="post">
+                        <p>Activate Logging
+                            <input class="checkbox" type="radio" id="ActivateYes" name="ActivateLogging" value="Yes" />
+                            <label for="radioYesAudit">Yes</label>
+                            <input class="checkbox" type="radio" id="ActivateNo" name="ActivateLogging" value="No" />
+                            <label for="DeleteNo">No</label>
+                        </p><br>
+                </form>
             </ul>
         </nav>
     </body>

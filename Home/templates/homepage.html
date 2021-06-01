@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>DB-Tools</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/Bootstrap/css/bootstrap.min.css')}}">
+    <!--Required fore Datatables-->
+    <link href="{{ url_for('static', filename='styles/DataTables/datatables.min.css')}}" rel="stylesheet"
+        type="text/css" />
+    <script src="{{ url_for('static', filename='styles/DataTables/datatables.min.js')}}"
+        type="text/javascript"></script>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #5db9fa;">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
+            aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03" style="width: 20%; text-align:center">
+            <a class="navbar-brand mt-2 mt-lg-0">
+                <img src="{{ url_for('static', filename='Resources/Koerber_Logo.jpg')}}" height="40" alt=""
+                    loading="lazy" />
+                <a style="text-align: center; font-weight: bold;">DB-Tools</a>
+            </a>
+        </div>
+        <div class="navbar-nav me-auto mb-6 mb-lg-0 " style="width: 60%">
+            <li class="nav-item" style="width: 10%">
+                <a> </a>
+            </li>
+            <li class="nav-item" style="width: 20%; text-align: center">
+                <a class="nav-link" href="{{url_for('export.page_filter')}}">Filter</a>
+            </li>
+            <li style="width: 10%; text-align: center">
+                <a style="text-align: center">-</a>
+            </li>
+            <li class="nav-item" style="width: 20%; text-align: center">
+                <a class="nav-link" href="{{url_for('export.page_view')}}">View</a>
+            </li>
+            <li style="width: 10%; text-align: center">
+                <a>-</a>
+            </li>
+            <li class="nav-item" style="width: 20%; text-align: center">
+                <a class="nav-link" href="{{url_for('export.page_process')}}">Process</a>
+            </li>
+            <li class="nav-item" style="width: 10%">
+                <a> </a>
+            </li>
+
+        </div>
+        <div class="navbar-nav ms-auto mb-2 mb-lg-0" style="width: 20%; text-align:center">
+            <li class="nav-item" style="text-align:right">
+                <a class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
+            </li>
+        </div>
+    </nav>
+
+    <div class="mainDiv">
+        <div class="ConatinerLeft">
+            <div class="containerPicture">
+                <!-- This is the container for the picture of Koerber -->
+            </div>
+        </div>
+        <div class="ConatinerRight">
+            <div class="containerText">
+                <!-- This is the container for the picture of Koerber -->
+            </div>
+            <div class="containerConfiguration">
+                <!-- This is the container for the picture of Koerber -->
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

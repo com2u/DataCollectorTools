@@ -1,8 +1,9 @@
 import ast
 import json
+from Oidc_Decorators import Decorators
 from db_actions import PostgersqlDBManagement, SQLiteDBManagement
 from Oidc_Decorators.Decorators import require_keycloak_role
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, render_template, request
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 
 from Oidc_Decorators import oidc
@@ -10,50 +11,13 @@ from Oidc_Decorators import oidc
 dash = Blueprint('dash', __name__,  static_folder='/static', static_url_path="/pages-static",
                  template_folder='templates')
 
-
 @dash.route('/my/', methods=['POST', 'GET'])
 @oidc.require_login
 def dashboard():
     if oidc.user_loggedin:
-        info = oidc.user_getinfo(['sub'])
-        user_id = info.get('sub')
-
-        if user_id in oidc.credentials_store:
-
-            flash('Welcome %s' % oidc.user_getfield(
-                'preferred_username'), 'success')
-            return render_template('main.html')
-
-        else:
-            session.clear()
-            oidc.logout()
-            return redirect('http://localhost:8080/auth/realms/Application1/protocol/openid-connect/logout?redirect_uri=http://127.0.0.1:5000/my')
+        return render_template('homepage.html')
 
     return redirect(url_for('start.Startscreen'))
-
-
-@dash.route('/my/Page1')
-@oidc.require_login
-@require_keycloak_role(["User", "Admin"])
-def page_1():
-    flash('Authorized!', 'success')
-    return render_template('Page1.html')
-
-
-@dash.route('/my/Page2')
-@oidc.require_login
-@require_keycloak_role(["User", "Admin", "Guest"])
-def page_2():
-    flash('Authorized!', 'success')
-    return render_template('Page2.html')
-
-
-@dash.route('/my/KeycloakAdminPage')
-@oidc.require_login
-@require_keycloak_role(["Admin"])
-def page_admin():
-    flash('Authorized!', 'success')
-    return render_template('PageAdmin.html')
 
 
 @dash.route('/my/Postgres', methods=["GET", "POST"])

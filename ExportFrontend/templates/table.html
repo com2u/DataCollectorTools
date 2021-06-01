@@ -129,7 +129,6 @@
             "data": JSON.parse("{" + '{%for key in parameters %} "{{key}}":"{{parameters[key]}}", {% endfor%}'.replace(/,\s*$/, "") + "}"),
             success: function (data) {
                 var columns = [];
-                console.log(data);
                 columnNames = Object.keys(data.data[0]);
                 for (var i in columnNames) {
                     columns.push({
@@ -137,7 +136,6 @@
                         title: columnNames[i]
                     });
                 }
-                console.log(columnNames);
                 var oTable = $("#{{table_name}}").DataTable({
                     "data": data.data,
                     "columns": columns,

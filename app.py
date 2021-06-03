@@ -37,6 +37,33 @@ def init_oidc():
     oidc = OpenIDConnect(current_app)
     return oidc
 
+def logging_intern():
+    import logging
+
+    LoggerIntern = logging.getLogger('DB-Tools-clientSide')
+    LoggerIntern.setLevel(10)
+
+    formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    LoggerIntern.setFormatter(formatter)
+
+    return LoggerIntern
+
+def init_logger():
+    from LoggingHandler.LogHandler import SVLog
+    NickModul = SVLog()
+
+    logger = NickModul.getLogger('DB-Tools_server-side')
+    logger.setLevel(10)
+
+    ch = NickModul.StreamHandler()
+    ch.setLevel(10)
+
+    formatter = NickModul.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    return logger  
+
 
 if __name__ == "__main__":
     app = init_app()

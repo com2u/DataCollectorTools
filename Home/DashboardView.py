@@ -16,7 +16,7 @@ dash = Blueprint('dash', __name__,  static_folder='/static', static_url_path="/p
 def dashboard():
     if oidc.user_loggedin:
         return render_template('homepage.html')
-
+      
     return redirect(url_for('start.Startscreen'))
 
 

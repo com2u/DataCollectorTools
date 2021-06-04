@@ -2,8 +2,14 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>DB-Tools</title>
+    <head>
+        {% if title %}
+        <title>{{ title }} - DB-Tools</title>
+        {% else %}
+        <title>Welcome to DB-Tools</title>
+        {% endif %}
+        {% include 'head.html' %}
+    </head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/Bootstrap/css/bootstrap.min.css')}}">
     <!--Required fore Datatables-->
     <link href="{{ url_for('static', filename='styles/DataTables/datatables.min.css')}}" rel="stylesheet"

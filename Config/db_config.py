@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, render_template
 from db_actions import PostgersqlDBManagement
-import json
+import json, os, sys
 
 from Oidc_Decorators import oidc
 
@@ -25,7 +25,8 @@ def get_config():
         "postgres_user": data["postgres_user"],
         "postgres_db": data["postgres_db"],
         "limit_table_length": data["limit_table_length"],
-        "export_path": data["export_path"]
+        "export_path": data["export_path"],
+        "flask_port": data["flask_port"]
     }
     return jsonify(json_data)
 
@@ -41,7 +42,8 @@ def post_config():
                            "postgres_pw",
                            "postgres_db",
                            "limit_table_length",
-                           "export_path"]
+                           "export_path",
+                           "flask_port"]
     for parameter in accepted_parameters:
         if parameter in req:
             if req[parameter] != "":
@@ -65,4 +67,8 @@ def reset_config():
         data[key] = standard_values[key]
     with open("parameters.json", 'w') as file:
         json.dump(data, file, indent=4)
+    return jsonify(success=True)
+
+@config_interface.route("/restart", methods=["POST"])
+def restart_app():
     return jsonify(success=True)

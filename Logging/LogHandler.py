@@ -1,7 +1,7 @@
 import requests
 from requests.api import request
 
-BASE = 'http://127.0.0.1:3000'
+BASE = 'http://127.0.0.1:3000/'
 
 
 class SVLog:
@@ -13,6 +13,9 @@ class SVLog:
     INFO = 20
     DEBUG = 10
     NOTSET = 0
+
+    def deactivate(self):
+        return "deactivated"
 
     def getLogger(self, name):
         method = 'getLogger'

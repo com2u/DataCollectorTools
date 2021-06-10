@@ -164,9 +164,15 @@ def dump_all():
     with open("parameters.json") as file:
         data = json.load(file)
     command = ["pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}']
-    memory_file = BytesIO()
     output = subprocess.Popen(command, stdout=subprocess.PIPE)
-    for line in iter(output.stdout.readline, b''):
-        memory_file.write(line)
+    output_string = output.stdout.read().decode("utf8")
+    memory_file = BytesIO()
+    with zipfile.ZipFile(memory_file, "w", "1234") as zf:
+        zf.writestr("dump.backup", output_string)
     memory_file.seek(0)
+    """
+    TODO: Encrypt/Password Protect the exported file
+    The Zipfile library currently does not support encrypting Zipfiles.
+    --> "https://docs.python.org/3/library/zipfile.html"
+    """
     return send_file(memory_file, attachment_filename="dump.zip", as_attachment=True)

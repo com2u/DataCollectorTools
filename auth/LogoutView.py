@@ -11,4 +11,3 @@ def logout():
     oidc.logout()
     session.clear()
     return redirect('http://localhost:8080/auth/realms/' + str((json.load(open('.\client_secrets.json')))["realm-name"]) + '/protocol/openid-connect/logout?redirect_uri=http://localhost:5000/')
-    

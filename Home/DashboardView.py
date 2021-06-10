@@ -19,7 +19,7 @@ def dashboard():
         ClientLogger.info('This is a Client Log for beeing on the Homepage')
         ServerLogger.info('This is Server Log for being on the Homepage')
         return render_template('homepage.html')
-
+      
     return redirect(url_for('start.Startscreen'))
 
 

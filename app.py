@@ -1,6 +1,7 @@
 from flask import Flask
 from flask.globals import current_app
 from flask_oidc import OpenIDConnect
+import json
 
 def init_app():
     """Create Flask application."""
@@ -37,11 +38,7 @@ def init_oidc():
 
 if __name__ == "__main__":
     app = init_app()
-    '''
     with open("parameters.json") as file:
         data = json.load(file)
     flask_port = data["flask_port"]
-    #app.run(host='0.0.0.0', port=flask_port)
-    '''
-    app.run(host='0.0.0.0', port=5000)
-
+    app.run(host="0.0.0.0", port=flask_port)

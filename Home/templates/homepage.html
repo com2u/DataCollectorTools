@@ -2,8 +2,14 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>DB-Tools</title>
+    <head>
+        {% if title %}
+        <title>{{ title }} - DB-Tools</title>
+        {% else %}
+        <title>Welcome to DB-Tools</title>
+        {% endif %}
+        {% include 'head.html' %}
+    </head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/Bootstrap/css/bootstrap.min.css')}}">
     <!--Required fore Datatables-->
     <link href="{{ url_for('static', filename='styles/DataTables/datatables.min.css')}}" rel="stylesheet"
@@ -70,6 +76,9 @@
             <div style="width:auto; height: 18%; text-align: center; display: inline-block; margin-top: 1%">
                 <a type="button" href="{{url_for('config_interface.page_config')}}" class="btn btn-outline-primary">Set the
                     Configurations for the Database</a>
+            </div>
+            <div style="width:auto; height: 18%; text-align: center; display: inline-block; margin-top: 1%">
+                <a type="button" href="{{url_for('log.logDecision')}}" class="btn btn-outline-primary">Change Logging Settings</a>
             </div>
         </div>
         

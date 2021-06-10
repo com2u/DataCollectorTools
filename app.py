@@ -3,7 +3,6 @@ from flask.globals import current_app
 from flask_oidc import OpenIDConnect
 import json
 
-
 def init_app():
     """Create Flask application."""
     app = Flask(__name__, static_folder='static', static_url_path='')
@@ -13,7 +12,7 @@ def init_app():
         from Startscreen.StartView import start
         from auth.LogoutView import auth
         from Home.DashboardView import dash
-        from LoggingHandler.LogView import log
+        from Logging.LogView import log
         from Table.Table import table_interface
         from ExportBackend.Export import export_interface
         from ExportFrontend.export_frontend import export
@@ -32,37 +31,9 @@ def init_app():
 
         return app
 
-
 def init_oidc():
     oidc = OpenIDConnect(current_app)
     return oidc
-
-def logging_intern():
-    import logging
-
-    LoggerIntern = logging.getLogger('DB-Tools-clientSide')
-    LoggerIntern.setLevel(10)
-
-    formatter = logging.Formatter(
-        '%(asctime)s - %(levelname)s - %(name)s - %(message)s')
-    LoggerIntern.setFormatter(formatter)
-
-    return LoggerIntern
-
-def init_logger():
-    from LoggingHandler.LogHandler import SVLog
-    NickModul = SVLog()
-
-    logger = NickModul.getLogger('DB-Tools_server-side')
-    logger.setLevel(10)
-
-    ch = NickModul.StreamHandler()
-    ch.setLevel(10)
-
-    formatter = NickModul.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-    return logger  
 
 
 if __name__ == "__main__":

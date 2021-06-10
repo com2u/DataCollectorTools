@@ -167,7 +167,7 @@ def dump_all():
     output = subprocess.Popen(command, stdout=subprocess.PIPE)
     output_string = output.stdout.read().decode("utf8")
     memory_file = BytesIO()
-    with zipfile.ZipFile(memory_file, "w", "1234") as zf:
+    with zipfile.ZipFile(memory_file, "w") as zf:
         zf.writestr("dump.backup", output_string)
     memory_file.seek(0)
     """

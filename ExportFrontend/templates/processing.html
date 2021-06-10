@@ -54,6 +54,18 @@
                 <a class="btn btn-primary" href="{{url_for('export_interface.download_excel')}}">Excel</a>
             </td>
         </tr>
+        <tr>
+            <th scope="row">Delete</th>
+            <td>
+                <a  class="btn btn-primary">Delete Data</a>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">Dump</th>
+            <td>
+                <a class="btn btn-primary" href="{{url_for('export_interface.dump_all')}}">Dump entire Database</a>
+            </td>
+        </tr>
     </tbody>
 </table>
 <div id="csv_alert" class="alert alert-primary" role="alert" hidden>

@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import time
+import subprocess
 import pandas as pd
 
 from flask import Blueprint, jsonify, request, send_file, url_for, after_this_request
@@ -44,13 +45,13 @@ def export_folder_csv():
 
     # creating a csv file for every table
     for table_name in database.get_view_names():
-        data_list = [dict(row) for row in database.get_table(table_name, filter=request.values.to_dict())]
+        data_list = [dict(row) for row in database.get_table(
+            table_name, filter=request.values.to_dict())]
         if len(data_list) > 0:
             df = pd.DataFrame(data_list)
             df.columns = database.get_table_columns(table_name)
             df.to_csv(os.path.join(folder_name, f"{table_name}.csv"))
     return jsonify(export_folder=str(folder_name))
-    
 
 
 @export_interface.route("/folder/excel")
@@ -59,7 +60,8 @@ def export_folder_excel():
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     for table_name in database.get_view_names():
-        data_list = [dict(row) for row in database.get_table(table_name, filter=request.values.to_dict())]
+        data_list = [dict(row) for row in database.get_table(
+            table_name, filter=request.values.to_dict())]
         if len(data_list) > 0:
             df = pd.DataFrame(data_list)
             df.columns = database.get_table_columns(table_name)
@@ -77,7 +79,6 @@ def export_folder_excel():
     return jsonify(export_folder=str(folder_name))
 
 
-
 @export_interface.route("/folder/pictures")
 def export_folder_pictures():
     database = get_db_instance()
@@ -86,7 +87,8 @@ def export_folder_pictures():
         data = json.load(file)
     folder_name = Path(str(data["export_path"]), id)
     folder_name.mkdir(parents=True, exist_ok=True)
-    pathes_to_pictures = database.get_table_column_values("trigger_image_links", "image1")
+    pathes_to_pictures = database.get_table_column_values(
+        "trigger_image_links", "image1")
     if len(pathes_to_pictures) > 0:
         for file in pathes_to_pictures:
             shutil.copy(file, str(folder_name))
@@ -103,7 +105,8 @@ def download_csv():
 
     # creating a zíp file for every table
     for table_name in database.get_view_names():
-        data_list = [dict(row) for row in database.get_table(table_name, filter=request.values.to_dict())]
+        data_list = [dict(row) for row in database.get_table(
+            table_name, filter=request.values.to_dict())]
         if len(data_list) > 0:
             df = pd.DataFrame(data_list)
             df.columns = database.get_table_columns(table_name)
@@ -117,6 +120,7 @@ def download_csv():
                 zf.write(filePath, basename(filePath))
     memory_file.seek(0)
     # removing temporary files from upload folder
+
     @after_this_request
     def clear_dir(response):
         shutil.rmtree(folder_name, ignore_errors=True)
@@ -130,7 +134,8 @@ def download_excel():
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     for table_name in database.get_view_names():
-        data_list = [dict(row) for row in database.get_table(table_name, filter=request.values.to_dict())]
+        data_list = [dict(row) for row in database.get_table(
+            table_name, filter=request.values.to_dict())]
         if len(data_list) > 0:
             df = pd.DataFrame(data_list)
             df.columns = database.get_table_columns(table_name)
@@ -144,7 +149,8 @@ def download_excel():
 def download_pictures():
     database = get_db_instance()
     memory_file = BytesIO()
-    pathes_to_pictures = database.get_table_column_values("trigger_image_links", "image1")
+    pathes_to_pictures = database.get_table_column_values(
+        "trigger_image_links", "image1")
     if len(pathes_to_pictures) > 0:
         with zipfile.ZipFile(memory_file, 'w') as zf:
             for picture in pathes_to_pictures:
@@ -152,3 +158,15 @@ def download_pictures():
         memory_file.seek(0)
         return send_file(memory_file, attachment_filename="pictures_testing.zip", as_attachment=True)
     return ""
+
+@export_interface.route("/dump")
+def dump_all():
+    with open("parameters.json") as file:
+        data = json.load(file)
+    command = ["pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}']
+    memory_file = BytesIO()
+    output = subprocess.Popen(command, stdout=subprocess.PIPE)
+    for line in iter(output.stdout.readline, b''):
+        memory_file.write(line)
+    memory_file.seek(0)
+    return send_file(memory_file, attachment_filename="dump.zip", as_attachment=True)

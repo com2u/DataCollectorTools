@@ -28,17 +28,17 @@ def get_table_columns(table_name):
 @table_interface.route("/column/<table_name>/<column_name>", methods=["GET"])
 def get_column_content(table_name, column_name):
     database = get_db_instance()
-    return jsonify(database.get_table_column_values(table_name, column_name, filter=request.values.to_dict()))
+    return jsonify(database.get_table_column_values(table_name, column_name, filter=request.values.to_dict(flat=False)))
 
 
 @table_interface.route("/rows/<table_name>", methods=["GET", "DELETE"])
 def get_table_rows(table_name):
     if request.method == "GET":
         database = get_db_instance()
-        return jsonify({"data": [dict(row) for row in database.get_table(table_name, filter=request.values.to_dict())]})
+        return jsonify({"data": [dict(row) for row in database.get_table(table_name, filter=request.values.to_dict(flat=False))]})
     if request.method == "DELETE":
         database = get_db_instance()
-        response = database.delete_from_table(table_name, filter=request.values.to_dict())
+        response = database.delete_from_table(table_name, filter=request.values.to_dict(flat=False))
         return jsonify(response)
 
 @table_interface.route("/table/<table_name>", methods=["GET"])

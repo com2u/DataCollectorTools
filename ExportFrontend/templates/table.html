@@ -122,11 +122,12 @@
 
 {% macro ajax_table(table_name="table_name", parameters = "parameters" ) %}
 <script>
-    var parameters = JSON.parse("{" + '{%for key in parameters %} "{{key}}":"{{parameters[key]}}", {% endfor%}'.replace(/,\s*$/, "") + "}");
     $(document).ready(function () {
+        var parameters = $.param(JSON.parse('{{parameters|tojson}}'), true);
+
         $.ajax({
             "url": "{{url_for('table_interface.get_table_rows', table_name=table_name)}}",
-            "data": JSON.parse("{" + '{%for key in parameters %} {%for i in range(parameters[key]|length) %} "{{key}}":"{{parameters[key][i]}}", {% endfor%}{% endfor%}'.replace(/,\s*$/, "") + "}"),
+            "data": parameters,
             success: function (data) {
                 var columns = [];
                 console.log(data);

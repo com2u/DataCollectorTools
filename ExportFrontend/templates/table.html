@@ -126,7 +126,7 @@
     $(document).ready(function () {
         $.ajax({
             "url": "{{url_for('table_interface.get_table_rows', table_name=table_name)}}",
-            "data": JSON.parse("{" + '{%for key in parameters %} "{{key}}":"{{parameters[key]}}", {% endfor%}'.replace(/,\s*$/, "") + "}"),
+            "data": JSON.parse("{" + '{%for key in parameters %} {%for i in range(parameters[key]|length) %} "{{key}}":"{{parameters[key][i]}}", {% endfor%}{% endfor%}'.replace(/,\s*$/, "") + "}"),
             success: function (data) {
                 var columns = [];
                 console.log(data);

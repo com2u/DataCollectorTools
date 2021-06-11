@@ -27,7 +27,7 @@
         }
     });
     function toView() {
-        var str = $("form :input[value!='']input[value!='']").serialize();
+        var str = $("form :input[value!='']").serialize();
         location.href = "{{url_for('export.page_view')}}?".concat(str);
     }
 </script>

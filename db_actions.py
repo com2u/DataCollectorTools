@@ -13,7 +13,7 @@ class DBManagement:
             if "batchid" in filter:
                 if filter["batchid"] != "":
                     conditions.append(
-                        f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {*filter['batchid'],})")
+                        f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
             if "from_datetime" in filter:
                 if filter["from_datetime"] != "":
                     conditions.append(

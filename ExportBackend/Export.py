@@ -1,4 +1,4 @@
-import zipfile
+import py7zr
 import json
 import os
 import shutil
@@ -6,7 +6,7 @@ import time
 import subprocess
 import pandas as pd
 
-from flask import Blueprint, jsonify, request, send_file, url_for, after_this_request
+from flask import Blueprint, jsonify, request, send_file, after_this_request
 from db_actions import PostgersqlDBManagement
 from io import BytesIO
 from pathlib import Path
@@ -113,7 +113,7 @@ def download_csv():
             df.to_csv(os.path.join(folder_name, f"{table_name}.csv"))
     # zipping files in memory
     memory_file = BytesIO()
-    with zipfile.ZipFile(memory_file, 'w') as zf:
+    with py7zr.SevenZipFile(memory_file, 'w') as zf:
         for folderName, subfolders, filenames in os.walk(folder_name):
             for filename in filenames:
                 filePath = os.path.join(folderName, filename)
@@ -125,7 +125,7 @@ def download_csv():
     def clear_dir(response):
         shutil.rmtree(folder_name, ignore_errors=True)
         return response
-    return send_file(memory_file, attachment_filename="testing.zip", as_attachment=True)
+    return send_file(memory_file, attachment_filename="testing.7z", as_attachment=True)
 
 
 @export_interface.route("/download/excel")
@@ -152,11 +152,11 @@ def download_pictures():
     pathes_to_pictures = database.get_table_column_values(
         "trigger_image_links", "image1")
     if len(pathes_to_pictures) > 0:
-        with zipfile.ZipFile(memory_file, 'w') as zf:
+        with py7zr.SevenZipFile(memory_file, 'w') as zf:
             for picture in pathes_to_pictures:
                 zf.write(picture, basename(picture))
         memory_file.seek(0)
-        return send_file(memory_file, attachment_filename="pictures_testing.zip", as_attachment=True)
+        return send_file(memory_file, attachment_filename="pictures_testing.7z", as_attachment=True)
     return ""
 
 @export_interface.route("/dump")
@@ -165,14 +165,9 @@ def dump_all():
         data = json.load(file)
     command = ["pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}']
     output = subprocess.Popen(command, stdout=subprocess.PIPE)
-    output_string = output.stdout.read().decode("utf8")
+    database_dump = output.stdout.read().decode('utf-8')
     memory_file = BytesIO()
-    with zipfile.ZipFile(memory_file, "w") as zf:
-        zf.writestr("dump.backup", output_string)
+    with py7zr.SevenZipFile(memory_file, "w", password="Pzma9T2nvz04KK1A9CU7") as zf:
+        zf.writestr(arcname="dump.sql", data=database_dump)
     memory_file.seek(0)
-    """
-    TODO: Encrypt/Password Protect the exported file
-    The Zipfile library currently does not support encrypting Zipfiles.
-    --> "https://docs.python.org/3/library/zipfile.html"
-    """
-    return send_file(memory_file, attachment_filename="dump.zip", as_attachment=True)
+    return send_file(memory_file, attachment_filename="dump.7z", as_attachment=True)

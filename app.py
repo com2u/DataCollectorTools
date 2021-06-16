@@ -28,7 +28,6 @@ def init_app():
         app.register_blueprint(export_interface)
         app.register_blueprint(export)
         app.register_blueprint(config_interface)
-
         return app
 
 def init_oidc():

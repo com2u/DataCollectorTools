@@ -99,32 +99,16 @@ def export_folder_pictures():
 @export_interface.route("/download/csv")
 def download_csv():
     database = get_db_instance()
-    id = time.strftime("%Y%m%d-%H%M%S")
-    folder_name = Path(os.path.join(".\\upload", id))
-    folder_name.mkdir(parents=True, exist_ok=True)
-
-    # creating a zíp file for every table
-    for table_name in database.get_view_names():
-        data_list = [dict(row) for row in database.get_table(
-            table_name, filter=request.values.to_dict())]
-        if len(data_list) > 0:
-            df = pd.DataFrame(data_list)
-            df.columns = database.get_table_columns(table_name)
-            df.to_csv(os.path.join(folder_name, f"{table_name}.csv"))
-    # zipping files in memory
     memory_file = BytesIO()
     with py7zr.SevenZipFile(memory_file, 'w') as zf:
-        for folderName, subfolders, filenames in os.walk(folder_name):
-            for filename in filenames:
-                filePath = os.path.join(folderName, filename)
-                zf.write(filePath, basename(filePath))
+        for table_name in database.get_view_names():
+            data_list = [dict(row) for row in database.get_table(
+                table_name, filter=request.values.to_dict())]
+            if len(data_list) > 0:
+                df = pd.DataFrame(data_list)
+                df.columns = database.get_table_columns(table_name)
+                zf.writestr(df.to_csv().encode(), arcname=f"{table_name}.csv")     
     memory_file.seek(0)
-    # removing temporary files from upload folder
-
-    @after_this_request
-    def clear_dir(response):
-        shutil.rmtree(folder_name, ignore_errors=True)
-        return response
     return send_file(memory_file, attachment_filename="testing.7z", as_attachment=True)
 
 

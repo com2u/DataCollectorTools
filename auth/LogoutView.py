@@ -5,11 +5,7 @@ from base64 import urlsafe_b64encode
 from flask import current_app
 from itsdangerous import JSONWebSignatureSerializer
 from six.moves.urllib.parse import urlencode
-import re
-import mechanize
-import requests
 
-from selenium import webdriver
 
 
 from Oidc_Decorators import oidc

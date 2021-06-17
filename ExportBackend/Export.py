@@ -11,6 +11,8 @@ from io import BytesIO
 from pathlib import Path
 from os.path import basename
 
+from Oidc_Decorators import oidc
+
 export_interface = Blueprint(
     'export_interface', __name__, url_prefix="/export_interface")
 
@@ -34,6 +36,7 @@ def to_dict(row):
 
 
 @export_interface.route("/folder/csv")
+@oidc.require_login
 def export_folder_csv():
     database = get_db_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
@@ -54,6 +57,7 @@ def export_folder_csv():
 
 
 @export_interface.route("/folder/excel")
+@oidc.require_login
 def export_folder_excel():
     database = get_db_instance()
     output = BytesIO()
@@ -79,6 +83,7 @@ def export_folder_excel():
 
 
 @export_interface.route("/folder/pictures")
+@oidc.require_login
 def export_folder_pictures():
     database = get_db_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
@@ -95,6 +100,7 @@ def export_folder_pictures():
 
 
 @export_interface.route("/download/csv")
+@oidc.require_login
 def download_csv():
     database = get_db_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
@@ -125,6 +131,7 @@ def download_csv():
 
 
 @export_interface.route("/download/excel")
+@oidc.require_login
 def download_excel():
     database = get_db_instance()
     output = BytesIO()
@@ -141,6 +148,7 @@ def download_excel():
 
 
 @export_interface.route("/download/pictures")
+@oidc.require_login
 def download_pictures():
     database = get_db_instance()
     memory_file = BytesIO()

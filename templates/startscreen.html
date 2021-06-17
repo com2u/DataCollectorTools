@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
-        <title>MyFlaskApp</title>
+        <head>
+            {% if title %}
+            <title>{{ title }} - DB-Tools</title>
+            {% else %}
+            <title>Welcome to DB-Tools</title>
+            {% endif %}
+            {% include 'head.html' %}
+        </head>
         <style>
-        body {
+        div {
             margin: 0;
             height: 100vh;
             display: flex;
@@ -16,17 +22,17 @@
             color: goldenrod;
             text-decoration: none;
         }
-        nav a:hover {
+        .navv a:hover {
             color: black;
         }
 
-        nav ul {
+        .navv ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
         }
 
-        nav ul li {
+        .navv ul li {
             --c: goldenrod;
             color: var(--c);
             font-size: 16px;
@@ -47,7 +53,7 @@
             margin: 1em;
         }
 
-        nav ul li span {
+        .navv ul li span {
             position: absolute;
             width: 25%;
             height: 100%;
@@ -60,38 +66,44 @@
             z-index: -1;
         }
 
-        nav ul li:hover {
+        .navv ul li:hover {
             color: black;
         }
 
-        nav ul li:hover span {
+        .navv ul li:hover span {
             transform: translateY(0) scale(2);
         }
 
-        nav ul li span:nth-child(1) {
+        .navv ul li span:nth-child(1) {
             --n: 1;
         }
 
-        nav ul li span:nth-child(2) {
+        .navv ul li span:nth-child(2) {
             --n: 2;
         }
 
-        nav ul li span:nth-child(3) {
+        .navv ul li span:nth-child(3) {
             --n: 3;
         }
 
-        nav ul li span:nth-child(4) {
+        .navv ul li span:nth-child(4) {
             --n: 4;
         }
-        </style>
+        </style>        
         
     </head>
     <body>
-        <nav>
+        <nav class="navbar navbar-expand-lg py-3 navbar-light bg-light">
+            <a class="navbar-brand">
+                <img src="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.svg')}}" height="100" alt="">
+            </a>
+        </nav>
+        <div>
+            <div class="navv">
             <ul>
                 <li>
                     <span></span><span></span><span></span><span></span>
-                    <a href="/my" style="text-decoration: none">Login</a>
+                    <a href="/home" style="text-decoration: none">Login</a>
                 </li>
             </ul>
             <ul>
@@ -103,9 +115,10 @@
             <ul>
                 <li>
                     <span></span><span></span><span></span><span></span>
-                    <a href="/dummy_login" style="text-decoration: none">Dummy Login</a>
+                    <a href="" style="text-decoration: none">View</a>
                 </li>
             </ul>
-        </nav>
+            </div>
+        </div>
     </body>
 </html>

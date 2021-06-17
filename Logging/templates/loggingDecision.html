@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% if title %}
+    <title>{{ title }} - DB-Tools</title>
+    {% else %}
+    <title>Welcome to DB-Tools</title>
+    {% endif %}
+    {% include 'head.html' %}
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg py-3 navbar-light bg-light">
+        <a class="navbar-brand">
+            <img src="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.svg')}}" height="100" alt="">
+        </a>
+    </nav>
+    <div style="margin: auto; width: 60%; border: 3px solid black; padding: 15px; text-align:center">
+        <p>Please select your settings for the Logging</p>
+    </div>
+    <div style="display:flex; margin: auto; height: 50%; width: 60%; padding: 15px; text-align:center">
+        <div style="text-align: center">
+            <form action="/loggingDecision" method="post">
+                <p style="text-align:left">Disable Logging on Client side
+                    <input class="checkbox" type="radio" id="LogClientYes" name="LogClient" value="Yes" />
+                    <label for="LogClientYes">Yes</label>
+                    <input class="checkbox" type="radio" id="LogClientNo" name="LogClient" value="No" />
+                    <label for="LogClientNo">No</label>
+                </p><br>
+                <input type="submit" value="Continue">
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

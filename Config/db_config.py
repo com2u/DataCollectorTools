@@ -2,17 +2,21 @@ from flask import Blueprint, jsonify, request, render_template
 from db_actions import PostgersqlDBManagement
 import json, os, sys
 
+from Oidc_Decorators import oidc
+
 config_interface = Blueprint(
     'config_interface', __name__, url_prefix="/config_interface", template_folder='templates')
 
 
 @config_interface.route('/config')
+@oidc.require_login
 def page_config():
     return render_template("config.html")
 
 
 
 @config_interface.route("/", methods=["GET"])
+@oidc.require_login
 def get_config():
     with open("parameters.json") as file:
         data = json.load(file)
@@ -28,6 +32,7 @@ def get_config():
 
 
 @config_interface.route("/", methods=["POST"])
+@oidc.require_login
 def post_config():
     with open("parameters.json", 'r') as file:
         data = json.load(file)
@@ -50,6 +55,7 @@ def post_config():
 
 
 @config_interface.route("/reset", methods=["POST"])
+@oidc.require_login
 def reset_config():
     with open("parameters.json", 'r') as file:
         data = json.load(file)

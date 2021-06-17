@@ -91,7 +91,7 @@ def export_folder_pictures():
         "trigger_image_links", "image1", filter=request.values.to_dict())
     if len(pathes_to_pictures) > 0:
         for file in pathes_to_pictures:
-            shutil.copy(file, str(folder_name))
+            shutil.copy(file)
         return jsonify(export_folder=str(folder_name))
     return ""
 
@@ -138,7 +138,7 @@ def download_pictures():
     if len(pathes_to_pictures) > 0:
         with py7zr.SevenZipFile(memory_file, 'w') as zf:
             for picture in pathes_to_pictures:
-                zf.write(picture, basename(picture))
+                zf.write(picture)
         memory_file.seek(0)
         return send_file(memory_file, attachment_filename="pictures_testing.7z", as_attachment=True)
     return ""

@@ -45,12 +45,7 @@ def page_view():
         data = json.load(file)
         database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
                                           url=data["postgres_url"], dbname=data["postgres_db"])
-    req = request.values.to_dict()
-    for key in [*req]:
-        if req[key] == 'Choose...' or req[key] == '':
-            del req[key]
-        elif req[key] == 'on':
-            req[key] = True
+    req = request.values.to_dict(flat=False)
     alltables = []
     table_names = database.get_view_names()
     for table_name in table_names:

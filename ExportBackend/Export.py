@@ -88,7 +88,7 @@ def export_folder_pictures():
     folder_name = Path(str(data["export_path"]), id)
     folder_name.mkdir(parents=True, exist_ok=True)
     pathes_to_pictures = database.get_table_column_values(
-        "trigger_image_links", "image1")
+        "trigger_image_links", "image1", filter=request.values.to_dict())
     if len(pathes_to_pictures) > 0:
         for file in pathes_to_pictures:
             shutil.copy(file, str(folder_name))
@@ -134,7 +134,7 @@ def download_pictures():
     database = get_db_instance()
     memory_file = BytesIO()
     pathes_to_pictures = database.get_table_column_values(
-        "trigger_image_links", "image1")
+        "trigger_image_links", "image1", filter=request.values.to_dict())
     if len(pathes_to_pictures) > 0:
         with py7zr.SevenZipFile(memory_file, 'w') as zf:
             for picture in pathes_to_pictures:
@@ -155,3 +155,23 @@ def dump_all():
         zf.writestr(arcname="dump.sql", data=database_dump)
     memory_file.seek(0)
     return send_file(memory_file, attachment_filename="dump.7z", as_attachment=True)
+
+
+@export_interface.route("/delete/pictures")
+def delete_pictures():
+    database = get_db_instance()
+    pathes_to_pictures = database.get_table_column_values(
+        "trigger_image_links", "image1", filter=request.values.to_dict())
+    missing_files = []
+    deleted_files = []
+    if len(pathes_to_pictures) > 0:
+        for picture in pathes_to_pictures:
+            picture = Path(picture)
+            if picture.exists():
+                picture.unlink()
+                deleted_files.append(picture)
+            else:
+                missing_files.append(picture)
+       
+        return jsonify(success=True, deleted_files=len(deleted_files), missing_files=len(missing_files))
+    return jsonify(success=False) 

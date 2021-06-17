@@ -163,9 +163,9 @@ def download_pictures():
 def dump_all():
     with open("parameters.json") as file:
         data = json.load(file)
-    command = ["pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}']
+    command = ["pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}', '--format=c']
     output = subprocess.Popen(command, stdout=subprocess.PIPE)
-    database_dump = output.stdout.read().decode('utf-8')
+    database_dump = output.stdout.read()
     memory_file = BytesIO()
     with py7zr.SevenZipFile(memory_file, "w", password="Pzma9T2nvz04KK1A9CU7") as zf:
         zf.writestr(arcname="dump.sql", data=database_dump)

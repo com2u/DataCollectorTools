@@ -168,6 +168,7 @@ def dump_all():
     memory_file = BytesIO()
     with py7zr.SevenZipFile(memory_file, 'w', password="Pzma9T2nvz04KK1A9CU7") as zf:
         zf.writestr(data=get_database_dump(), arcname="dump.backup")
+    memory_file.seek(0)
     return send_file(memory_file, attachment_filename="dump.7z", as_attachment=True)
 
 @process_interface.route("/dump_with_pictures")

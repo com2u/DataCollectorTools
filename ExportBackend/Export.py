@@ -13,7 +13,7 @@ from io import BytesIO
 from pathlib import Path
 from os.path import basename
 
-export_interface = Blueprint(
+process_interface = Blueprint(
     'export_interface', __name__, url_prefix="/export_interface")
 
 
@@ -61,7 +61,7 @@ def to_dict(row):
     return rtn_dict
 
 
-@export_interface.route("/folder/csv")
+@process_interface.route("/folder/csv")
 def export_folder_csv():
     database = get_db_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
@@ -81,7 +81,7 @@ def export_folder_csv():
     return jsonify(export_folder=str(folder_name))
 
 
-@export_interface.route("/folder/excel")
+@process_interface.route("/folder/excel")
 def export_folder_excel():
     database = get_db_instance()
     output = BytesIO()
@@ -106,7 +106,7 @@ def export_folder_excel():
     return jsonify(export_folder=str(folder_name))
 
 
-@export_interface.route("/folder/pictures")
+@process_interface.route("/folder/pictures")
 def export_folder_pictures():
     database = get_db_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
@@ -123,7 +123,7 @@ def export_folder_pictures():
     return ""
 
 
-@export_interface.route("/download/csv")
+@process_interface.route("/download/csv")
 def download_csv():
     database = get_db_instance()
     memory_file = BytesIO()
@@ -139,7 +139,7 @@ def download_csv():
     return send_file(memory_file, attachment_filename="testing.7z", as_attachment=True)
 
 
-@export_interface.route("/download/excel")
+@process_interface.route("/download/excel")
 def download_excel():
     database = get_db_instance()
     output = BytesIO()
@@ -156,21 +156,21 @@ def download_excel():
     return send_file(output, attachment_filename="testing.xlsx", as_attachment=True)
 
 
-@export_interface.route("/download/pictures")
+@process_interface.route("/download/pictures")
 def download_pictures():
     pictures = get_pictures_7z()
     if pictures != "":
         return send_file(pictures, attachment_filename="pictures_testing.7z", as_attachment=True)
     return jsonify(success=False)
 
-@export_interface.route("/dump")
+@process_interface.route("/dump")
 def dump_all():
     memory_file = BytesIO()
-    with py7zr.ZipFile(memory_file, password="Pzma9T2nvz04KK1A9CU7") as zf:
+    with py7zr.SevenZipFile(memory_file, 'w', password="Pzma9T2nvz04KK1A9CU7") as zf:
         zf.writestr(data=get_database_dump(), arcname="dump.backup")
     return send_file(memory_file, attachment_filename="dump.7z", as_attachment=True)
 
-@export_interface.route("/dump_with_pictures")
+@process_interface.route("/dump_with_pictures")
 def dump_with_pictures():
     memory_file = get_pictures_7z()
     with py7zr.SevenZipFile(memory_file, "a", password="Pzma9T2nvz04KK1A9CU7") as zf:
@@ -179,7 +179,7 @@ def dump_with_pictures():
     return send_file(memory_file, attachment_filename="dump_with_pictures.7z", as_attachment=True)
 
 
-@export_interface.route("/delete/pictures")
+@process_interface.route("/delete/pictures")
 def delete_pictures():
     database = get_db_instance()
     pathes_to_pictures = database.get_table_column_values(

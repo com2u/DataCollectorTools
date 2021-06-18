@@ -4,6 +4,7 @@ import os
 import shutil
 import time
 import subprocess
+import uuid
 import pandas as pd
 
 from flask import Blueprint, jsonify, request, send_file, after_this_request
@@ -22,6 +23,32 @@ def get_db_instance():
         database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
                                           url=data["postgres_url"], dbname=data["postgres_db"])
     return database
+
+def get_database_dump():
+    with open("parameters.json") as file:
+        data = json.load(file)
+    command = ["pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}', '--format=c']
+    output = subprocess.Popen(command, stdout=subprocess.PIPE)
+    return output.stdout.read()
+
+def get_pictures_7z():
+    database = get_db_instance()
+    
+    pathes_to_pictures = database.get_table_column_values(
+        "trigger_image_links", "image1", filter=request.values.to_dict())
+    if len(pathes_to_pictures) > 0:
+        zip_uuid = f"{str(uuid.uuid4())}"
+        with open(zip_uuid + '.txt', "w") as file:
+            for picture in pathes_to_pictures:
+                file.write(picture + "\n")
+        subprocess.run(["7z", "a", "-spf", "-t7z", "-m0=LZMA2:d64k:fb32", "-ms=8m", "-mmt=32", "-mx=1" , zip_uuid + ".7z" , "@" + zip_uuid + ".txt"], stdout=subprocess.PIPE)
+        with open(zip_uuid + ".7z", 'rb') as fh:
+            memory_file = BytesIO(fh.read())
+        #removing temporary files
+        os.remove(zip_uuid + ".7z")
+        os.remove(zip_uuid + ".txt")
+        return memory_file
+    return ""
 
 
 def to_dict(row):
@@ -131,30 +158,25 @@ def download_excel():
 
 @export_interface.route("/download/pictures")
 def download_pictures():
-    database = get_db_instance()
-    memory_file = BytesIO()
-    pathes_to_pictures = database.get_table_column_values(
-        "trigger_image_links", "image1", filter=request.values.to_dict())
-    if len(pathes_to_pictures) > 0:
-        with py7zr.SevenZipFile(memory_file, 'w') as zf:
-            for picture in pathes_to_pictures:
-                zf.write(picture)
-        memory_file.seek(0)
-        return send_file(memory_file, attachment_filename="pictures_testing.7z", as_attachment=True)
-    return ""
+    pictures = get_pictures_7z()
+    if pictures != "":
+        return send_file(pictures, attachment_filename="pictures_testing.7z", as_attachment=True)
+    return jsonify(success=False)
 
 @export_interface.route("/dump")
 def dump_all():
-    with open("parameters.json") as file:
-        data = json.load(file)
-    command = ["pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}', '--format=c']
-    output = subprocess.Popen(command, stdout=subprocess.PIPE)
-    database_dump = output.stdout.read()
     memory_file = BytesIO()
-    with py7zr.SevenZipFile(memory_file, "w", password="Pzma9T2nvz04KK1A9CU7") as zf:
-        zf.writestr(arcname="dump.sql", data=database_dump)
-    memory_file.seek(0)
+    with py7zr.ZipFile(memory_file, password="Pzma9T2nvz04KK1A9CU7") as zf:
+        zf.writestr(data=get_database_dump(), arcname="dump.backup")
     return send_file(memory_file, attachment_filename="dump.7z", as_attachment=True)
+
+@export_interface.route("/dump_with_pictures")
+def dump_with_pictures():
+    memory_file = get_pictures_7z()
+    with py7zr.SevenZipFile(memory_file, "a", password="Pzma9T2nvz04KK1A9CU7") as zf:
+        zf.writestr(data=get_database_dump(), arcname="dump.backup")
+    memory_file.seek(0)
+    return send_file(memory_file, attachment_filename="dump_with_pictures.7z", as_attachment=True)
 
 
 @export_interface.route("/delete/pictures")

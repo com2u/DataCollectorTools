@@ -43,3 +43,4 @@ urllib3
 webencodings
 Werkzeug
 XlsxWriter
+logging

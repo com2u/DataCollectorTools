@@ -6,9 +6,9 @@ import time
 import subprocess
 import uuid
 import pandas as pd
+import db_actions
 
 from flask import Blueprint, jsonify, request, send_file, after_this_request
-from db_actions import PostgersqlDBManagement
 from io import BytesIO
 from pathlib import Path
 from os.path import basename
@@ -17,12 +17,7 @@ process_interface = Blueprint(
     'export_interface', __name__, url_prefix="/export_interface")
 
 
-def get_db_instance():
-    with open("parameters.json") as file:
-        data = json.load(file)
-        database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
-                                          url=data["postgres_url"], dbname=data["postgres_db"])
-    return database
+
 
 def get_database_dump():
     with open("parameters.json") as file:
@@ -32,7 +27,7 @@ def get_database_dump():
     return output.stdout.read()
 
 def get_pictures_7z():
-    database = get_db_instance()
+    database = db_actions.get_postgres_instance()
     
     pathes_to_pictures = database.get_table_column_values(
         "trigger_image_links", "image1", filter=request.values.to_dict())
@@ -63,7 +58,7 @@ def to_dict(row):
 
 @process_interface.route("/folder/csv")
 def export_folder_csv():
-    database = get_db_instance()
+    database = db_actions.get_postgres_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
     with open("parameters.json") as file:
         data = json.load(file)
@@ -83,7 +78,7 @@ def export_folder_csv():
 
 @process_interface.route("/folder/excel")
 def export_folder_excel():
-    database = get_db_instance()
+    database = db_actions.get_postgres_instance()
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     for table_name in database.get_view_names():
@@ -108,7 +103,7 @@ def export_folder_excel():
 
 @process_interface.route("/folder/pictures")
 def export_folder_pictures():
-    database = get_db_instance()
+    database = db_actions.get_postgres_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
     with open("parameters.json") as file:
         data = json.load(file)
@@ -125,7 +120,7 @@ def export_folder_pictures():
 
 @process_interface.route("/download/csv")
 def download_csv():
-    database = get_db_instance()
+    database = db_actions.get_postgres_instance()
     memory_file = BytesIO()
     with py7zr.SevenZipFile(memory_file, 'w') as zf:
         for table_name in database.get_view_names():
@@ -141,7 +136,7 @@ def download_csv():
 
 @process_interface.route("/download/excel")
 def download_excel():
-    database = get_db_instance()
+    database = db_actions.get_postgres_instance()
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     for table_name in database.get_view_names():
@@ -182,7 +177,7 @@ def dump_with_pictures():
 
 @process_interface.route("/delete/pictures")
 def delete_pictures():
-    database = get_db_instance()
+    database = db_actions.get_postgres_instance()
     pathes_to_pictures = database.get_table_column_values(
         "trigger_image_links", "image1", filter=request.values.to_dict())
     missing_files = []

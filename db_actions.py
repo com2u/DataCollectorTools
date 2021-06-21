@@ -1,6 +1,15 @@
+import json
 from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
+
+
+def get_postgres_instance():
+    with open("parameters.json") as file:
+        data = json.load(file)
+        database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
+                                          url=data["postgres_url"], dbname=data["postgres_db"])
+    return database
 
 
 class DBManagement:
@@ -39,12 +48,12 @@ class DBManagement:
         return self.engine.execute(f"SELECT * FROM {table_name} LIMIT 0").keys()
 
     def get_table_column_values(self, table_name, column_name, filter=None):
-         filter = dict(filter)
-         if "_" in filter:
+        filter = dict(filter)
+        if "_" in filter:
             del filter["_"]
-         if filter != {}:
+        if filter != {}:
             return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} {self.__condition_filter_to_string(filter)} GROUP BY {column_name}")]
-         if filter == {}:
+        if filter == {}:
             return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} GROUP BY {column_name}")]
 
     def get_table(self, table_name, filter=None):
@@ -52,7 +61,8 @@ class DBManagement:
         if "_" in filter:
             del filter["_"]
         if filter != {}:
-            query_string = f"SELECT * FROM {table_name} " + self.__condition_filter_to_string(filter)
+            query_string = f"SELECT * FROM {table_name} " + \
+                self.__condition_filter_to_string(filter)
             return self.engine.execute(query_string)
         if filter == {}:
             return self.engine.execute(f"SELECT * FROM {table_name}")
@@ -62,7 +72,8 @@ class DBManagement:
         if "_" in filter:
             del filter["_"]
         if filter != {}:
-            query_string = f"DELETE FROM {table_name} " + self.__condition_filter_to_string(filter)
+            query_string = f"DELETE FROM {table_name} " + \
+                self.__condition_filter_to_string(filter)
             return self.engine.execute(query_string)
 
 

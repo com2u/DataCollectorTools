@@ -14,6 +14,7 @@ def get_postgres_instance():
 
 class DBManagement:
     def __condition_filter_to_string(self, filter):
+        filter={k: v for k, v in filter.items() if v[0] != ''}
         if "_" in filter:
             del filter["_"]
         if filter != {}:
@@ -22,20 +23,12 @@ class DBManagement:
             if "batchid" in filter:
                 conditions.append(
                     f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
-            if "interval" in filter:
-                if "from_datetime" in filter:
-                    del filter["from_datetime"]
-                if "to_datetime" in filter:
-                    del filter["to_datetime"]
-                conditions.append(
-                    f"timestamp > (SELECT NOW() - interval '{filter['interval'][0]}')::text")
-
             if "from_datetime" in filter:
                 conditions.append(
-                    f"timestamp > '{filter['from_datetime'].replace('T', ' ')}'")
+                    f"timestamp > '{filter['from_datetime'][0].replace('T', ' ')}'")
             if "to_datetime" in filter:
                 conditions.append(
-                    f"timestamp < '{filter['to_datetime'].replace('T', ' ')}'")
+                    f"timestamp < '{filter['to_datetime'][0].replace('T', ' ')}'")
             if len(conditions) > 0:
                 query_string += " Where "
                 query_string += " AND ".join(conditions)

@@ -2,15 +2,19 @@ from flask import Blueprint, request, url_for, render_template, redirect
 from db_actions import PostgersqlDBManagement
 import json
 
+from Oidc_Decorators import oidc
+
 export = Blueprint(
     'export', __name__, url_prefix="/export", template_folder='templates')
 
 @export.route('/')
+@oidc.require_login
 def export_index():
     return render_template("export_index.html")
 
 
 @export.route('/alltables')
+@oidc.require_login
 def alltables():
     with open("parameters.json") as file:
         data = json.load(file)
@@ -27,6 +31,7 @@ def alltables():
 
 
 @export.route('/filter', methods=["GET", "POST"])
+@oidc.require_login
 def page_filter():
     if request.method == "POST":
         return redirect(url_for("page_view"), code=307)
@@ -34,17 +39,13 @@ def page_filter():
 
 
 @export.route('/view', methods=["GET"])
+@oidc.require_login
 def page_view():
     with open("parameters.json") as file:
         data = json.load(file)
         database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
                                           url=data["postgres_url"], dbname=data["postgres_db"])
-    req = request.values.to_dict()
-    for key in [*req]:
-        if req[key] == 'Choose...' or req[key] == '':
-            del req[key]
-        elif req[key] == 'on':
-            req[key] = True
+    req = request.values.to_dict(flat=False)
     alltables = []
     table_names = database.get_view_names()
     for table_name in table_names:
@@ -56,5 +57,6 @@ def page_view():
 
 
 @export.route('/process', methods=["GET", "POST"])
+@oidc.require_login
 def page_process():
     return render_template("processing.html")

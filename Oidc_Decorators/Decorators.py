@@ -2,7 +2,6 @@ import json
 from base64 import b64decode
 from functools import wraps
 from flask import redirect, url_for, flash
-from flask.helpers import make_response
 
 from Oidc_Decorators import oidc
 

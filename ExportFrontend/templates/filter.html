@@ -1,24 +1,40 @@
+<!DOCTYPE html>
 {% extends "base.html" %}
 {% block content %}
 <script>
-    $(document).ready(function () {
-        $.ajax({
-            url: "{{url_for('table_interface.get_column_content', table_name='batchview', column_name='batchid')}}", success: function (result) {
 
-                for (i = 0; i < result.length; i++) {
-                    var batchid_select = document.getElementById("batchid");
-                    var option = document.createElement("option");
-                    option.text = result[i];
-                    batchid_select.add(option);
-                }
+    $.ajax({
+        url: "{{url_for('table_interface.get_column_content', table_name='batchview', column_name='batchid')}}", success: function (result) {
+
+            for (i = 0; i < result.length; i++) {
+                var batchid_select = document.getElementById("batchid");
+                var option = document.createElement("option");
+                option.text = result[i];
+                batchid_select.add(option);
             }
-        });
+            $('.selectpicker').selectpicker('refresh')
+        }
     });
-
+    $.ajax({
+        url: "{{url_for('table_interface.get_column_content', table_name='batchview', column_name='inspectionname')}}",
+        success: function (result) {
+            for (i = 0; i < result.length; i++) {
+                var batchid_select = document.getElementById("inspectionname");
+                var option = document.createElement("option");
+                option.text = result[i];
+                batchid_select.add(option);
+            }
+            $('.selectpicker').selectpicker('refresh')
+        }
+    });
     function toView() {
-        var str = $( "form" ).serialize();
+        var str = $("form :input[value!='']").serialize();
         location.href = "{{url_for('export.page_view')}}?".concat(str);
-    }
+    };
+    function resetForm() {
+        $(".form-control").val('default')
+        $('.selectpicker').selectpicker('refresh')
+    };
 </script>
 <h1 style="color:blue;">
     Select data
@@ -27,8 +43,7 @@
     <div class="form-group row">
         <label for="batchid" class="col-sm-2 col-form-label h3">Batch Number</label>
         <div class="col-sm-10">
-            <select id="batchid" name="batchid" class="form-control">
-                <option selected value="">Choose...</option>
+            <select id="batchid" name="batchid" class="form-control selectpicker" multiple data-live-search="true">
             </select>
         </div>
     </div>
@@ -37,19 +52,43 @@
         <div class="col-sm-5">
             <label for="from_datetime">From</label>
             <input type="datetime-local" id="from_datetime" name="from_datetime" class="form-control"
-                data-date-format="YYYY-MM-DD hh:mm:ss" step="0.0001">
+                data-date-format="YYYY-MM-DD hh:mm">
         </div>
         <div class="col-sm-5">
             <label for="to_datetime">To</label>
             <input type="datetime-local" id="to_datetime" name="to_datetime" class="form-control"
-                data-date-format="YYYY-MM-DD hh:mm:ss" step="0.0001">
+                data-date-format="YYYY-MM-DD hh:mm">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="recipename" class="col-sm-2 col-form-label h3">Recipe name</label>
+        <div class="col-sm-10">
+            <select id="recipename" name="batchrecipenameid" class="form-control selectpicker" multiple data-live-search="true">
+
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="camera_name" class="col-sm-2 col-form-label h3">Camera station</label>
+        <div class="col-sm-10">
+            <select id="camera_name" name="camera_name" class="form-control selectpicker" multiple data-live-search="true">
+
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inspectionname" class="col-sm-2 col-form-label h3">Camera name / Inspection name</label>
+        <div class="col-sm-10">
+            <select id="inspectionname" name="inspectionname" class="form-control selectpicker" multiple data-live-search="true">
+            </select>
         </div>
     </div>
 
-    
+
+
 </form>
 <div style="float: right">
-    <input type="reset" class="btn btn-secondary mb-2" value="Reset">
+    <button onclick="resetForm()" class="btn btn-secondary mb-2">Reset</button>
     <button onclick="toView()" class="btn btn-primary mb-2">Select Data</button>
 </div>
 

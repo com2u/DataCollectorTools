@@ -12,6 +12,7 @@ from flask import Blueprint, jsonify, request, send_file, after_this_request
 from io import BytesIO
 from pathlib import Path
 from os.path import basename
+from Oidc_Decorators import oidc
 
 process_interface = Blueprint(
     'export_interface', __name__, url_prefix="/export_interface")
@@ -57,6 +58,7 @@ def to_dict(row):
 
 
 @process_interface.route("/folder/csv")
+@oidc.require_login
 def export_folder_csv():
     database = db_actions.get_postgres_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
@@ -77,6 +79,7 @@ def export_folder_csv():
 
 
 @process_interface.route("/folder/excel")
+@oidc.require_login
 def export_folder_excel():
     database = db_actions.get_postgres_instance()
     output = BytesIO()
@@ -102,6 +105,7 @@ def export_folder_excel():
 
 
 @process_interface.route("/folder/pictures")
+@oidc.require_login
 def export_folder_pictures():
     database = db_actions.get_postgres_instance()
     id = time.strftime("%Y%m%d-%H%M%S")
@@ -119,6 +123,7 @@ def export_folder_pictures():
 
 
 @process_interface.route("/download/csv")
+@oidc.require_login
 def download_csv():
     database = db_actions.get_postgres_instance()
     memory_file = BytesIO()
@@ -135,6 +140,7 @@ def download_csv():
 
 
 @process_interface.route("/download/excel")
+@oidc.require_login
 def download_excel():
     database = db_actions.get_postgres_instance()
     output = BytesIO()
@@ -152,6 +158,7 @@ def download_excel():
 
 
 @process_interface.route("/download/pictures")
+@oidc.require_login
 def download_pictures():
     pictures = get_pictures_7z()
     if pictures != "":
@@ -159,6 +166,7 @@ def download_pictures():
     return jsonify(success=False)
 
 @process_interface.route("/dump")
+@oidc.require_login
 def dump_all():
     memory_file = BytesIO()
     with py7zr.SevenZipFile(memory_file, 'w', password="Pzma9T2nvz04KK1A9CU7") as zf:
@@ -167,6 +175,7 @@ def dump_all():
     return send_file(memory_file, attachment_filename="dump.7z", as_attachment=True)
 
 @process_interface.route("/dump_with_pictures")
+@oidc.require_login
 def dump_with_pictures():
     memory_file = get_pictures_7z()
     with py7zr.SevenZipFile(memory_file, "a", password="Pzma9T2nvz04KK1A9CU7") as zf:

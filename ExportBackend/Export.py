@@ -173,23 +173,3 @@ def dump_with_pictures():
         zf.writestr(data=get_database_dump(), arcname="dump.backup")
     memory_file.seek(0)
     return send_file(memory_file, attachment_filename="dump_with_pictures.7z", as_attachment=True)
-
-
-@process_interface.route("/delete/pictures")
-def delete_pictures():
-    database = db_actions.get_postgres_instance()
-    pathes_to_pictures = database.get_table_column_values(
-        "trigger_image_links", "image1", filter=request.values.to_dict())
-    missing_files = []
-    deleted_files = []
-    if len(pathes_to_pictures) > 0:
-        for picture in pathes_to_pictures:
-            picture = Path(picture)
-            if picture.exists():
-                picture.unlink()
-                deleted_files.append(picture)
-            else:
-                missing_files.append(picture)
-       
-        return jsonify(success=True, deleted_files=len(deleted_files), missing_files=len(missing_files))
-    return jsonify(success=False) 

@@ -32,10 +32,19 @@
         var search = location.search.substring(1);
         var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
         $.get({
-            url: "{{url_for('export_interface.delete_pictures')}}",
+            url: "{{url_for('delete_interface.delete_pictures')}}",
             data: params,
         })
-    }
+    };
+
+    function delete_from_db() {
+        var search = location.search.substring(1);
+        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+        $.get({
+            url: "{{url_for('delete_interface.delete_db')}}",
+            data: params,
+        })
+    };
 
 </script>
 <h1 style="color:blue;">
@@ -66,8 +75,8 @@
         <tr>
             <th scope="row">Delete</th>
             <td>
-                <a  class="btn btn-primary">Database and Pictures</a>
-                <a  class="btn btn-primary" onclick="delete_pictures()"> Pictures</a>
+                <button class="btn btn-primary" onclick="delete_pictures();delete_from_db()">Database and Pictures</button>
+                <button class="btn btn-primary" onclick="delete_pictures()"> Pictures</button>
 
             </td>
         </tr>

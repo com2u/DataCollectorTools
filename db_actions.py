@@ -20,17 +20,22 @@ class DBManagement:
             query_string = f""
             conditions = []
             if "batchid" in filter:
-                if filter["batchid"] != "":
-                    conditions.append(
-                        f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
+                conditions.append(
+                    f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
+            if "interval" in filter:
+                if "from_datetime" in filter:
+                    del filter["from_datetime"]
+                if "to_datetime" in filter:
+                    del filter["to_datetime"]
+                conditions.append(
+                    f"timestamp > (SELECT NOW() - interval '{filter['interval'][0]}')::text")
+
             if "from_datetime" in filter:
-                if filter["from_datetime"] != "":
-                    conditions.append(
-                        f"timestamp > '{filter['from_datetime'].replace('T', ' ')}'")
+                conditions.append(
+                    f"timestamp > '{filter['from_datetime'].replace('T', ' ')}'")
             if "to_datetime" in filter:
-                if filter["to_datetime"] != "":
-                    conditions.append(
-                        f"timestamp < '{filter['to_datetime'].replace('T', ' ')}'")
+                conditions.append(
+                    f"timestamp < '{filter['to_datetime'].replace('T', ' ')}'")
             if len(conditions) > 0:
                 query_string += " Where "
                 query_string += " AND ".join(conditions)
@@ -68,22 +73,30 @@ class DBManagement:
             return self.engine.execute(f"SELECT * FROM {table_name}")
 
     def delete(self, filter):
-        triggerheader_ids = self.get_table_column_values("trigger_image_links", "headerid", filter)
-        batchheader_ids = self.get_table_column_values("batch", "headerid", filter)
-        trigger_delete = self.engine.execute(f"DELETE FROM trigger_image_links {self.__condition_filter_to_string(filter)}")
-        batch_delete = self.engine.execute(f"DELETE FROM batch {self.__condition_filter_to_string(filter)}")
-        new_trigger_header_ids = self.get_table_column_values("trigger_image_links", "headerid", filter)
-        new_batch_header_ids = self.get_table_column_values("batch", "headerid", filter)
+        triggerheader_ids = self.get_table_column_values(
+            "trigger_image_links", "headerid", filter)
+        batchheader_ids = self.get_table_column_values(
+            "batch", "headerid", filter)
+        trigger_delete = self.engine.execute(
+            f"DELETE FROM trigger_image_links {self.__condition_filter_to_string(filter)}")
+        batch_delete = self.engine.execute(
+            f"DELETE FROM batch {self.__condition_filter_to_string(filter)}")
+        new_trigger_header_ids = self.get_table_column_values(
+            "trigger_image_links", "headerid", filter)
+        new_batch_header_ids = self.get_table_column_values(
+            "batch", "headerid", filter)
         for id in triggerheader_ids:
             if id in new_trigger_header_ids:
                 triggerheader_ids.remove(id)
         for id in batchheader_ids:
             if id in new_batch_header_ids:
                 triggerheader_ids.remove(id)
-        if len(triggerheader_ids)>0:
-            self.engine.execute(f"DELETE FROM triggerheader WHERE id in {str(triggerheader_ids).replace('[','(').replace(']',')')}")
-        if len(batchheader_ids)>0:
-            self.engine.execute(f"DELETE FROM batchheader WHERE id in {str(batchheader_ids).replace('[','(').replace(']',')')}")
+        if len(triggerheader_ids) > 0:
+            self.engine.execute(
+                f"DELETE FROM triggerheader WHERE id in {str(triggerheader_ids).replace('[','(').replace(']',')')}")
+        if len(batchheader_ids) > 0:
+            self.engine.execute(
+                f"DELETE FROM batchheader WHERE id in {str(batchheader_ids).replace('[','(').replace(']',')')}")
         return {"batch": batch_delete.rowcount, "trigger_image_links": trigger_delete.rowcount}
 
 

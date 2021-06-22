@@ -12,7 +12,6 @@ def init_app():
         from Startscreen.StartView import start
         from auth.LogoutView import auth
         from Home.DashboardView import dash
-        from Logging.LogView import log
         from Table.Table import table_interface
         from ExportBackend.Export import process_interface
         from ExportFrontend.export_frontend import export
@@ -24,7 +23,6 @@ def init_app():
         app.register_blueprint(start)
         app.register_blueprint(auth)
         app.register_blueprint(dash)
-        app.register_blueprint(log)
         app.register_blueprint(table_interface)
         app.register_blueprint(process_interface)
         app.register_blueprint(export)

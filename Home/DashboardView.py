@@ -4,8 +4,6 @@ from db_actions import PostgersqlDBManagement, SQLiteDBManagement
 from Oidc_Decorators.Decorators import require_keycloak_role
 from flask import Blueprint, render_template, request, redirect, url_for
 
-from Logging import ClientLogger
-from Logging import ServerLogger
 from Oidc_Decorators import oidc
 
 dash = Blueprint('dash', __name__,  static_folder='/static', static_url_path="/pages-static",
@@ -15,9 +13,6 @@ dash = Blueprint('dash', __name__,  static_folder='/static', static_url_path="/p
 @oidc.require_login
 def dashboard():
     if oidc.user_loggedin:
-
-        ClientLogger.info('This is a Client Log for beeing on the Homepage')
-        ServerLogger.info('This is Server Log for being on the Homepage')
         return render_template('homepage.html')
       
     return redirect(url_for('start.Startscreen'))

@@ -1,124 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <head>
-            {% if title %}
-            <title>{{ title }} - DB-Tools</title>
-            {% else %}
-            <title>Welcome to DB-Tools</title>
-            {% endif %}
-            {% include 'head.html' %}
-        </head>
-        <style>
-        div {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: white;
-        }
-        a {
-            color: goldenrod;
-            text-decoration: none;
-        }
-        .navv a:hover {
-            color: black;
-        }
-
-        .navv ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .navv ul li {
-            --c: goldenrod;
-            color: var(--c);
-            font-size: 16px;
-            border: 0.3em solid var(--c);
-            border-radius: 0.5em;
-            width: 12em;
-            height: 3em;
-            text-transform: uppercase;
-            font-weight: bold;
-            font-family: sans-serif;
-            letter-spacing: 0.1em;
-            text-align: center;
-            line-height: 3em;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            transition: 0.5s;
-            margin: 1em;
-        }
-
-        .navv ul li span {
-            position: absolute;
-            width: 25%;
-            height: 100%;
-            background-color: var(--c);
-            transform: translateY(150%);
-            border-radius: 50%;
-            left: calc((var(--n) - 1) * 25%);
-            transition: 0.5s;
-            transition-delay: calc((var(--n) - 1) * 0.1s);
-            z-index: -1;
-        }
-
-        .navv ul li:hover {
-            color: black;
-        }
-
-        .navv ul li:hover span {
-            transform: translateY(0) scale(2);
-        }
-
-        .navv ul li span:nth-child(1) {
-            --n: 1;
-        }
-
-        .navv ul li span:nth-child(2) {
-            --n: 2;
-        }
-
-        .navv ul li span:nth-child(3) {
-            --n: 3;
-        }
-
-        .navv ul li span:nth-child(4) {
-            --n: 4;
-        }
-        </style>        
-        
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg py-3 navbar-light bg-light">
-            <a class="navbar-brand">
-                <img src="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.svg')}}" height="100" alt="">
-            </a>
-        </nav>
+{% if title %}
+<title>{{ title }} - DB-Tools</title>
+{% else %}
+<title>Welcome to DB-Tools</title>
+{% endif %}
+{% include 'head.html' %}
+</head>
+<body>
+    <div style="height: auto; width:auto; text-align:center">
+        <div style="height: auto; width:50%; display: inline-block; margin-top: 5%">
+            <img alt="Körber Logo" class="koerber_logo"
+                src="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.svg')}}">
+        </div>
         <div>
-            <div class="navv">
-            <ul>
-                <li>
-                    <span></span><span></span><span></span><span></span>
-                    <a href="/home" style="text-decoration: none">Login</a>
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <span></span><span></span><span></span><span></span>
-                    <a href="http://localhost:8080/auth/admin/master/console" style="text-decoration: none">User Managment</a>
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <span></span><span></span><span></span><span></span>
-                    <a href="" style="text-decoration: none">View</a>
-                </li>
-            </ul>
+            <h1>
+                DB-Tools
+            </h1>
+        </div>
+        <div>
+            <div>
+                <a type="button" href="{{url_for('dash.dashboard')}}" class="btn btn-primary">Login</a>
+                <a type="button" href="http://localhost:8080/auth/admin/master/console"
+                    class="btn btn-outline-primary">User Management</a>
             </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>

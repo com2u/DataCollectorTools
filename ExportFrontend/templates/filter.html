@@ -32,7 +32,7 @@
         location.href = "{{url_for('export.page_view')}}?".concat(str);
     };
     function resetForm() {
-        $(".form-control").val('default')
+        $(".form-control").val('')
         $('.selectpicker').selectpicker('refresh')
     };
 </script>
@@ -86,7 +86,7 @@
     <div class="form-group row">
         <label for="interval" class="col-sm-2 col-form-label h3">Interval</label>
         <div class="col-sm-10">
-            <input id="interval" name="interval" class="form-control" value=''></input>
+            <input id="interval" name="interval" class="form-control" placeholder='Interval' value=''></input>
         </div>
     </div>
 

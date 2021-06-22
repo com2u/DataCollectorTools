@@ -14,7 +14,7 @@ def get_postgres_instance():
 
 class DBManagement:
     def __condition_filter_to_string(self, filter):
-        filter={k: v for k, v in filter.items() if v[0] != ''}
+        filter = {k: v for k, v in filter.items() if v[0] != ''}
         if "_" in filter:
             del filter["_"]
         if filter != {}:
@@ -23,12 +23,26 @@ class DBManagement:
             if "batchid" in filter:
                 conditions.append(
                     f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
-            if "from_datetime" in filter:
-                conditions.append(
-                    f"timestamp > '{filter['from_datetime'][0].replace('T', ' ')}'")
-            if "to_datetime" in filter:
-                conditions.append(
-                    f"timestamp < '{filter['to_datetime'][0].replace('T', ' ')}'")
+            if "from_datetime" in filter or "from_datetime_offset" in filter:
+                if "from_datetime_offset" not in filter:
+                    conditions.append(
+                        f"timestamp > '{filter['from_datetime'][0].replace('T', ' ')}'")
+                elif "from_datetime" not in filter:
+                    conditions.append(
+                        f"timestamp > (SELECT NOW() + interval '{filter['from_datetime_offset'][0]}')::text")
+                elif "from_datetime" in filter or "from_datetime_offset" in filter:
+                    conditions.append(
+                        f"timestamp > (SELECT '{filter['from_datetime'][0].replace('T', ' ')}'::timestamp + interval '{filter['from_datetime_offset'][0]}')::text")
+            if "to_datetime" in filter or "to_datetime_offset" in filter:
+                if "to_datetime_offset" not in filter:
+                    conditions.append(
+                        f"timestamp > '{filter['to_datetime'][0].replace('T', ' ')}'")
+                elif "to_datetime" not in filter:
+                    conditions.append(
+                        f"timestamp < (SELECT NOW() + interval '{filter['to_datetime_offset'][0]}')::text")
+                elif "to_datetime" in filter or "to_datetime_offset" in filter:
+                    conditions.append(
+                        f"timestamp > (SELECT '{filter['to_datetime'][0].replace('T', ' ')}'::timestamp + interval '{filter['from_datetime_offset'][0]}')::text")
             if len(conditions) > 0:
                 query_string += " Where "
                 query_string += " AND ".join(conditions)

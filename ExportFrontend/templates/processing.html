@@ -29,6 +29,24 @@
         });
     };
 
+    function delete_pictures() {
+        var search = location.search.substring(1);
+        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+        $.get({
+            url: "{{url_for('delete_interface.delete_pictures')}}",
+            data: params,
+        })
+    };
+
+    function delete_from_db() {
+        var search = location.search.substring(1);
+        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+        $.get({
+            url: "{{url_for('delete_interface.delete_db')}}",
+            data: params,
+        })
+    };
+
 </script>
 <h1 style="color:blue;">
     Process data
@@ -55,6 +73,22 @@
                 <a class="btn btn-primary" href="{{url_for('export_interface.download_excel')}}">Excel</a>
             </td>
         </tr>
+        <tr>
+            <th scope="row">Delete</th>
+            <td>
+                <button class="btn btn-primary" onclick="delete_pictures();delete_from_db()">Database and Pictures</button>
+                <button class="btn btn-primary" onclick="delete_pictures()"> Pictures</button>
+
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">Dump</th>
+            <td>
+                <a class="btn btn-primary" href="{{url_for('export_interface.dump_all')}}">Dump entire Database</a>
+                <a class="btn btn-primary" href="{{url_for('export_interface.dump_with_pictures')}}">Dump entire Database and Pictures</a>
+
+            </td>
+        </tr>
     </tbody>
 </table>
 <div id="csv_alert" class="alert alert-primary" role="alert" hidden>
@@ -69,5 +103,4 @@
     Your excel-file is ready: <br>
     <div id=excel_folder></div>
 </div>
-
 {% endblock %}

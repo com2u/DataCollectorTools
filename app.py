@@ -14,9 +14,10 @@ def init_app():
         from Home.DashboardView import dash
         from Logging.LogView import log
         from Table.Table import table_interface
-        from ExportBackend.Export import export_interface
+        from ExportBackend.Export import process_interface
         from ExportFrontend.export_frontend import export
         from Config.db_config import config_interface
+        from Delete.Delete import delete_interface
        
         
         # Register Blueprints
@@ -25,9 +26,11 @@ def init_app():
         app.register_blueprint(dash)
         app.register_blueprint(log)
         app.register_blueprint(table_interface)
-        app.register_blueprint(export_interface)
+        app.register_blueprint(process_interface)
         app.register_blueprint(export)
         app.register_blueprint(config_interface)
+        app.register_blueprint(delete_interface)
+
         return app
 
 def init_oidc():

@@ -31,7 +31,7 @@ def get_pictures_7z():
     database = db_actions.get_postgres_instance()
     
     pathes_to_pictures = database.get_table_column_values(
-        "trigger_image_links", "image1", filter=request.values.to_dict())
+        "trigger_image_links", "image1", filter=request.values.to_dict(flat=False))
     if len(pathes_to_pictures) > 0:
         zip_uuid = f"{str(uuid.uuid4())}"
         with open(zip_uuid + '.txt', "w") as file:
@@ -70,7 +70,7 @@ def export_folder_csv():
     # creating a csv file for every table
     for table_name in database.get_view_names():
         data_list = [dict(row) for row in database.get_table(
-            table_name, filter=request.values.to_dict())]
+            table_name, filter=request.values.to_dict(flat=False))]
         if len(data_list) > 0:
             df = pd.DataFrame(data_list)
             df.columns = database.get_table_columns(table_name)
@@ -86,7 +86,7 @@ def export_folder_excel():
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     for table_name in database.get_view_names():
         data_list = [dict(row) for row in database.get_table(
-            table_name, filter=request.values.to_dict())]
+            table_name, filter=request.values.to_dict(flat=False))]
         if len(data_list) > 0:
             df = pd.DataFrame(data_list)
             df.columns = database.get_table_columns(table_name)
@@ -114,7 +114,7 @@ def export_folder_pictures():
     folder_name = Path(str(data["export_path"]), id)
     folder_name.mkdir(parents=True, exist_ok=True)
     pathes_to_pictures = database.get_table_column_values(
-        "trigger_image_links", "image1", filter=request.values.to_dict())
+        "trigger_image_links", "image1", filter=request.values.to_dict(flat=False))
     if len(pathes_to_pictures) > 0:
         for file in pathes_to_pictures:
             shutil.copy(file)
@@ -130,7 +130,7 @@ def download_csv():
     with py7zr.SevenZipFile(memory_file, 'w') as zf:
         for table_name in database.get_view_names():
             data_list = [dict(row) for row in database.get_table(
-                table_name, filter=request.values.to_dict())]
+                table_name, filter=request.values.to_dict(flat=False))]
             if len(data_list) > 0:
                 df = pd.DataFrame(data_list)
                 df.columns = database.get_table_columns(table_name)
@@ -147,7 +147,7 @@ def download_excel():
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     for table_name in database.get_view_names():
         data_list = [dict(row) for row in database.get_table(
-            table_name, filter=request.values.to_dict())]
+            table_name, filter=request.values.to_dict(flat=False))]
         if len(data_list) > 0:
             df = pd.DataFrame(data_list)
             df.columns = database.get_table_columns(table_name)

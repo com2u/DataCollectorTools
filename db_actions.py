@@ -14,23 +14,35 @@ def get_postgres_instance():
 
 class DBManagement:
     def __condition_filter_to_string(self, filter):
+        filter = {k: v for k, v in filter.items() if v[0] != ''}
         if "_" in filter:
             del filter["_"]
         if filter != {}:
             query_string = f""
             conditions = []
             if "batchid" in filter:
-                if filter["batchid"] != "":
+                conditions.append(
+                    f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
+            if "from_datetime" in filter or "from_datetime_offset" in filter:
+                if "from_datetime_offset" not in filter:
                     conditions.append(
-                        f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
-            if "from_datetime" in filter:
-                if filter["from_datetime"] != "":
+                        f"timestamp > '{filter['from_datetime'][0].replace('T', ' ')}'")
+                elif "from_datetime" not in filter:
                     conditions.append(
-                        f"timestamp > '{filter['from_datetime'].replace('T', ' ')}'")
-            if "to_datetime" in filter:
-                if filter["to_datetime"] != "":
+                        f"timestamp > (SELECT NOW() + interval '{filter['from_datetime_offset'][0]}')::text")
+                elif "from_datetime" in filter or "from_datetime_offset" in filter:
                     conditions.append(
-                        f"timestamp < '{filter['to_datetime'].replace('T', ' ')}'")
+                        f"timestamp > (SELECT '{filter['from_datetime'][0].replace('T', ' ')}'::timestamp + interval '{filter['from_datetime_offset'][0]}')::text")
+            if "to_datetime" in filter or "to_datetime_offset" in filter:
+                if "to_datetime_offset" not in filter:
+                    conditions.append(
+                        f"timestamp > '{filter['to_datetime'][0].replace('T', ' ')}'")
+                elif "to_datetime" not in filter:
+                    conditions.append(
+                        f"timestamp < (SELECT NOW() + interval '{filter['to_datetime_offset'][0]}')::text")
+                elif "to_datetime" in filter or "to_datetime_offset" in filter:
+                    conditions.append(
+                        f"timestamp > (SELECT '{filter['to_datetime'][0].replace('T', ' ')}'::timestamp + interval '{filter['from_datetime_offset'][0]}')::text")
             if len(conditions) > 0:
                 query_string += " Where "
                 query_string += " AND ".join(conditions)
@@ -68,22 +80,30 @@ class DBManagement:
             return self.engine.execute(f"SELECT * FROM {table_name}")
 
     def delete(self, filter):
-        triggerheader_ids = self.get_table_column_values("trigger_image_links", "headerid", filter)
-        batchheader_ids = self.get_table_column_values("batch", "headerid", filter)
-        trigger_delete = self.engine.execute(f"DELETE FROM trigger_image_links {self.__condition_filter_to_string(filter)}")
-        batch_delete = self.engine.execute(f"DELETE FROM batch {self.__condition_filter_to_string(filter)}")
-        new_trigger_header_ids = self.get_table_column_values("trigger_image_links", "headerid", filter)
-        new_batch_header_ids = self.get_table_column_values("batch", "headerid", filter)
+        triggerheader_ids = self.get_table_column_values(
+            "trigger_image_links", "headerid", filter)
+        batchheader_ids = self.get_table_column_values(
+            "batch", "headerid", filter)
+        trigger_delete = self.engine.execute(
+            f"DELETE FROM trigger_image_links {self.__condition_filter_to_string(filter)}")
+        batch_delete = self.engine.execute(
+            f"DELETE FROM batch {self.__condition_filter_to_string(filter)}")
+        new_trigger_header_ids = self.get_table_column_values(
+            "trigger_image_links", "headerid", filter)
+        new_batch_header_ids = self.get_table_column_values(
+            "batch", "headerid", filter)
         for id in triggerheader_ids:
             if id in new_trigger_header_ids:
                 triggerheader_ids.remove(id)
         for id in batchheader_ids:
             if id in new_batch_header_ids:
                 triggerheader_ids.remove(id)
-        if len(triggerheader_ids)>0:
-            self.engine.execute(f"DELETE FROM triggerheader WHERE id in {str(triggerheader_ids).replace('[','(').replace(']',')')}")
-        if len(batchheader_ids)>0:
-            self.engine.execute(f"DELETE FROM batchheader WHERE id in {str(batchheader_ids).replace('[','(').replace(']',')')}")
+        if len(triggerheader_ids) > 0:
+            self.engine.execute(
+                f"DELETE FROM triggerheader WHERE id in {str(triggerheader_ids).replace('[','(').replace(']',')')}")
+        if len(batchheader_ids) > 0:
+            self.engine.execute(
+                f"DELETE FROM batchheader WHERE id in {str(batchheader_ids).replace('[','(').replace(']',')')}")
         return {"batch": batch_delete.rowcount, "trigger_image_links": trigger_delete.rowcount}
 
 

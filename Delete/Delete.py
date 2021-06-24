@@ -9,14 +9,14 @@ delete_interface = Blueprint(
 @delete_interface.route('/db')
 def delete_db():
     database = db_actions.get_postgres_instance()
-    return jsonify(database.delete(filter=request.values.to_dict()))
+    return jsonify(database.delete(filter=request.values.to_dict(flat=False)))
 
 
 @delete_interface.route("/pictures")
 def delete_pictures():
     database = db_actions.get_postgres_instance()
     pathes_to_pictures = database.get_table_column_values(
-        "trigger_image_links", "image1", filter=request.values.to_dict())
+        "trigger_image_links", "image1", filter=request.values.to_dict(flat=False))
     missing_files = []
     deleted_files = []
     if len(pathes_to_pictures) > 0:

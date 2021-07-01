@@ -40,7 +40,4 @@ def init_oidc():
 
 if __name__ == "__main__":
     app = init_app()
-    with open("parameters.json") as file:
-        data = json.load(file)
-    flask_port = data["flask_port"]
-    app.run(host="0.0.0.0", port=flask_port)
+    app.run(host="0.0.0.0")

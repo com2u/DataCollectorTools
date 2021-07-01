@@ -25,8 +25,7 @@ def get_config():
         "postgres_user": data["postgres_user"],
         "postgres_db": data["postgres_db"],
         "limit_table_length": data["limit_table_length"],
-        "export_path": data["export_path"],
-        "flask_port": data["flask_port"]
+        "export_path": data["export_path"]
     }
     return jsonify(json_data)
 
@@ -42,8 +41,7 @@ def post_config():
                            "postgres_pw",
                            "postgres_db",
                            "limit_table_length",
-                           "export_path",
-                           "flask_port"]
+                           "export_path"]
     for parameter in accepted_parameters:
         if parameter in req:
             if req[parameter] != "":

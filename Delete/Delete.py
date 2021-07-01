@@ -9,7 +9,7 @@ delete_interface = Blueprint(
 @delete_interface.route('/db')
 def delete_db():
     database = db_actions.get_postgres_instance()
-    return jsonify(database.delete(filter=request.values.to_dict(flat=False)))
+    return jsonify(database.delete_vision(filter=request.values.to_dict(flat=False)))
 
 
 @delete_interface.route("/pictures")

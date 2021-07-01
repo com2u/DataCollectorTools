@@ -11,12 +11,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg py-3 navbar-light bg-light">
-        <a class="navbar-brand" href="{{url_for('dash.dashboard')}}">
-            <img src="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.svg')}}" height="100"
-                alt="">
-        </a>
-    </nav>
+    {% include 'NavBar.html' %}
     <div class="container">
         {% block content %}{% endblock %}
     </div>

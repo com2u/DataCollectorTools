@@ -1,5 +1,5 @@
 from flask import Blueprint, request, url_for, render_template, redirect
-from db_actions import PostgersqlDBManagement
+from db_actions import get_postgres_instance
 import json
 
 from Oidc_Decorators import oidc
@@ -16,10 +16,7 @@ def export_index():
 @export.route('/alltables')
 @oidc.require_login
 def alltables():
-    with open("parameters.json") as file:
-        data = json.load(file)
-        database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
-                                          url=data["postgres_url"], dbname=data["postgres_db"])
+    database = get_postgres_instance()
     alltables = []
     table_names = database.get_view_names()
     table_names.extend(database.get_table_names())
@@ -41,10 +38,7 @@ def page_filter():
 @export.route('/view', methods=["GET"])
 @oidc.require_login
 def page_view():
-    with open("parameters.json") as file:
-        data = json.load(file)
-        database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
-                                          url=data["postgres_url"], dbname=data["postgres_db"])
+    database = get_postgres_instance()
     req = request.values.to_dict(flat=False)
     alltables = []
     table_names = database.get_view_names()

@@ -5,7 +5,8 @@ RUN apt-get update -y && \
     apt-get install -y python-dev && \
     apt-get install -y python3-pip && \
     apt-get install -y p7zip-full && \
-    apt-get install -y libpq-dev
+    apt-get install -y libpq-dev && \
+    apt-get install -y postgresql-client
 
 WORKDIR /app
 

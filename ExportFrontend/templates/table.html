@@ -58,29 +58,36 @@
     });
 
 
+
+
     function showModal(id) {
-        $.ajax({
-            url: "{{url_for('view_templates.all_view_templates')}}",
-            success: function (data) {
-                var modalTable = $("#{{table_name}}ModalTable").DataTable({
-                    "autoWidth": true,
-                    "columns": [
-                        { data: "id", title: "id", name: "id" },
-                        { data: "viewname", title: "viewname", name: "viewname" },
-                        { data: "defaultrowcount", title: "defaultrowcount", name: "defaultrowcount" }
-                    ],
-                    "colReorder": true,
-                    "data": data.data,
-                    "destroy": true,
-                    "orderMuli": true,
-                    "processing": true,
-                    "responsive": true,
-                    "select": {
-                        style: 'single' 
-                    }
-                });
+
+        var modalTable = $("#{{table_name}}ModalTable").DataTable({
+            "autoWidth": true,
+            "columns": [
+                { "data": "id", "title": "id", "name": "id" },
+                { "data": "viewname", "title": "viewname", "name": "viewname" },
+                { "data": "defaultrowcount", "title": "defaultrowcount", "name": "defaultrowcount" }
+            ],
+            "colReorder": true,
+            "ajax": "{{url_for('view_templates.all_view_templates')}}",
+            "destroy": true,
+            "orderMuli": true,
+            "processing": true,
+            "responsive": true,
+            "select": {
+                style: 'single'
             }
         });
+        modalTable.on('select', function (e, dt, type, indexes) {
+            var rowData = modalTable.rows( indexes ).data().toArray()[0];
+            console.log(rowData);
+            modalTable.page.len(rowData['defaultrowcount'])
+            modalTable.columns( rowData['invisiblecolumns']).visible(false, false);
+            modalTable.columns.adjust().draw( false );
+
+        });
+
         $(id).modal('toggle')
     }
 
@@ -105,7 +112,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary">Default</button>
                 <button type="button" class="btn btn-secondary" onclick="hideModals()">Close</button>
             </div>
         </div>

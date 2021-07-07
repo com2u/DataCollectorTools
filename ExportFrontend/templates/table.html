@@ -140,17 +140,8 @@
                     });
                 }
                 var oTable = $("#{{table_name}}").DataTable({
-                    "data": data.data,
-                    "columns": columns,
-                    "dom": '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"l>> rt <"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+
                     "autoWidth": true,
-                    "colReorder": true,
-                    "responsive": true,
-                    "processing": true,
-                    "orderMuli": true,
-                    "select": {
-                        style: 'multi'
-                    },
                     "buttons": [
                         {
                             extend: 'collection',
@@ -168,44 +159,76 @@
                         {
                             text: 'View Templates', className: 'btn btn-outline-primary mb-2',
                             action: function () {
-                                $("#{{table_name}}Modal").modal()
+                                showModal('#{{table_name}}Modal')
                             }
                         }
-                    ]
+                    ],
+                    "columns": columns,
+                    "colReorder": true,
+                    "data": data.data,
+                    "orderMuli": true,
+                    "processing": true,
+                    "dom": '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"l>> rt <"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    "responsive": true,
+                    "stateSave": true,
+                    "select": {
+                        style: 'multi'
+                    }
                 });
             }
         });
     });
 
-    $.ajax({
-        url: "{{url_for('table_interface.get_table_columns', table_name=table_name)}}",
-        success: function (data) {
-            for (let index = 0; index < data.length; index++) {
-                const element = data[index];
-                var node = document.createElement("th");
-                var textnode = document.createTextNode(element);
-                node.appendChild(textnode);
-                var children = document.getElementById("{{table_name}}").children[0].children[0].appendChild();
+
+    function showModal(id) {
+        $.ajax({
+            url: "{{url_for('view_templates.get_all_templates')}}",
+            success: function (data) {
+                var modalTable = $("#{{table_name}}ModalTable").DataTable({
+                    "autoWidth": true,
+                    "columns": [
+                        { data: "id", title: "id", name: "id" },
+                        { data: "viewname", title: "viewname", name: "viewname" },
+                        { data: "defaultrowcount", title: "defaultrowcount", name: "defaultrowcount" }
+                    ],
+                    "colReorder": true,
+                    "data": data.data,
+                    "destroy": true,
+                    "orderMuli": true,
+                    "processing": true,
+                    "responsive": true,
+                    "select": {
+                        style: 'single' 
+                    }
+                });
             }
-        }
-    });
+        });
+        $(id).modal('toggle')
+    }
+
+    function hideModals() {
+        $('.modal').modal('toggle')
+    }
+
+
 </script>
-<div class="modal fade" id="{{table_name}}Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="{{table_name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{table_name}}ModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" onclick="hideModals()" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                ...
+                <table class="table" id="{{table_name}}ModalTable" style="width: 100%">
+                </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" onclick="hideModals()">Close</button>
             </div>
         </div>
     </div>

@@ -22,7 +22,7 @@ def database_initialization():
 
 
 @view_templates.route("/", methods=["GET", "POST"])
-def get_all_templates():
+def all_view_templates():
     if request.method == 'GET':
         database = get_postgres_instance(dbname="dbtools")
         table_names = database.get_table_names()
@@ -55,8 +55,10 @@ def get_all_templates():
             f"""INSERT INTO viewfilter (viewname, defaultrowcount, rowcountoptions, invisiblecolumns) VALUES('{params['viewname']}', {int(params['defaultrowcount'])}, '{params['rowcountoptions']}', '{params['invisiblecolumns']}') RETURNING id;""").fetchone()[0]
         return jsonify(id=id)
 
-
-@view_templates.route("/delete/<id>", methods=["DELETE"])
-def delete_view_template(id):
-    database = get_postgres_instance(dbname="dbtools")
-    return jsonify(success=database.delet_view_template(id))
+@view_templates.route("/<id>", methods=["GET", "DELETE"])
+def view_template(id):
+    if request.method == "DELETE":
+        database = get_postgres_instance(dbname="dbtools")
+        return jsonify(success=database.delet_view_template(id))
+    if request.method == "GET":
+        pass

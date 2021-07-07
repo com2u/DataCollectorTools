@@ -182,7 +182,7 @@
 
     function showModal(id) {
         $.ajax({
-            url: "{{url_for('view_templates.get_all_templates')}}",
+            url: "{{url_for('view_templates.all_view_templates')}}",
             success: function (data) {
                 var modalTable = $("#{{table_name}}ModalTable").DataTable({
                     "autoWidth": true,
@@ -233,6 +233,6 @@
         </div>
     </div>
 </div>
-<table class="table table-striped table-bordered" id="{{table_name}}" style="width: 100%">
+<table class="table" id="{{table_name}}" style="width: 100%">
 </table>
 {% endmacro %}

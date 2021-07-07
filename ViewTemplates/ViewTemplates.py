@@ -14,9 +14,9 @@ def database_initialization():
     (
     id SERIAL,
     viewname text COLLATE pg_catalog."default",
-    defaultrowcount integer,
-    rowcountoptions integer[],
+    defaultrowcount integer NOT NULL,
     invisiblecolumns text[] COLLATE pg_catalog."default",
+    tablename text,
     PRIMARY KEY (id))
     """)
 
@@ -38,21 +38,23 @@ def all_view_templates():
                 params[param] = params[param][0]
         if 'rowcountoptions' not in params or len(params['rowcountoptions']) == 0:
             params[param] = "{}"
-        elif param in params:
+        elif "rowcountoptions" in params:
             params['rowcountoptions'] = str({int(option) for option in params['rowcountoptions'] if option != ''})
-        if 'invisiblecolumns' not in params or len(params['invisiblecolumns']) == 0:
+        if "invisiblecolumns" not in params or len(params["invisiblecolumns"]) == 0:
             params[param] = "{}"
-        elif param in params:
-            params['invisiblecolumns'] = {str(column) for column in params['invisiblecolumns'] if column  != ''}
-            if len(params['invisiblecolumns']) == 0:
-                params['invisiblecolumns'] = "{}"
+        elif "invisiblecolumns" in params:
+            params["invisiblecolumns"] = {str(column) for column in params["invisiblecolumns"] if column  != ""}
+            if len(params["invisiblecolumns"]) == 0:
+                params["invisiblecolumns"] = "{}"
             else:
-                 params['invisiblecolumns'] =  str(params['invisiblecolumns'])
+                 params["invisiblecolumns"] =  params["invisiblecolumns"]
 
-        
         database = get_postgres_instance(dbname="dbtools")
-        id = database.engine.execute(
-            f"""INSERT INTO viewfilter (viewname, defaultrowcount, rowcountoptions, invisiblecolumns) VALUES('{params['viewname']}', {int(params['defaultrowcount'])}, '{params['rowcountoptions']}', '{params['invisiblecolumns']}') RETURNING id;""").fetchone()[0]
+        querystring = f"""
+        INSERT INTO viewfilter (viewname, defaultrowcount, rowcountoptions, invisiblecolumns)
+        VALUES('{params['viewname']}', {int(params['defaultrowcount'])}, '{params["rowcountoptions"]}', '{str(params["invisiblecolumns"]).replace("'", '"')}')
+        RETURNING id;"""
+        id = database.engine.execute(querystring).fetchone()[0]
         return jsonify(id=id)
 
 @view_templates.route("/<id>", methods=["GET", "DELETE"])

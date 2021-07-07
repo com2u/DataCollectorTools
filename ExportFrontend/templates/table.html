@@ -5,11 +5,11 @@
         var parameters = $.param(JSON.parse('{{parameters|tojson}}'), true);
 
         $.ajax({
-            "url": "{{url_for('table_interface.get_table_rows', table_name=table_name)}}",
+            "url": "{{url_for('table_interface.get_table_columns', table_name=table_name)}}",
             "data": parameters,
             success: function (data) {
                 var columns = [];
-                columnNames = Object.keys(data.data[0]);
+                columnNames = data.columns;
                 for (var i in columnNames) {
                     columns.push({
                         data: columnNames[i],
@@ -20,6 +20,10 @@
                 var oTable = $("#{{table_name}}").DataTable({
 
                     "autoWidth": true,
+                    "ajax": {
+                        "url": "{{url_for('table_interface.get_table_rows', table_name=table_name)}}?" + parameters,
+                        "dataSrc": 'data',
+                    },
                     "buttons": [
                         {
                             extend: 'collection',
@@ -43,14 +47,18 @@
                     ],
                     "columns": columns,
                     "colReorder": true,
-                    "data": data.data,
-                    "orderMuli": true,
-                    "processing": true,
+                    "deferRender": true,
                     "dom": '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"l>> rt <"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "orderMuli": true,
+                    "pageLength": 10,
                     "responsive": true,
                     "stateSave": true,
                     "select": {
                         style: 'multi'
+                    },
+                    "language":{
+                        "loadingRecords": "<div><img src='{{ url_for('static', filename='Resources/Koerber_Logo_RGB_Black.svg')}}'' height='100'/></br>Loading...</div>"
                     }
                 });
             }
@@ -66,8 +74,7 @@
             "autoWidth": true,
             "columns": [
                 { "data": "id", "title": "id", "name": "id" },
-                { "data": "viewname", "title": "viewname", "name": "viewname" },
-                { "data": "defaultrowcount", "title": "defaultrowcount", "name": "defaultrowcount" }
+                { "data": "viewname", "title": "viewname", "name": "viewname" }
             ],
             "colReorder": true,
             "ajax": "{{url_for('view_templates.all_view_templates')}}",
@@ -78,13 +85,17 @@
             "select": {
                 style: 'single'
             }
-        });
+        }).columns.adjust().draw();;
+
         modalTable.on('select', function (e, dt, type, indexes) {
-            var rowData = modalTable.rows( indexes ).data().toArray()[0];
+            var rowData = modalTable.rows(indexes).data().toArray()[0];
             console.log(rowData);
-            modalTable.page.len(rowData['defaultrowcount'])
-            modalTable.columns( rowData['invisiblecolumns']).visible(false, false);
-            modalTable.columns.adjust().draw( false );
+            var table = $("#{{table_name}}").DataTable();
+            table.page.len(rowData['defaultrowcount']).draw();
+            for (let index = 0; index < rowData['invisiblecolumns'].length; index++) {
+                table.columns(rowData['invisiblecolumns'][index] + ":name").visible(show = false, redrawCalculations = false);
+            }
+            table.columns.adjust().draw();
 
         });
 
@@ -95,6 +106,14 @@
         $('.modal').modal('toggle')
     }
 
+    function defaultDataTable(id) {
+        table = $(id).DataTable()
+        table.page.len(10);
+        table.columns().visible(true).draw();
+        table.columns.adjust().draw();
+
+    }
+
 
 </script>
 <div class="modal fade" id="{{table_name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{table_name}}ModalLabel"
@@ -102,7 +121,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+                <h5 class="modal-title">Templates</h5>
                 <button type="button" class="close" onclick="hideModals()" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -112,7 +131,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Default</button>
+                <button type="button" class="btn btn-primary"
+                    onclick="defaultDataTable('#{{table_name}}')">Default</button>
                 <button type="button" class="btn btn-secondary" onclick="hideModals()">Close</button>
             </div>
         </div>

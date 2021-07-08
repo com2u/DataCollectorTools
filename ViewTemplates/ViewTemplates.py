@@ -14,7 +14,8 @@ def database_initialization():
     (
     id SERIAL,
     viewname text COLLATE pg_catalog."default",
-    setting text,
+    setting json,
+    tablename text,
     PRIMARY KEY (id))
     """)
 
@@ -34,10 +35,11 @@ def view_template():
         elif 'viewname' in params:
             params['viewname'] = params['viewname'][0]
         params['options'] = params['options'][0]
+        params['tablename'] = params['tablename'][0]
         database = get_postgres_instance(dbname="dbtools")
         querystring = f"""
-        INSERT INTO viewfilter (viewname, setting)
-        VALUES('{params['viewname']}', '{params["options"]}')
+        INSERT INTO viewfilter (viewname, setting, tablename)
+        VALUES('{params['viewname']}', '{params["options"]}', '{params['tablename']}')
         RETURNING id;"""
         id = database.engine.execute(querystring).fetchone()[0]
         return jsonify(id=id)

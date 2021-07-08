@@ -24,9 +24,7 @@ def database_initialization():
 def view_template():
     if request.method == 'GET':
         database = get_postgres_instance(dbname="dbtools")
-        table_names = database.get_table_names()
-        if "viewfilter" in table_names:
-            return jsonify({"data": [dict(row) for row in database.get_table("viewfilter")]})
+        return jsonify({"data": [dict(row) for row in database.get_table("viewfilter", filter=request.values.to_dict(flat=False))]})
     if request.method == 'POST':
         params = request.values.to_dict(flat=False)
         #formating params to fit database connection string

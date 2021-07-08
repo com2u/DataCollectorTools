@@ -23,6 +23,8 @@ class DBManagement:
         if filter != {}:
             query_string = f""
             conditions = []
+            if "tablename" in filter:
+                conditions.append(f"tablename in {str(filter['tablename']).replace('[','(').replace(']',')')}")
             if "batchid" in filter:
                 conditions.append(
                     f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")

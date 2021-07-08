@@ -82,6 +82,12 @@
 
         var modalTable = $("#{{table_name}}ModalTable").DataTable({
             "autoWidth": true,
+            "ajax": {
+                url: "{{url_for('view_templates.view_template')}}",
+                data: {
+                    tablename: "{{table_name}}"
+                }
+            },
             "buttons": [
                 {
                     text: 'Apply',
@@ -129,7 +135,6 @@
             ],
             "colReorder": true,
             "dom": 'frtpB',
-            "ajax": "{{url_for('view_templates.view_template')}}",
             "destroy": true,
             "orderMuli": true,
             "processing": true,

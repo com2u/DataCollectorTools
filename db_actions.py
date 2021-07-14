@@ -25,9 +25,9 @@ class DBManagement:
             conditions = []
             if "tablename" in filter:
                 conditions.append(f"tablename in {str(filter['tablename']).replace('[','(').replace(']',')')}")
-            if "batchid" in filter:
+            if "batchname" in filter:
                 conditions.append(
-                    f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
+                    f"batch_inspectionid in (select batch_inspectionid from batchview where batchname IN {str(filter['batchname']).replace('[','(').replace(']',')')})")
             if "from_datetime" in filter or "from_datetime_offset" in filter:
                 if "from_datetime_offset" not in filter:
                     conditions.append(

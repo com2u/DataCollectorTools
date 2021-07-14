@@ -55,14 +55,14 @@ class DBManagement:
         return ""
 
     def get_table_names(self):
-        return self.metadata.tables.keys()
+        return sorted(self.metadata.tables.keys())
 
     def get_view_names(self):
-        return [r for r, in self.engine.execute(
-            "select viewname from pg_catalog.pg_views where schemaname NOT IN ('pg_catalog', 'information_schema')order by schemaname, viewname;")]
+        return sorted([r for r, in self.engine.execute(
+            "select viewname from pg_catalog.pg_views where schemaname NOT IN ('pg_catalog', 'information_schema')order by schemaname, viewname;")])
 
     def get_table_columns(self, table_name):
-        return self.engine.execute(f"SELECT * FROM {table_name} LIMIT 0").keys()
+        return sorted(self.engine.execute(f"SELECT * FROM {table_name} LIMIT 0").keys())
 
     def get_table_column_values(self, table_name, column_name, filter=None):
         if filter !=None:

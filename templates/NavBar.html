@@ -1,36 +1,46 @@
 {% block content %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{{url_for('dash.dashboard')}}">
+
+    <a class="navbar-brand float-left" href="{{url_for('dash.dashboard')}}">
         <img src="{{ url_for('static', filename='Resources/Koerber_Logo_RGB_Black.svg')}}" height="50" alt="" />
         <div style="text-align: center; font-weight: bold; display:inline;">DB-Tools</div>
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+
+
+    <div class="navbar-collapse collapse justify-content-between align-items-center w-100" id="collapsingNavbar2">
+        <ul class="navbar-nav mx-auto text-md-center text-left">
+            <li class="nav-item">
+                <a class="nav-link circle" href="{{url_for('export.page_filter')}}"><img
+                        src="{{ url_for('static', filename='Resources/Icons/database-search.png')}}" height="50"
+                        alt="Filter" /><br>Filter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link circle" href="{{url_for('export.page_view')}}"><img
+                        src="{{ url_for('static', filename='Resources/Icons/view-list.png')}}" height="50"
+                        alt="View" /><br>View</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link circle" href="{{url_for('export.page_process')}}"><img
+                        src="{{ url_for('static', filename='Resources/Icons/database-export.png')}}" height="50"
+                        alt="Process" /><br>Process</a>
+            </li>
+        </ul>
+
+    </div>
+
+    <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse justify-content-md-center" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('export.page_filter')}}"><img
-                        src="{{ url_for('static', filename='Resources/Icons/database-search.png')}}" height="50"
-                        alt="Filter" />Filter</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('export.page_view')}}"><img
-                        src="{{ url_for('static', filename='Resources/Icons/view-list.png')}}" height="50"
-                        alt="View" />View</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('export.page_process')}}"><img
-                        src="{{ url_for('static', filename='Resources/Icons/database-export.png')}}" height="50"
-                        alt="Process" />Process</a>
-            </li>
-
+    <div class="nav-item float-right">
+        <ul data-v-3eac620b="" class="navbar-nav ml-auto">
+            <ul data-v-3eac620b="" class="navbar-nav">
+                <li data-v-3eac620b="" class="nav-item">
+                    <a class="btn btn-outline-primary" href="{{ url_for('auth.logout')}}" role="button">Logout</a>
+                </li>
+            </ul>
         </ul>
-        <div class="my-lg-0">
-            <a class="btn btn-outline-primary my-2 my-sm-0" href="{{url_for('auth.logout')}}">Logout</a>
-        </div>
     </div>
 </nav>
 {% endblock %}

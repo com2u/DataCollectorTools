@@ -4,11 +4,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 
 
-def get_postgres_instance():
+def get_postgres_instance(username=None, password=None, url=None, dbname=None):
     with open("parameters.json") as file:
         data = json.load(file)
-        database = PostgersqlDBManagement(username=data["postgres_user"], password=data["postgres_pw"],
-                                          url=data["postgres_url"], dbname=data["postgres_db"])
+    if username == None : username=data["postgres_user"]
+    if password == None : password=data["postgres_pw"]
+    if url == None : url=data["postgres_url"]
+    if dbname == None : dbname=data["postgres_db"]
+    database = PostgersqlDBManagement(username=username, password=password, url=url, dbname=dbname)
     return database
 
 
@@ -20,9 +23,11 @@ class DBManagement:
         if filter != {}:
             query_string = f""
             conditions = []
-            if "batchid" in filter:
+            if "tablename" in filter:
+                conditions.append(f"tablename in {str(filter['tablename']).replace('[','(').replace(']',')')}")
+            if "batchname" in filter:
                 conditions.append(
-                    f"batch_inspectionid in (select batch_inspectionid from batchview where batchid IN {str(filter['batchid']).replace('[','(').replace(']',')')})")
+                    f"batch_inspectionid in (select batch_inspectionid from batchview where batchname IN {str(filter['batchname']).replace('[','(').replace(']',')')})")
             if "from_datetime" in filter or "from_datetime_offset" in filter:
                 if "from_datetime_offset" not in filter:
                     conditions.append(
@@ -50,36 +55,37 @@ class DBManagement:
         return ""
 
     def get_table_names(self):
-        return self.metadata.tables.keys()
+        return sorted(self.metadata.tables.keys())
 
     def get_view_names(self):
-        return [r for r, in self.engine.execute(
-            "select viewname from pg_catalog.pg_views where schemaname NOT IN ('pg_catalog', 'information_schema')order by schemaname, viewname;")]
+        return sorted([r for r, in self.engine.execute(
+            "select viewname from pg_catalog.pg_views where schemaname NOT IN ('pg_catalog', 'information_schema')order by schemaname, viewname;")])
 
     def get_table_columns(self, table_name):
-        return self.engine.execute(f"SELECT * FROM {table_name} LIMIT 0").keys()
+        return sorted(self.engine.execute(f"SELECT * FROM {table_name} LIMIT 0").keys())
 
     def get_table_column_values(self, table_name, column_name, filter=None):
-        filter = dict(filter)
-        if "_" in filter:
-            del filter["_"]
-        if filter != {}:
-            return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} {self.__condition_filter_to_string(filter)} GROUP BY {column_name}")]
-        if filter == {}:
-            return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} GROUP BY {column_name}")]
+        if filter !=None:
+            filter = dict(filter)
+            if "_" in filter:
+                del filter["_"]
+            if filter != {}:
+                return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} {self.__condition_filter_to_string(filter)} GROUP BY {column_name}")]
+        return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} GROUP BY {column_name}")]
 
     def get_table(self, table_name, filter=None):
-        filter = dict(filter)
-        if "_" in filter:
-            del filter["_"]
-        if filter != {}:
-            query_string = f"SELECT * FROM {table_name} " + \
-                self.__condition_filter_to_string(filter)
-            return self.engine.execute(query_string)
-        if filter == {}:
-            return self.engine.execute(f"SELECT * FROM {table_name}")
+        if filter !=None:
+            filter = dict(filter)
+            if "_" in filter:
+                del filter["_"]
+            if filter != {}:
+                query_string = f"SELECT * FROM {table_name} " + \
+                    self.__condition_filter_to_string(filter)
+                return self.engine.execute(query_string)
+        return self.engine.execute(f"SELECT * FROM {table_name}")
 
-    def delete(self, filter):
+
+    def delete_vision(self, filter):
         triggerheader_ids = self.get_table_column_values(
             "trigger_image_links", "headerid", filter)
         batchheader_ids = self.get_table_column_values(
@@ -106,6 +112,13 @@ class DBManagement:
                 f"DELETE FROM batchheader WHERE id in {str(batchheader_ids).replace('[','(').replace(']',')')}")
         return {"batch": batch_delete.rowcount, "trigger_image_links": trigger_delete.rowcount}
 
+
+    def delet_view_template(self, id):
+        if self.engine.execute(f"DELETE FROM viewfilter WHERE id = {id}").rowcount >0:
+            return True
+        else:
+            return False
+        
 
 class PostgersqlDBManagement(DBManagement):
     def __init__(self, username, password, url, dbname):

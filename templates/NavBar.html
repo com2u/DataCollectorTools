@@ -1,44 +1,46 @@
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #5db9fa;">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
-        aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <a class="navbar-brand float-left" href="{{url_for('dash.dashboard')}}">
+        <img src="{{ url_for('static', filename='Resources/Koerber_Logo_RGB_Black.svg')}}" height="50" alt="" />
+        <div style="text-align: center; font-weight: bold; display:inline;">DB-Tools</div>
+    </a>
+
+
+
+    <div class="navbar-collapse collapse justify-content-between align-items-center w-100" id="collapsingNavbar2">
+        <ul class="navbar-nav mx-auto text-md-center text-left">
+            <li class="nav-item">
+                <a class="nav-link circle" href="{{url_for('export.page_filter')}}"><img
+                        src="{{ url_for('static', filename='Resources/Icons/database-search.png')}}" height="50"
+                        alt="Filter" /><br>Filter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link circle" href="{{url_for('export.page_view')}}"><img
+                        src="{{ url_for('static', filename='Resources/Icons/view-list.png')}}" height="50"
+                        alt="View" /><br>View</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link circle" href="{{url_for('export.page_process')}}"><img
+                        src="{{ url_for('static', filename='Resources/Icons/database-export.png')}}" height="50"
+                        alt="Process" /><br>Process</a>
+            </li>
+        </ul>
+
+    </div>
+
+    <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03" style="width: 20%; text-align:center">
-        <a class="navbar-brand mt-2 mt-lg-0" href="{{url_for('dash.dashboard')}}">
-            <img src="{{ url_for('static', filename='Resources/Koerber_Logo_RGB_Black.svg')}}" height="50" alt=""/>
-            <div style="text-align: center; font-weight: bold; display:inline;">DB-Tools</div>
-        </a>
-    </div>
-    <div class="navbar-nav me-auto mb-6 mb-lg-0 " style="width: 60%">
-        <li class="nav-item" style="width: 10%">
-            <a> </a>
-        </li>
-        <li class="nav-item" style="width: 20%; text-align: center">
-            <a class="nav-link" href="{{url_for('export.page_filter')}}">Filter</a>
-        </li>
-        <li style="width: 10%; text-align: center">
-            <a style="text-align: center">-</a>
-        </li>
-        <li class="nav-item" style="width: 20%; text-align: center">
-            <a class="nav-link" href="{{url_for('export.page_view')}}">View</a>
-        </li>
-        <li style="width: 10%; text-align: center">
-            <a>-</a>
-        </li>
-        <li class="nav-item" style="width: 20%; text-align: center">
-            <a class="nav-link" href="{{url_for('export.page_process')}}">Process</a>
-        </li>
-        <li class="nav-item" style="width: 10%">
-            <a> </a>
-        </li>
-
-    </div>
-    <div class="navbar-nav ms-auto mb-2 mb-lg-0" style="width: 20%; text-align:center">
-        <li class="nav-item" style="text-align:right">
-            <a class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
-        </li>
+    <div class="nav-item float-right">
+        <ul data-v-3eac620b="" class="navbar-nav ml-auto">
+            <ul data-v-3eac620b="" class="navbar-nav">
+                <li data-v-3eac620b="" class="nav-item">
+                    <a class="btn btn-outline-primary" href="{{ url_for('auth.logout')}}" role="button">Logout</a>
+                </li>
+            </ul>
+        </ul>
     </div>
 </nav>
 {% endblock %}

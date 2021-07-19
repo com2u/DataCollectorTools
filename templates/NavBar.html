@@ -9,51 +9,28 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse " id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto justify-content-center">
+    <div class="collapse navbar-collapse justify-content-md-center" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a class="nav-link" href="{{url_for('export.page_filter')}}"><img
                         src="{{ url_for('static', filename='Resources/Icons/database-search.png')}}" height="50"
-                        alt="Filter" /></a>
+                        alt="Filter" />Filter</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{url_for('export.page_view')}}"><img
                         src="{{ url_for('static', filename='Resources/Icons/view-list.png')}}" height="50"
-                        alt="View" /></a>
+                        alt="View" />View</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{url_for('export.page_process')}}"><img
                         src="{{ url_for('static', filename='Resources/Icons/database-export.png')}}" height="50"
-                        alt="Process" /></a>
+                        alt="Process" />Process</a>
             </li>
 
         </ul>
-        <div class="form-inline my-2 my-lg-0">
+        <div class="my-lg-0">
             <a class="btn btn-outline-primary my-2 my-sm-0" href="{{url_for('auth.logout')}}">Logout</a>
         </div>
     </div>
 </nav>
 {% endblock %}
-<!--
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #5db9fa;">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
-        aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03" style="width: 20%; text-align:center">
-        <a class="navbar-brand mt-2 mt-lg-0" href="">
-            
-        </a>
-    </div>
-    <div class="navbar-nav me-auto mb-6 mb-lg-0 " style="width: 60%">
-        <ul class="navbar-nav mr-auto">
-        
-    </ul>
-        <div class="form-inline my-2 my-lg-0">
-            <a class="btn btn-primary" href="{{url_for('auth.logout')}}">Logout</a>
-        </div>
-
-    </div>
-</nav>
--->

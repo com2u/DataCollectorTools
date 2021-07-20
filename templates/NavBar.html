@@ -1,39 +1,48 @@
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<style>
+    .divider {
+        flex-grow: 0.1;
+        border-bottom: 3px solid black;
+    }
 
-    <a class="navbar-brand float-left" href="{{url_for('dash.dashboard')}}">
+    .active {
+        background-color: #006AF8;
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between">
+
+    <a class="navbar-brand" href="{{url_for('dash.dashboard')}}">
         <img src="{{ url_for('static', filename='Resources/Koerber_Logo_RGB_Black.svg')}}" height="50" alt="" />
         <div style="text-align: center; font-weight: bold; display:inline;">DB-Tools</div>
     </a>
 
 
 
-    <div class="navbar-collapse collapse justify-content-between align-items-center w-100" id="collapsingNavbar2">
-        <ul class="navbar-nav mx-auto text-md-center text-left">
-            <li class="nav-item">
-                <a class="nav-link circle" href="{{url_for('export.page_filter')}}"><img class="rounded-circle border border-secondary"
-                        src="{{ url_for('static', filename='Resources/Icons/database-search.png')}}" height="50"
-                        alt="Filter" /><br>Filter</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link circle" href="{{url_for('export.page_view')}}"><img class="rounded-circle border border-secondary"
-                        src="{{ url_for('static', filename='Resources/Icons/view-list.png')}}" height="50"
-                        alt="View" /><br>View</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link circle" href="{{url_for('export.page_process')}}"><img class="rounded-circle border border-secondary"
-                        src="{{ url_for('static', filename='Resources/Icons/database-export.png')}}" height="50"
-                        alt="Process" /><br>Process</a>
-            </li>
-        </ul>
+    <div class="navbar-collapse collapse d-flex justify-content-center" id="collapsingNavbar2">
 
+        <a href="{{url_for('export.page_filter')}}">
+            <svg class="rounded-circle border border-secondary" height="50" width="50" alt="Filter">
+                <image xlink:href="{{ url_for('static', filename='Resources/Icons/database-search.png')}}" />
+            </svg>
+        </a>
+        <div class="divider">
+        </div>
+        <a href="{{url_for('export.page_view')}}">
+            <svg class="rounded-circle border border-secondary" height="50" width="50" alt="Filter">
+                <image xlink:href="{{ url_for('static', filename='Resources/Icons/view-list.png')}}" />
+            </svg>
+        </a>
+
+        <div class="divider">
+        </div>
+        <a href="{{url_for('export.page_process')}}">
+            <svg class="rounded-circle border border-secondary" height="50" width="50" alt="Filter">
+                <image xlink:href="{{ url_for('static', filename='Resources/Icons/database-export.png')}}" />
+            </svg>
+        </a>
     </div>
 
-    <button class="navbar-toggler ml-1" type="button" data-toggle="collapse" data-target="#collapsingNavbar2">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="nav-item float-right">
+    <div class="nav-item">
         <ul data-v-3eac620b="" class="navbar-nav ml-auto">
             <ul data-v-3eac620b="" class="navbar-nav">
                 <li data-v-3eac620b="" class="nav-item">

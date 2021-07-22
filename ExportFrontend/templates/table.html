@@ -45,6 +45,27 @@
                             }
                         }
                     ],
+                    "initComplete": function () {
+                        params = JSON.parse('{{parameters|tojson}}')
+                        if ("viewtemplateid" in params) {
+                            console.log(params);
+                            $.ajax({
+                                url: "{{url_for('view_templates.view_template')}}",
+                                data: {
+                                    tablename: "{{table_name}}"
+                                },
+                                success: function(data){
+                                    data= data['data']
+                                    for (let index = 0; index < data.length; index++) {
+                                        if (params["viewtemplateid"].includes(data[index]['id'].toString())) {
+                                            var applied = applyViewTemplate("{{table_name}}", data[index]['setting']);
+                                            console.log(applied);
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    },
                     "columns": columns,
                     "colReorder": true,
                     "deferRender": true,
@@ -99,21 +120,7 @@
                         modaltable = $("#{{table_name}}ModalTable").DataTable();
                         var rowData = modaltable.rows({ selected: true }).data().toArray()[0];
                         var setting = rowData['setting'];
-                        var table = $("#{{table_name}}").DataTable();
-                        table.state.clear()
-                        table.colReorder.reset();
-                        table.columns().visible(true);
-                        var invisibleColumnIndexes = [];
-                        for (let index = 0; index < setting['columns'].length; index++) {
-                            if (setting['columns'][index]['visible'] == false) {
-                                invisibleColumnIndexes.push(index);
-                            }
-                        }
-                        table.columns(invisibleColumnIndexes).visible(false);
-                        table.colReorder.order(setting['ColReorder'], true)
-                        table.page.len(setting["length"]);
-                        table.order(setting["order"]);
-                        table.columns.adjust().draw();
+                        applyViewTemplate(tablename = "{{table_name}}", setting = setting)
                     }
                 },
                 {
@@ -149,6 +156,25 @@
         }).columns.adjust().draw();;
 
         $(id).modal('toggle')
+    }
+
+    function applyViewTemplate(tablename, setting) {
+        var table = $("#" + tablename).DataTable();
+        table.state.clear()
+        table.colReorder.reset();
+        table.columns().visible(true);
+        var invisibleColumnIndexes = [];
+        for (let index = 0; index < setting['columns'].length; index++) {
+            if (setting['columns'][index]['visible'] == false) {
+                invisibleColumnIndexes.push(index);
+            }
+        }
+        table.columns(invisibleColumnIndexes).visible(false);
+        table.colReorder.order(setting['ColReorder'], true)
+        table.page.len(setting["length"]);
+        table.order(setting["order"]);
+        table.columns.adjust().draw();
+        return true;
     }
 
     function hideModals() {

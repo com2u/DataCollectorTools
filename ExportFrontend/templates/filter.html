@@ -27,12 +27,19 @@
             $('.selectpicker').selectpicker('refresh')
         }
     });
-
-    $("#to_datetime").change(function () {
-        var dt = new Date($.now());
-        dt.setUTCHours(24, 0, 0, 0);
-        console.log(dt.toISOString().slice(0, 16));
-        $("#to_datetime").val(dt.toISOString().slice(0, 16));
+    $(document).ready(function () {
+        $("#from_datetime_offset_label").tooltip({
+            title: "from offset explanation"
+        });
+        $("#to_datetime_offset_label").tooltip({
+            title: "to offset explanation"
+        });
+        $("#from_datetime_label").tooltip({
+            title: "from datetime explanation"
+        });
+        $("#to_datetime_label").tooltip({
+            title: "to datetime explanation"
+        });
     });
 
     function toView() {
@@ -59,14 +66,14 @@
         <label for="Date" class="col-sm-2 col-form-label h3">Datetime</label>
         <div class="col-sm-5">
             <div class="input-group">
-                <span class="input-group-text">From</span>
+                <span class="input-group-text" id="from_datetime_label">From</span>
                 <input type="date" id="from_date" name="from_date" class="form-control">
                 <input type="time" id="from_time" name="from_time" class="form-control">
             </div>
         </div>
         <div class="col-sm-5">
             <div class="input-group">
-                <span class="input-group-text">To</span>
+                <span class="input-group-text" id="to_datetime_label">To</span>
                 <input type="date" id="to_date" name="to_date" class="form-control">
                 <input type="time" id="to_time" name="to_time" class="form-control">
             </div>
@@ -78,13 +85,13 @@
         <label for="Date" class="col-sm-2 col-form-label h3">Offset</label>
         <div class="col-sm-5">
             <div class="input-group">
-                <span class="input-group-text">From</span>
+                <span class="input-group-text" id="from_datetime_offset_label">From</span>
                 <input type="text" id="from_datetime_offset" name="from_datetime_offset" class="form-control" value=''>
             </div>
         </div>
         <div class="col-sm-5">
             <div class="input-group">
-                <span class="input-group-text">To</span>
+                <span class="input-group-text" id="to_datetime_offset_label">To</span>
                 <input type="text" id="to_datetime_offset" name="to_datetime_offset" class="form-control" value=''>
             </div>
         </div>

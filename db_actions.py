@@ -7,11 +7,16 @@ from sqlalchemy.ext.automap import automap_base
 def get_postgres_instance(username=None, password=None, url=None, dbname=None):
     with open("parameters.json") as file:
         data = json.load(file)
-    if username == None : username=data["postgres_user"]
-    if password == None : password=data["postgres_pw"]
-    if url == None : url=data["postgres_url"]
-    if dbname == None : dbname=data["postgres_db"]
-    database = PostgersqlDBManagement(username=username, password=password, url=url, dbname=dbname)
+    if username == None:
+        username = data["postgres_user"]
+    if password == None:
+        password = data["postgres_pw"]
+    if url == None:
+        url = data["postgres_url"]
+    if dbname == None:
+        dbname = data["postgres_db"]
+    database = PostgersqlDBManagement(
+        username=username, password=password, url=url, dbname=dbname)
     return database
 
 
@@ -24,30 +29,46 @@ class DBManagement:
             query_string = f""
             conditions = []
             if "tablename" in filter:
-                conditions.append(f"tablename in {str(filter['tablename']).replace('[','(').replace(']',')')}")
+                conditions.append(
+                    f"tablename in {str(filter['tablename']).replace('[','(').replace(']',')')}")
             if "batchname" in filter:
                 conditions.append(
                     f"batch_inspectionid in (select batch_inspectionid from batchview where batchname IN {str(filter['batchname']).replace('[','(').replace(']',')')})")
-            if "from_datetime" in filter or "from_datetime_offset" in filter:
-                if "from_datetime_offset" not in filter:
+
+            if "to_datetime_offset" not in filter:
+                if "to_date" in filter or "to_time" in filter:
                     conditions.append(
-                        f"timestamp > '{filter['from_datetime'][0].replace('T', ' ')}'")
-                elif "from_datetime" not in filter:
+                        f"timestamp < '{filter['to_date'][0] if 'to_date' in filter else ''} {filter['to_time'][0] if 'to_time' in filter else ''}'")
+            elif "to_datetime_offset" in filter:
+                conditions.append(
+                    f"timestamp < (SELECT '{filter['to_date'][0] if 'to_date' in filter else ''}" +
+                    f"{filter['to_time'][0] if 'to_time' in filter else ''} {'NOW()' if 'to_date' not in filter and 'to_time' not in filter else ''}::timestamp" +
+                    f"+ interval '{filter['from_datetime_offset'][0]}')::text")
+
+            if "from_datetime_offset" not in filter:
+                if "from_date" in filter or "from_time" in filter:
                     conditions.append(
-                        f"timestamp > (SELECT NOW() + interval '{filter['from_datetime_offset'][0]}')::text")
-                elif "from_datetime" in filter or "from_datetime_offset" in filter:
+                        f"timestamp > '{filter['from_date'][0] if 'from_date' in filter else ''} {filter['from_time'][0] if 'from_time' in filter else ''}'")
+            elif "from_datetime_offset" in filter:
+                conditions.append(
+                    f"""timestamp > (SELECT {"'" if 'from_date' in filter or 'from_time' in filter else ''}
+                    {filter['from_date'][0] if 'from_date' in filter else ''} {filter['from_time'][0] if 'from_time' in filter else ''}
+                    {"'" if 'from_date' in filter or 'from_time' in filter else ''}
+                    {'NOW()' if 'from_date' not in filter and 'from_time' not in filter else ''}::timestamp
+                    + interval '{filter['from_datetime_offset'][0]}')::text""")
+
+            if "to_datetime_offset" not in filter:
+                if "to_date" in filter or "to_time" in filter:
                     conditions.append(
-                        f"timestamp > (SELECT '{filter['from_datetime'][0].replace('T', ' ')}'::timestamp + interval '{filter['from_datetime_offset'][0]}')::text")
-            if "to_datetime" in filter or "to_datetime_offset" in filter:
-                if "to_datetime_offset" not in filter:
-                    conditions.append(
-                        f"timestamp > '{filter['to_datetime'][0].replace('T', ' ')}'")
-                elif "to_datetime" not in filter:
-                    conditions.append(
-                        f"timestamp < (SELECT NOW() + interval '{filter['to_datetime_offset'][0]}')::text")
-                elif "to_datetime" in filter or "to_datetime_offset" in filter:
-                    conditions.append(
-                        f"timestamp > (SELECT '{filter['to_datetime'][0].replace('T', ' ')}'::timestamp + interval '{filter['from_datetime_offset'][0]}')::text")
+                        f"timestamp < '{filter['to_date'][0] if 'to_date' in filter else ''} {filter['to_time'][0] if 'to_time' in filter else ''}'")
+            elif "to_datetime_offset" in filter:
+                conditions.append(
+                    f"""timestamp < (SELECT {"'" if 'to_date' in filter or 'to_time' in filter else ''}
+                    {filter['to_date'][0] if 'to_date' in filter else ''} {filter['to_time'][0] if 'to_time' in filter else ''}
+                    {"'" if 'to_date' in filter or 'to_time' in filter else ''}
+                    {'NOW()' if 'to_date' not in filter and 'to_time' not in filter else ''}::timestamp
+                    + interval '{filter['to_datetime_offset'][0]}')::text""")
+
             if len(conditions) > 0:
                 query_string += " Where "
                 query_string += " AND ".join(conditions)
@@ -65,7 +86,7 @@ class DBManagement:
         return sorted(self.engine.execute(f"SELECT * FROM {table_name} LIMIT 0").keys())
 
     def get_table_column_values(self, table_name, column_name, filter=None):
-        if filter !=None:
+        if filter != None:
             filter = dict(filter)
             if "_" in filter:
                 del filter["_"]
@@ -74,7 +95,7 @@ class DBManagement:
         return [r for r, in self.engine.execute(f"SELECT {column_name} from {table_name} GROUP BY {column_name}")]
 
     def get_table(self, table_name, filter=None):
-        if filter !=None:
+        if filter != None:
             filter = dict(filter)
             if "_" in filter:
                 del filter["_"]
@@ -83,7 +104,6 @@ class DBManagement:
                     self.__condition_filter_to_string(filter)
                 return self.engine.execute(query_string)
         return self.engine.execute(f"SELECT * FROM {table_name}")
-
 
     def delete_vision(self, filter):
         triggerheader_ids = self.get_table_column_values(
@@ -112,13 +132,12 @@ class DBManagement:
                 f"DELETE FROM batchheader WHERE id in {str(batchheader_ids).replace('[','(').replace(']',')')}")
         return {"batch": batch_delete.rowcount, "trigger_image_links": trigger_delete.rowcount}
 
-
     def delet_view_template(self, id):
-        if self.engine.execute(f"DELETE FROM viewfilter WHERE id = {id}").rowcount >0:
+        if self.engine.execute(f"DELETE FROM viewfilter WHERE id = {id}").rowcount > 0:
             return True
         else:
             return False
-        
+
 
 class PostgersqlDBManagement(DBManagement):
     def __init__(self, username, password, url, dbname):

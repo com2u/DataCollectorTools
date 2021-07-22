@@ -27,6 +27,14 @@
             $('.selectpicker').selectpicker('refresh')
         }
     });
+
+    $("#to_datetime").change( function(){
+        var dt = new Date($.now());
+        dt.setUTCHours(24,0,0,0);
+        console.log(dt.toISOString().slice(0,16));
+        $("#to_datetime").val(dt.toISOString().slice(0,16));
+    });
+
     function toView() {
         var str = $("#filterForm").serialize();
         location.href = "{{url_for('export.page_view')}}?".concat(str);
@@ -50,14 +58,20 @@
     <div class="form-group row">
         <label for="Date" class="col-sm-2 col-form-label h3">Datetime</label>
         <div class="col-sm-5">
-            <label for="from_datetime">From</label>
-            <input type="datetime-local" id="from_datetime" name="from_datetime" class="form-control"
-                data-date-format="YYYY-MM-DD hh:mm">
+            <div class="input-group">
+                <span class="input-group-text">From</span>
+                <input type="date" id="from_date" name="from_date" class="form-control">
+                <input type="time" id="from_time" name="from_time" class="form-control">
+            </div>
         </div>
         <div class="col-sm-5">
-            <label for="to_datetime">To</label>
-            <input type="datetime-local" id="to_datetime" name="to_datetime" class="form-control"
-                data-date-format="YYYY-MM-DD hh:mm">
+            <div class="input-group">
+                <span class="input-group-text">To</span>
+                <input type="date" id="to_date" name="to_date" class="form-control">
+                <input type="time" id="to_time" name="to_time" class="form-control">
+            </div>
+            
+            
         </div>
     </div>
     <div class="form-group row">
@@ -82,16 +96,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="camera_name" class="col-sm-2 col-form-label h3">inspectionname</label>
-        <div class="col-sm-10">
-            <select id="camera_name" name="camera_name" class="form-control selectpicker" multiple
-                data-live-search="true">
-
-            </select>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="inspectionname" class="col-sm-2 col-form-label h3">Camera name / Inspection name</label>
+        <label for="inspectionname" class="col-sm-2 col-form-label h3">Inspection name</label>
         <div class="col-sm-10">
             <select id="inspectionname" name="inspectionname" class="form-control selectpicker" multiple
                 data-live-search="true">

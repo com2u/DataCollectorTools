@@ -28,11 +28,11 @@
         }
     });
 
-    $("#to_datetime").change( function(){
+    $("#to_datetime").change(function () {
         var dt = new Date($.now());
-        dt.setUTCHours(24,0,0,0);
-        console.log(dt.toISOString().slice(0,16));
-        $("#to_datetime").val(dt.toISOString().slice(0,16));
+        dt.setUTCHours(24, 0, 0, 0);
+        console.log(dt.toISOString().slice(0, 16));
+        $("#to_datetime").val(dt.toISOString().slice(0, 16));
     });
 
     function toView() {
@@ -70,20 +70,23 @@
                 <input type="date" id="to_date" name="to_date" class="form-control">
                 <input type="time" id="to_time" name="to_time" class="form-control">
             </div>
-            
-            
+
+
         </div>
     </div>
     <div class="form-group row">
-        <label for="Date" class="col-sm-2 col-form-label h3">Datetime offset</label>
+        <label for="Date" class="col-sm-2 col-form-label h3">Offset</label>
         <div class="col-sm-5">
-            <label for="from_datetime_offset">From-offset</label>
-            <input type="text" id="from_datetime_offset" name="from_datetime_offset" class="form-control"
-                value=''>
+            <div class="input-group">
+                <span class="input-group-text">From</span>
+                <input type="text" id="from_datetime_offset" name="from_datetime_offset" class="form-control" value=''>
+            </div>
         </div>
         <div class="col-sm-5">
-            <label for="to_datetime_offset">To-offset</label>
-            <input type="text" id="to_datetime_offset" name="to_datetime_offset" class="form-control" value=''>
+            <div class="input-group">
+                <span class="input-group-text">To</span>
+                <input type="text" id="to_datetime_offset" name="to_datetime_offset" class="form-control" value=''>
+            </div>
         </div>
     </div>
     <div class="form-group row">
@@ -104,7 +107,7 @@
         </div>
     </div>
 </form>
-<div class="pt-3"style="float: right">
+<div class="pt-3" style="float: right">
     <button onclick="resetForm()" class="btn btn-secondary mb-2">Reset</button>
     <button class="btn btn-secondary mb-2">Save as Filter</button>
     <button onclick="toView()" class="btn btn-primary mb-2">Select Data</button>

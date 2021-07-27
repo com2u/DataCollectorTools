@@ -2,6 +2,7 @@
 parameters.json
 SQLiteDBs
 client_secrets.json
+static\styles\bootstrap\css\bootstrap.css
 __pycache__/
 *.py[cod]
 *$py.class

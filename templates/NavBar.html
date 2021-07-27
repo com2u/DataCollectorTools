@@ -5,9 +5,12 @@
         border-bottom: 3px solid black;
     }
 
+    .active_background {
+        background-color: var(--primary);
+    }
+
     .active_icon {
         filter: invert(100%);
-        background-color: #ff9507;
     }
 </style>
 
@@ -15,11 +18,14 @@
     $(document).ready(function () {
         var url = window.location.href;
         if (url.indexOf("filter") > -1) {
-            $("#filter_icon").addClass("active_icon")
+            $("#filter_icon").addClass("active_background")
+            $("#filter_icon_image").addClass("active_icon")
         } else if (url.indexOf("view") > -1) {
-            $("#view_icon").addClass("active_icon")
+            $("#view_icon").addClass("active_background")
+            $("#view_icon_image").addClass("active_icon")
         } else if (url.indexOf("process") > -1) {
-            $("#process_icon").addClass("active_icon")
+            $("#process_icon").addClass("active_background")
+            $("#process_icon_image").addClass("active_icon")
         }
     });
 </script>
@@ -36,14 +42,14 @@
 
         <a href="{{url_for('export.page_filter')}}">
             <svg id="filter_icon" class="rounded-circle border border-secondary" height="50" width="50" alt="Filter">
-                <image xlink:href="{{ url_for('static', filename='Resources/Icons/database-search.png')}}" />
+                <image id="filter_icon_image" xlink:href="{{ url_for('static', filename='Resources/Icons/database-search.png')}}" />
             </svg>
         </a>
         <div class="divider">
         </div>
         <a href="{{url_for('export.page_view')}}">
             <svg id="view_icon" class="rounded-circle border border-secondary" height="50" width="50" alt="Filter">
-                <image xlink:href="{{ url_for('static', filename='Resources/Icons/view-list.png')}}" />
+                <image id="view_icon_image" xlink:href="{{ url_for('static', filename='Resources/Icons/view-list.png')}}" />
             </svg>
         </a>
 
@@ -51,7 +57,7 @@
         </div>
         <a href="{{url_for('export.page_process')}}">
             <svg id="process_icon" class="rounded-circle border border-secondary" height="50" width="50" alt="Filter">
-                <image xlink:href="{{ url_for('static', filename='Resources/Icons/database-export.png')}}" />
+                <image id="process_icon_image" xlink:href="{{ url_for('static', filename='Resources/Icons/database-export.png')}}" />
             </svg>
         </a>
     </div>

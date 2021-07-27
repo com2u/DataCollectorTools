@@ -27,19 +27,18 @@
                     "buttons": [
                         {
                             extend: 'collection',
-                            className: 'btn btn-outline-primary mb-2',
-                            text: 'Export Table',
+                            text: 'Export',
                             buttons: [
-                                { extend: 'copy', className: 'btn btn-secondary mb-2' },
-                                { extend: 'csv', className: 'btn btn-secondary mb-2' },
-                                { extend: 'excel', className: 'btn btn-secondary mb-2' },
-                                { extend: 'pdf', className: 'btn btn-secondary mb-2' },
-                                { extend: 'print', className: 'btn btn-secondary mb-2' },
+                                { extend: 'copy', },
+                                { extend: 'csv' },
+                                { extend: 'excel' },
+                                { extend: 'pdf' },
+                                { extend: 'print' },
                             ]
                         },
-                        { extend: 'colvis', className: 'btn btn-outline-primary mb-2', collectionLayout: 'four-column' },
+                        { extend: 'colvis', collectionLayout: 'four-column' },
                         {
-                            text: 'View Templates', className: 'btn btn-outline-primary mb-2',
+                            text: 'View Templates',
                             action: function () {
                                 showModal('#{{table_name}}Modal')
                             }
@@ -54,8 +53,8 @@
                                 data: {
                                     tablename: "{{table_name}}"
                                 },
-                                success: function(data){
-                                    data= data['data']
+                                success: function (data) {
+                                    data = data['data']
                                     for (let index = 0; index < data.length; index++) {
                                         if (params["viewtemplateid"].includes(data[index]['id'].toString())) {
                                             var applied = applyViewTemplate("{{table_name}}", data[index]['setting']);
@@ -69,7 +68,7 @@
                     "columns": columns,
                     "colReorder": true,
                     "deferRender": true,
-                    "dom": '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"l>> rt <"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    "dom": '<"d-flex justify-content-end"B> rt <"d-flex justify-content-between align-baseline"lip>',
                     "lengthMenu": [10, 25, 50],
                     "orderMuli": true,
                     "pageLength": 10,

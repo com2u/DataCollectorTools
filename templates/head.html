@@ -8,4 +8,10 @@
 <script src="{{ url_for('static',filename='styles/Bootstrap/js/bootstrap.bundle.min.js')}}" type="text/javascript"></script>
 <script src="{{ url_for('static',filename='styles/Bootstrap-select/js/bootstrap-select.min.js')}}" type="text/javascript"></script>
 <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.ico')}}" />
+<style>
+    table.dataTable tbody tr.selected {
+    color: var(--white) !important;
+    background-color: var(--primary) !important;
+}
+</style>
 {% endblock %}

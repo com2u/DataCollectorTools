@@ -31,7 +31,7 @@
 
     function delete_pictures() {
         var search = location.search.substring(1);
-        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) })
         $.get({
             url: "{{url_for('delete_interface.delete_pictures')}}",
             data: params,
@@ -40,7 +40,7 @@
 
     function delete_from_db() {
         var search = location.search.substring(1);
-        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) })
         $.get({
             url: "{{url_for('delete_interface.delete_db')}}",
             data: params,
@@ -60,23 +60,26 @@
         <tr>
             <th scope="row">Export to Folder</th>
             <td>
-                <button id="csv_button"class="btn btn-primary" onclick="get_csv_folder()">CSV</button>
-                <button id="pictures_button"class="btn btn-primary" onclick="get_pictures_folder()">Pictures</button>
-                <button id="excel_button"class="btn btn-primary" onclick="get_excel_folder()">Excel</button>
+                <button id="csv_button" class="btn btn-primary" onclick="get_csv_folder()">CSV</button>
+                <button id="pictures_button" class="btn btn-primary" onclick="get_pictures_folder()">Pictures</button>
+                <button id="excel_button" class="btn btn-primary" onclick="get_excel_folder()">Excel</button>
             </td>
         </tr>
         <tr>
             <th scope="row">Download</th>
             <td>
-                <a class="btn btn-primary" href="{{url_for('export_interface.download_csv')}}">CSV</a>
-                <a class="btn btn-primary" href="{{url_for('export_interface.download_pictures')}}">Pictures</a>
-                <a class="btn btn-primary" href="{{url_for('export_interface.download_excel')}}">Excel</a>
+                <a class="btn btn-primary" href="{{url_for('export_interface.download_csv')}}" download="csv.7z">CSV</a>
+                <a class="btn btn-primary" href="{{url_for('export_interface.download_pictures')}}"
+                    download="Pictures.zip">Pictures</a>
+                <a class="btn btn-primary" href="{{url_for('export_interface.download_excel')}}"
+                    download="DBTools.xlsx">Excel</a>
             </td>
         </tr>
         <tr>
             <th scope="row">Delete</th>
             <td>
-                <button class="btn btn-primary" onclick="delete_pictures();delete_from_db()">Database and Pictures</button>
+                <button class="btn btn-primary" onclick="delete_pictures();delete_from_db()">Database and
+                    Pictures</button>
                 <button class="btn btn-primary" onclick="delete_pictures()"> Pictures</button>
 
             </td>
@@ -84,23 +87,25 @@
         <tr>
             <th scope="row">Dump</th>
             <td>
-                <a class="btn btn-primary" href="{{url_for('export_interface.dump_all')}}">Dump entire Database</a>
-                <a class="btn btn-primary" href="{{url_for('export_interface.dump_with_pictures')}}">Dump entire Database and Pictures</a>
+                <a class="btn btn-primary" href="{{url_for('export_interface.dump_all')}}" download="dump.7z">Dump
+                    entire Database</a>
+                <a class="btn btn-primary" href="{{url_for('export_interface.dump_with_pictures')}}"
+                    download="dump_with_pictures.7z">Dump entire
+                    Database and Pictures</a>
 
             </td>
         </tr>
     </tbody>
 </table>
-<div id="csv_alert" class="alert alert-primary" role="alert" hidden>
-    Your CSV-Data is ready: <br>
-    <div id=csv_folder></div>
+<div id="csv_alert" class="alert alert-primary text-center" role="alert" hidden>
+    <div class='spinner-border' role='status'><span class='sr-only'></span></div>
+    Your CSV-Data is beeing prepared
 </div>
-<div id="pictures_alert" class="alert alert-primary" role="alert" hidden>
-    Your pictures are ready: <br>
-    <div id=pictures_folder></div>
+<div id="pictures_alert" class="alert alert-primary text-center" role="alert" hidden>
+    <div class='spinner-border' role='status'><span class='sr-only'></span></div>
+    Your pictures are beeing prepared
 </div>
-<div id="excel_alert" class="alert alert-primary" role="alert" hidden>
-    Your excel-file is ready: <br>
-    <div id=excel_folder></div>
+<div id="excel_alert" class="alert alert-primary align-middle" role="alert" hidden>
+    Your excel-file is beeing prepared
 </div>
 {% endblock %}

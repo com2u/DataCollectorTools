@@ -55,63 +55,42 @@
     Select data
 </h1>
 <form id="filterForm">
-    <div class="form-group row">
-        <label for="batchname" class="col-sm-2 col-form-label h3">Batch name</label>
-        <div class="col-sm-10">
-            <select id="batchname" name="batchname" class="form-control selectpicker" multiple data-live-search="true">
-            </select>
+    <div class="mb-3">
+        <label for="batchname" class="h4">Batch name</label>
+        <select id="batchname" name="batchname" class="form-control selectpicker" multiple data-live-search="true">
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="Date" class="h4">Date/Time</label>
+        <div class="input-group">
+            <span class="input-group-text" id="from_datetime_label">From</span>
+            <input type="date" id="from_date" name="from_date" class="form-control">
+            <input type="time" id="from_time" name="from_time" class="form-control">
+            <span class="input-group-text" id="to_datetime_label">To</span>
+            <input type="date" id="to_date" name="to_date" class="form-control">
+            <input type="time" id="to_time" name="to_time" class="form-control">
         </div>
     </div>
-    <div class="form-group row">
-        <label for="Date" class="col-sm-2 col-form-label h3">Date/Time</label>
-        <div class="col-sm-5">
-            <div class="input-group">
-                <span class="input-group-text" id="from_datetime_label">From</span>
-                <input type="date" id="from_date" name="from_date" class="form-control">
-                <input type="time" id="from_time" name="from_time" class="form-control">
-            </div>
-        </div>
-        <div class="col-sm-5">
-            <div class="input-group">
-                <span class="input-group-text" id="to_datetime_label">To</span>
-                <input type="date" id="to_date" name="to_date" class="form-control">
-                <input type="time" id="to_time" name="to_time" class="form-control">
-            </div>
-
-
+    <div class="mb-3">
+        <label for="Date" class="h4">Offset</label>
+        <div class="input-group">
+            <span class="input-group-text" id="from_datetime_offset_label">From</span>
+            <input type="text" id="from_datetime_offset" name="from_datetime_offset" class="form-control" value=''>
+            <span class="input-group-text" id="to_datetime_offset_label">To</span>
+            <input type="text" id="to_datetime_offset" name="to_datetime_offset" class="form-control" value=''>
         </div>
     </div>
-    <div class="form-group row">
-        <label for="Date" class="col-sm-2 col-form-label h3">Offset</label>
-        <div class="col-sm-5">
-            <div class="input-group">
-                <span class="input-group-text" id="from_datetime_offset_label">From</span>
-                <input type="text" id="from_datetime_offset" name="from_datetime_offset" class="form-control" value=''>
-            </div>
-        </div>
-        <div class="col-sm-5">
-            <div class="input-group">
-                <span class="input-group-text" id="to_datetime_offset_label">To</span>
-                <input type="text" id="to_datetime_offset" name="to_datetime_offset" class="form-control" value=''>
-            </div>
-        </div>
+    <div class="mb-3">
+        <label for="recipename" class="h4">Recipe name</label>
+        <select id="recipename" name="batchrecipenameid" class="form-control selectpicker" multiple
+            data-live-search="true">
+        </select>
     </div>
-    <div class="form-group row">
-        <label for="recipename" class="col-sm-2 col-form-label h3">Recipe name</label>
-        <div class="col-sm-10">
-            <select id="recipename" name="batchrecipenameid" class="form-control selectpicker" multiple
-                data-live-search="true">
-
-            </select>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="inspectionname" class="col-sm-2 col-form-label h3">Inspection name</label>
-        <div class="col-sm-10">
-            <select id="inspectionname" name="inspectionname" class="form-control selectpicker" multiple
-                data-live-search="true">
-            </select>
-        </div>
+    <div class="mb-3">
+        <label for="inspectionname" class="h4">Inspection name</label>
+        <select id="inspectionname" name="inspectionname" class="form-control selectpicker" multiple
+            data-live-search="true">
+        </select>
     </div>
 </form>
 <div class="pt-3" style="float: right">

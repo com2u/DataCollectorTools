@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 {% block content %}
 
-<link href="{{ url_for('static',filename='styles/DataTables/datatables.min.css')}}" rel="stylesheet" type="text/css"/>
-<link href="{{ url_for('static',filename='styles/Bootstrap/css/bootstrap.css')}}" rel="stylesheet" type="text/css"/>
-<link href="{{ url_for('static',filename='styles/Bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" type="text/css"/>
+<link href="{{ url_for('static',filename='styles/DataTables/datatables.min.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static',filename='styles/Bootstrap/css/bootstrap.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static',filename='styles/Bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet"
+    type="text/css" />
 <script src="{{ url_for('static',filename='styles/DataTables/datatables.min.js')}}" type="text/javascript"></script>
-<script src="{{ url_for('static',filename='styles/Bootstrap/js/bootstrap.bundle.min.js')}}" type="text/javascript"></script>
-<script src="{{ url_for('static',filename='styles/Bootstrap-select/js/bootstrap-select.min.js')}}" type="text/javascript"></script>
-<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.ico')}}" />
-<style>
-    table.dataTable tbody tr.selected {
-    color: var(--white) !important;
-    background-color: var(--bs-primary) !important;
-}
-div.dataTables_wrapper div.dataTables_info {
-    padding-top: 0px;
-}
-.table > tbody > tr > td {
-     vertical-align: middle;
-}
-</style>
+<script src="{{ url_for('static',filename='styles/Bootstrap/js/bootstrap.bundle.min.js')}}"
+    type="text/javascript"></script>
+<script src="{{ url_for('static',filename='styles/Bootstrap-select/js/bootstrap-select.min.js')}}"
+    type="text/javascript"></script>
+<link rel="shortcut icon" type="image/x-icon"
+    href="{{ url_for('static',filename='Resources/Koerber_Logo_RGB_Black.ico')}}" />
 {% endblock %}

@@ -2,6 +2,7 @@
 parameters.json
 SQLiteDBs
 client_secrets.json
+static\styles\bootstrap\css\bootstrap.css
 __pycache__/
 *.py[cod]
 *$py.class
@@ -138,3 +139,4 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+static/styles/Bootstrap/css/bootstrap.css

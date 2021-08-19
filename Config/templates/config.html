@@ -10,7 +10,7 @@
             url: "{{url_for('config_interface.get_config')}}", success: function (result) {
                 params = Object.keys(result)
                 for (i = 0; i < params.length; i++) {
-                    document.getElementById(params[i]).setAttribute("placeholder", result[params[i]])
+                    document.getElementById(params[i]).setAttribute("value", result[params[i]])
                 }
             }
         });
@@ -30,7 +30,7 @@
         updateForm();
     }
     function resetConfig() {
-        $.post("{{url_for('config_interface.reset_config')}}", function(){
+        $.post("{{url_for('config_interface.reset_config')}}", function () {
             updateForm();
         });
     }
@@ -41,42 +41,30 @@
 </h1>
 
 <form id="configForm">
-    <div class="form-group row">
-        <label for="postgres_url" class="col-sm-2 col-form-label h3">Database URL</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="postgres_url" name="postgres_url" placeholder="postgres_url">
-        </div>
+    <div class="form-floating mb-3">
+        <input onClick="this.setSelectionRange(0, this.value.length)" type="text" class="form-control" id="postgres_url" name="postgres_url" placeholder="postgres_url">
+        <label for="postgres_url" >Database URL</label>
     </div>
-    <div class="form-group row">
-        <label for="postgres_user" class="col-sm-2 col-form-label h3">Database user</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="postgres_user" name="postgres_user" placeholder="postgres_user">
-        </div>
+    <div class="form-floating mb-3">
+        <input onClick="this.setSelectionRange(0, this.value.length)" type="text" class="form-control" id="postgres_user" name="postgres_user" placeholder="postgres_user">
+        <label for="postgres_user" >Database user</label>
     </div>
-    <div class="form-group row">
-        <label for="postgres_pw" class="col-sm-2 col-form-label h3">Database password</label>
-        <div class="col-sm-10">
-            <input type="password" class="form-control" id="postgres_pw" name="postgres_pw" placeholder="password">
-        </div>
+    <div class="form-floating mb-3">
+        <input onClick="this.setSelectionRange(0, this.value.length)" type="password" class="form-control" id="postgres_pw" name="postgres_pw" placeholder="password">
+        <label for="postgres_pw" >Database password</label>
     </div>
-    <div class="form-group row">
-        <label for="postgres_db" class="col-sm-2 col-form-label h3">Database name</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="postgres_db" name="postgres_pw" placeholder="postgres_db">
-        </div>
+    <div class="form-floating mb-3">
+        <input onClick="this.setSelectionRange(0, this.value.length)" type="text" class="form-control" id="postgres_db" name="postgres_pw" placeholder="postgres_db">
+        <label for="postgres_db" >Database name</label>
     </div>
-    <div class="form-group row">
-        <label for="limit_table_length" class="col-sm-2 col-form-label h3">Table length limit</label>
-        <div class="col-sm-10">
-            <input type="number" class="form-control" id="limit_table_length" name="limit_table_length"
-                placeholder="limit_table_length">
-        </div>
+    <div class="form-floating mb-3">
+        <input onClick="this.setSelectionRange(0, this.value.length)" type="number" class="form-control" id="limit_table_length" name="limit_table_length" placeholder="limit_table_length">
+        <label for="limit_table_length" >Table length limit</label>
     </div>
-    <div class="form-group row">
-        <label for="export_path" class="col-sm-2 col-form-label h3">Export folder</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="export_path" name="export_path" placeholder="export_path">
-        </div>
+    <div class="form-floating mb-3">
+        <input onClick="this.setSelectionRange(0, this.value.length)" type="text" class="form-control" id="export_path" name="export_path" placeholder="export_path">
+        <label for="export_path" >Export folder</label>
+    </div>
     </div>
 </form>
 <div style="float: right">

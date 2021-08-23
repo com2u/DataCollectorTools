@@ -132,6 +132,14 @@ class DBManagement:
                 f"DELETE FROM batchheader WHERE id in {str(batchheader_ids).replace('[','(').replace(']',')')}")
         return {"batch": batch_delete.rowcount, "trigger_image_links": trigger_delete.rowcount}
 
+    def get_dataset_count(self, table_name, filter):
+        query_string= f"""SELECT COUNT(*) as "Count" FROM {str(table_name)} {self.__condition_filter_to_string(filter)}"""
+        query_result = self.engine.execute(
+            query_string
+        )
+        length = query_result.first()[0]
+        return length
+
     def delet_view_template(self, id):
         if self.engine.execute(f"DELETE FROM viewfilter WHERE id = {id}").rowcount > 0:
             return True

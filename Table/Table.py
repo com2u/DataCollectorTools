@@ -35,8 +35,12 @@ def get_table_rows(table_name):
         database = db_actions.get_postgres_instance()
         response = database.delete_from_table(
             table_name, filter=request.values.to_dict(flat=False))
-
         return jsonify(response)
+
+@table_interface.route("/count/<table_name>", methods=["GET"])
+def get_table_length(table_name):
+    database = db_actions.get_postgres_instance()
+    return jsonify({"table_name": table_name, "length":database.get_dataset_count(table_name, filter=request.values.to_dict(flat=False))})
 
 
 @table_interface.route("/table/<table_name>", methods=["GET"])

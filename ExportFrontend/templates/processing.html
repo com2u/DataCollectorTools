@@ -6,6 +6,15 @@
         $('a').each(function () {
             this.href += window.location.search;
         })
+        $.ajax({
+            url: ["{{url_for('table_interface.get_table_length', table_name='trigger')}}",
+                window.location.search].join(""),
+            success: function (results) {
+                $('#selectedDatasets')
+                        .text(results["length"]
+                    )
+            }
+        })
     });
     function get_csv_folder() {
         $.get("{{url_for('export_interface.export_folder_csv')}}", function (data) {
@@ -51,6 +60,13 @@
 <h1 class="text-primary">
     Process data
 </h1>
+<div class="align-middle">
+    Selected data:
+    <span id="selectedDatasets">
+        <div class='spinner-border' role='status'><span class='sr-only'></span></div>
+    </span>
+    Records
+</div>
 <table class="table table-borderless">
     <thead>
         <th scope="col">Action</th>
@@ -108,4 +124,5 @@
 <div id="excel_alert" class="alert alert-primary align-middle" role="alert" hidden>
     Your excel-file is beeing prepared
 </div>
+
 {% endblock %}

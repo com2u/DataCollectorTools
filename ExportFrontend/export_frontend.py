@@ -54,3 +54,8 @@ def page_view():
 @oidc.require_login
 def page_process():
     return render_template("processing.html")
+
+@export.route('/viewimages', methods=["GET"])
+@oidc.require_login
+def page_view_images():
+    return render_template('viewimages.html')

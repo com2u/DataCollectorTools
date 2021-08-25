@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
-{% block content %}
+{% block scripts %}
 <script>
     $(document).ready(function () {
         $('a').each(function () {
@@ -8,11 +8,11 @@
         })
         $.ajax({
             url: ["{{url_for('table_interface.get_table_length', table_name='trigger')}}",
-                window.location.search].join(""),
+            window.location.search].join(""),
             success: function (results) {
                 $('#selectedDatasets')
-                        .text(results["length"]
-                    )
+                .text(results["length"]
+                )
             }
         })
     });
@@ -37,7 +37,7 @@
             document.getElementById("excel_alert").removeAttribute("hidden");
         });
     };
-
+    
     function delete_pictures() {
         var search = location.search.substring(1);
         var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) })
@@ -46,7 +46,7 @@
             data: params,
         })
     };
-
+    
     function delete_from_db() {
         var search = location.search.substring(1);
         var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) })
@@ -55,8 +55,10 @@
             data: params,
         })
     };
-
+    
 </script>
+{% endblock %}
+{% block content %}
 <h1 class="text-primary">
     Process data
 </h1>

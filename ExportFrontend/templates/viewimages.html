@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block scripts %}
+<script>
+    function toProcess() {
+        location.href = "{{url_for('export.page_process')}}".concat(location.search);
+    };
+</script>
+{% endblock %}
+{% block content %}
+<h1 class="text-primary">View Images</h1>
+{% endblock %}

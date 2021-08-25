@@ -1,6 +1,5 @@
 from flask import Blueprint, request, url_for, render_template, redirect
 from db_actions import get_postgres_instance
-import json
 
 from Oidc_Decorators import oidc
 

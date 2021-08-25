@@ -5,8 +5,28 @@
     function toProcess() {
         location.href = "{{url_for('export.page_process')}}".concat(location.search);
     };
+    $(document).ready(
+        $.ajax({
+            "url": "{{url_for('table_interface.get_base64_images')}}".concat(location.search),
+            "success": function (result) {
+                pictures = result["data"];
+                pictures.forEach(picture => {
+                    var image = new Image();
+                    image.src = "data:image/bmp;base64, ".concat(picture["image"]);
+                    image.alt = picture["path"];
+                    image.class = "rounded";
+                    $('#images').append(image);
+                });
+            }
+        })
+    )
 </script>
 {% endblock %}
 {% block content %}
 <h1 class="text-primary">View Images</h1>
+<div id="images" class="d-flex flex-wrap justify-content-between">
+</div>
+<div style="float: right" class="pt-3">
+    <button onclick="toProcess()" class="btn btn-primary mb-2">Process Data</button>
+</div>
 {% endblock %}

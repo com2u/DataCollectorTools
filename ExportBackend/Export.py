@@ -1,8 +1,6 @@
 import py7zr
 import json
 import os
-import shutil
-import time
 import subprocess
 import uuid
 import pandas as pd
@@ -23,15 +21,19 @@ def process():
     params = request.values.to_dict(flat=False)
     if 'check' in params:
         if 'download' in params['check']:
-            downloadData = BytesIO()
-            if 'downloadExcel' in params['check']:
-                downloadData = get_excel(params, downloadData)
-            if 'downloadCSV' in params['check']:
-                downloadData = get_csv(params, downloadData)
-            if 'downloadImages' in params['check']:
-                downloadData = get_pictures(params, downloadData)
+            downloadFile = BytesIO()
+            with py7zr.SevenZipFile(downloadFile, 'w') as downloadData:
+                if 'downloadExcel' in params['check']:
+                    downloadData = get_excel(params, downloadData)
+                if 'downloadCSV' in params['check']:
+                    downloadData = get_csv(params, downloadData)
+                if 'downloadImages' in params['check']:
+                    downloadData = get_pictures(params, downloadData)
+            downloadFile.seek(0)
             if 'downloadDatabaseDump' in params['check']:
-                downloadData = get_dump(params, downloadData)
+                with py7zr.SevenZipFile(downloadFile, 'a', password="Pzma9T2nvz04KK1A9CU7") as downloadData:
+                    downloadData = get_dump(downloadData)
+                downloadFile.seek(0)
         if 'export' in params['check']:
             exportData = BytesIO()
             if 'exportExcel' in params['check']:
@@ -41,29 +43,30 @@ def process():
             if 'exportImages' in params['check']:
                 exportData = get_pictures(params, exportData)
             if 'exportDatabaseDump' in params['check']:
-                exportData = get_dump(params, exportData)
+                exportData = get_dump(exportData)
         if 'delete' in params:
             if 'deleteImages' in params:
                 test = 'test'
-    return jsonify(params)
+    return send_file(downloadFile, attachment_filename='download.7z', as_attachment=True)
 
 
-def get_csv(filter, memory_file=BytesIO()):
+def get_csv(filter, zipfile):
     database = db_actions.get_postgres_instance()
-    with py7zr.SevenZipFile(memory_file, 'w') as zf:
-        for table_name in database.get_view_names():
-            data_list = [dict(row) for row in database.get_table(
-                table_name, filter=filter)]
-            if len(data_list) > 0:
-                df = pd.DataFrame(data_list)
-                df.columns = database.get_table_columns(table_name)
-                zf.writestr(df.to_csv().encode(), arcname=f"{table_name}.csv")
-    return memory_file
+    for table_name in database.get_view_names():
+        data_list = [dict(row) for row in database.get_table(
+            table_name, filter=filter)]
+        if len(data_list) > 0:
+            df = pd.DataFrame(data_list)
+            df.columns = database.get_table_columns(table_name)
+            zipfile.writestr(df.to_csv().encode(),
+                        arcname=f"csv/{table_name}.csv")
+    return zipfile
 
 
-def get_excel(filter, memory_file=BytesIO()):
+def get_excel(filter, zipfile):
+    excel_file = BytesIO()
     database = db_actions.get_postgres_instance()
-    writer = pd.ExcelWriter(memory_file, engine='xlsxwriter')
+    writer = pd.ExcelWriter(excel_file, engine='xlsxwriter')
     for table_name in database.get_view_names():
         data_list = [dict(row) for row in database.get_table(
             table_name, filter=filter)]
@@ -72,10 +75,12 @@ def get_excel(filter, memory_file=BytesIO()):
             df.columns = database.get_table_columns(table_name)
             df.to_excel(writer, sheet_name=str(table_name))
     writer.close()
-    return memory_file
+    excel_file.seek(0)
+    zipfile.writestr(excel_file.read(), arcname="tables.xlsx")
+    return zipfile
 
 
-def get_pictures(filter, memory_file=BytesIO()):
+def get_pictures(filter, zipfile):
     database = db_actions.get_postgres_instance()
     pathes_to_pictures = database.get_table_column_values(
         "triggerview", "image1_link", filter=filter)
@@ -87,24 +92,23 @@ def get_pictures(filter, memory_file=BytesIO()):
         subprocess.run(["7z", "a", "-spf", "-t7z", "-m0=LZMA2:d64k:fb32", "-ms=8m", "-mmt=32",
                        "-mx=1", zip_uuid + ".7z", "@" + zip_uuid + ".txt"], stdout=subprocess.PIPE)
         with open(zip_uuid + ".7z", 'rb') as fh:
-            memory_file.write(fh.read())
+            zipfile.writestr(fh.read(), arcname="images.7z")
         # removing temporary files
         os.remove(zip_uuid + ".7z")
         os.remove(zip_uuid + ".txt")
-        return memory_file
-    return memory_file
+        return zipfile
+    return zipfile
 
 
-def get_dump(memory_file=BytesIO()):
-    with py7zr.SevenZipFile(memory_file, 'w', password="Pzma9T2nvz04KK1A9CU7") as zf:
-        with open("parameters.json") as file:
-            data = json.load(file)
-        command = [
-            "pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}', '--format=c']
-        output = subprocess.Popen(command, stdout=subprocess.PIPE)
-        database_dump = output.stdout.read()
-        zf.writestr(data=database_dump, arcname="dump.backup")
-    return memory_file
+def get_dump(zipfile):
+    with open("parameters.json") as file:
+        data = json.load(file)
+    command = [
+        "pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}', '--format=c']
+    output = subprocess.Popen(command, stdout=subprocess.PIPE)
+    database_dump = output.stdout.read()
+    zipfile.writestr(data=database_dump, arcname="dump/dump.backup")
+    return zipfile
 
 
 def delete_db(filter):

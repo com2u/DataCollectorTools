@@ -48,13 +48,21 @@
                 $('#deleteData').attr("disabled", true)
         })
         $('#processDataButton').click(function () {
-            $.ajax({
-                "url": ["{{url_for('export_interface.process')}}", window.location.search, "&", $('form').serialize()].join(''),
-                "success": function (result) {
-                    console.log(result)
-                    console.log($('form').serialize())
-                }
-            })
+            fetch(["{{url_for('export_interface.process')}}", window.location.search, "&", $('form').serialize()].join(''))
+                .then(resp => resp.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    // the filename you want
+                    a.download = 'download.7z';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    alert('your file has downloaded!'); // or you know, something with better UX...
+                })
+                .catch(() => alert('oh no!'));
         })
     });
 

@@ -5,6 +5,7 @@ import subprocess
 import uuid
 import pandas as pd
 import db_actions
+from datetime import datetime
 
 from flask import Blueprint, jsonify, request, send_file, after_this_request
 from io import BytesIO
@@ -35,18 +36,32 @@ def process():
                     downloadData = get_dump(downloadData)
                 downloadFile.seek(0)
         if 'export' in params['check']:
-            exportData = BytesIO()
-            if 'exportExcel' in params['check']:
-                exportData = get_excel(params, exportData)
-            if 'exportCSV' in params['check']:
-                exportData = get_csv(params, exportData)
-            if 'exportImages' in params['check']:
-                exportData = get_pictures(params, exportData)
+            exportFile = BytesIO()
+            with py7zr.SevenZipFile(exportFile, 'w') as exportData:
+                if 'exportExcel' in params['check']:
+                    exportData = get_excel(params, exportData)
+                if 'exportCSV' in params['check']:
+                    exportData = get_csv(params, exportData)
+                if 'exportImages' in params['check']:
+                    exportData = get_pictures(params, exportData)
+            exportFile.seek(0)
             if 'exportDatabaseDump' in params['check']:
-                exportData = get_dump(exportData)
-        if 'delete' in params:
-            if 'deleteImages' in params:
-                test = 'test'
+                with py7zr.SevenZipFile(exportFile, 'a', password="Pzma9T2nvz04KK1A9CU7") as exportData:
+                    exportData = get_dump(exportData)
+                exportFile.seek(0)
+
+            #saving File in Network share
+            with open("parameters.json") as file:
+                data = json.load(file)
+            exportFileName = Path(data["export_path"], "Export_" + datetime.now().strftime("%Y-%m-%dT%H_%M_%S_%f") + ".7z")
+            exportFileName.write_bytes(exportFile.getbuffer())
+
+        
+        if 'delete' in params['check']:
+            if 'deleteImages' in params['check']:
+                if 'deleteData' in params['check']:
+                    delete_data_result = delete_db(params)
+                delete_pictures_result = delete_db(params)
     return send_file(downloadFile, attachment_filename='download.7z', as_attachment=True)
 
 
@@ -59,7 +74,7 @@ def get_csv(filter, zipfile):
             df = pd.DataFrame(data_list)
             df.columns = database.get_table_columns(table_name)
             zipfile.writestr(df.to_csv().encode(),
-                        arcname=f"csv/{table_name}.csv")
+                             arcname=f"csv/{table_name}.csv")
     return zipfile
 
 

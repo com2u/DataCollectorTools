@@ -14,6 +14,9 @@
     function toProcess() {
         location.href = "{{url_for('export.page_process')}}".concat(location.search);
     };
+    function toViewImages() {
+        location.href = "{{url_for('export.page_view_images')}}".concat(location.search);
+    }
 
 </script>
 {% endblock %}
@@ -60,6 +63,7 @@
         </div>
     </div>
     <div style="float: right" class="pt-3">
+        <button onclick="toViewImages()" class="btn btn-secondary mb-2">View Images</button>
         <button onclick="toProcess()" class="btn btn-primary mb-2">Process Data</button>
     </div>
 </div>

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_file
 import db_actions
 import base64
 
@@ -42,16 +42,10 @@ def get_table_length(table_name):
     database = db_actions.get_postgres_instance()
     return jsonify({"table_name": table_name, "length":database.get_dataset_count(table_name, filter=request.values.to_dict(flat=False))})
 
-@table_interface.route("/base64image", methods=["GET"])
-def get_base64_images():
-    database = db_actions.get_postgres_instance()
-    image_paths = database.get_table_column_values("triggerview", "image1_link", filter=request.values.to_dict(flat=False))
-    pictures = []
-    for path in image_paths:
-        with open(path, "rb") as image_file:
-            image = base64.b64encode(image_file.read()).decode("utf-8")
-            pictures.append({"path": path, "image":image})
-    return jsonify({"data": pictures})
+@table_interface.route("/image", methods=["GET"])
+def get_image():
+    filename = request.values.to_dict(flat=False)["path"][0]
+    return send_file(filename)
 
 @table_interface.route("/table/<table_name>", methods=["GET"])
 def get_table(table_name):

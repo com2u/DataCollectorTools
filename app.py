@@ -17,7 +17,6 @@ def init_app():
         from ExportBackend.Export import process_interface
         from ExportFrontend.export_frontend import export
         from Config.db_config import config_interface
-        from Delete.Delete import delete_interface
         from ViewTemplates.ViewTemplates import view_templates
        
         
@@ -29,7 +28,6 @@ def init_app():
         app.register_blueprint(process_interface)
         app.register_blueprint(export)
         app.register_blueprint(config_interface)
-        app.register_blueprint(delete_interface)
         app.register_blueprint(view_templates)
 
         return app

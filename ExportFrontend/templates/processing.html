@@ -8,54 +8,57 @@
         })
         $.ajax({
             url: ["{{url_for('table_interface.get_table_length', table_name='trigger')}}",
-            window.location.search].join(""),
+                window.location.search].join(""),
             success: function (results) {
                 $('#selectedDatasets')
-                .text(results["length"]
-                )
+                    .text(results["length"]
+                    )
             }
         })
+        $('#processForm').change(function () {
+            if ($('#download').is(':checked'))
+                $('#downloadExcel').removeAttr("disabled"),
+                    $('#downloadCSV').removeAttr("disabled"),
+                    $('#downloadImages').removeAttr("disabled"),
+                    $('#downloadDatabaseDump').removeAttr("disabled");
+            else
+                $('#downloadExcel').attr("disabled", true),
+                    $('#downloadCSV').attr("disabled", true),
+                    $('#downloadImages').attr("disabled", true),
+                    $('#downloadDatabaseDump').attr("disabled", true);
+
+            if ($('#export').is(':checked'))
+                $('#exportExcel').removeAttr("disabled"),
+                    $('#exportCSV').removeAttr("disabled"),
+                    $('#exportImages').removeAttr("disabled"),
+                    $('#exportDatabaseDump').removeAttr("disabled");
+            else
+                $('#exportExcel').attr("disabled", true),
+                    $('#exportCSV').attr("disabled", true),
+                    $('#exportImages').attr("disabled", true),
+                    $('#exportDatabaseDump').attr("disabled", true);
+
+            if ($('#delete').is(':checked'))
+                $('#deleteImages').removeAttr("disabled")
+            else
+                $('#deleteImages').attr("disabled", true)
+            if ($('#deleteImages').is(':checked') && $('#delete').is(':checked'))
+                $('#deleteData').removeAttr("disabled")
+            else
+                $('#deleteData').attr("disabled", true)
+        })
+        $('#processDataButton').click(function () {
+            $.ajax({
+                "url": ["{{url_for('export_interface.process')}}", window.location.search, "&", $('form').serialize()].join(''),
+                "success": function (result) {
+                    console.log(result)
+                    console.log($('form').serialize())
+                }
+            })
+        })
     });
-    function get_csv_folder() {
-        $.get("{{url_for('export_interface.export_folder_csv')}}", function (data) {
-            var folder_link = data["export_folder"];
-            document.getElementById("csv_folder").innerHTML = folder_link;
-            document.getElementById("csv_alert").removeAttribute("hidden");
-        });
-    };
-    function get_pictures_folder() {
-        $.get("{{url_for('export_interface.export_folder_pictures')}}", function (data) {
-            var folder_link = data["export_folder"];
-            document.getElementById("pictures_folder").innerHTML = folder_link;
-            document.getElementById("pictures_alert").removeAttribute("hidden");
-        });
-    };
-    function get_excel_folder() {
-        $.get("{{url_for('export_interface.export_folder_excel')}}", function (data) {
-            var folder_link = data["export_folder"];
-            document.getElementById("excel_folder").innerHTML = folder_link;
-            document.getElementById("excel_alert").removeAttribute("hidden");
-        });
-    };
-    
-    function delete_pictures() {
-        var search = location.search.substring(1);
-        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) })
-        $.get({
-            url: "{{url_for('delete_interface.delete_pictures')}}",
-            data: params,
-        })
-    };
-    
-    function delete_from_db() {
-        var search = location.search.substring(1);
-        var params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) })
-        $.get({
-            url: "{{url_for('delete_interface.delete_db')}}",
-            data: params,
-        })
-    };
-    
+
+
 </script>
 {% endblock %}
 {% block content %}
@@ -69,62 +72,90 @@
     </span>
     Records
 </div>
-<table class="table table-borderless">
-    <thead>
-        <th scope="col">Action</th>
-        <th scope="col">Target</th>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="row">Export to Folder</th>
-            <td>
-                <button id="csv_button" class="btn btn-primary" onclick="get_csv_folder()">CSV</button>
-                <button id="pictures_button" class="btn btn-primary" onclick="get_pictures_folder()">Pictures</button>
-                <button id="excel_button" class="btn btn-primary" onclick="get_excel_folder()">Excel</button>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">Download</th>
-            <td>
-                <a class="btn btn-primary" href="{{url_for('export_interface.download_csv')}}" download="csv.7z">CSV</a>
-                <a class="btn btn-primary" href="{{url_for('export_interface.download_pictures')}}"
-                    download="Pictures.zip">Pictures</a>
-                <a class="btn btn-primary" href="{{url_for('export_interface.download_excel')}}"
-                    download="DBTools.xlsx">Excel</a>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">Delete</th>
-            <td>
-                <button class="btn btn-primary" onclick="delete_pictures();delete_from_db()">Database and
-                    Pictures</button>
-                <button class="btn btn-primary" onclick="delete_pictures()"> Pictures</button>
-
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">Dump</th>
-            <td>
-                <a class="btn btn-primary" href="{{url_for('export_interface.dump_all')}}" download="dump.7z">Dump
-                    entire Database</a>
-                <a class="btn btn-primary" href="{{url_for('export_interface.dump_with_pictures')}}"
-                    download="dump_with_pictures.7z">Dump entire
-                    Database and Pictures</a>
-
-            </td>
-        </tr>
-    </tbody>
-</table>
-<div id="csv_alert" class="alert alert-primary text-center" role="alert" hidden>
-    <div class='spinner-border' role='status'><span class='sr-only'></span></div>
-    Your CSV-Data is beeing prepared
-</div>
-<div id="pictures_alert" class="alert alert-primary text-center" role="alert" hidden>
-    <div class='spinner-border' role='status'><span class='sr-only'></span></div>
-    Your pictures are beeing prepared
-</div>
-<div id="excel_alert" class="alert alert-primary align-middle" role="alert" hidden>
-    Your excel-file is beeing prepared
-</div>
-
+<form id="processForm" class="m-3">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="download" name="check" value="download">
+        <label class="form-check-label" for="download">
+            Download
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="downloadExcel" name="check" value="downloadExcel" disabled>
+        <label class="form-check-label" for="downloadExcel">
+            Excel
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="downloadCSV" name="check" value="downloadCSV" disabled>
+        <label class="form-check-label" for="downloadCSV">
+            CSV
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="downloadImages" name="check" value="downloadImages"
+            disabled>
+        <label class="form-check-label" for="downloadImages">
+            Images
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="downloadDatabaseDump" name="check"
+            value="downloadDatabaseDump" disabled>
+        <label class="form-check-label" for="downloadDatabaseDump">
+            Database Dump
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="export" name="check" value="export">
+        <label class="form-check-label" for="export">
+            Export
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="exportExcel" name="check" value="exportExcel" disabled>
+        <label class="form-check-label" for="exportExcel">
+            Excel
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="exportCSV" name="check" value="exportCSV" disabled>
+        <label class="form-check-label" for="exportCSV">
+            CSV
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="exportImages" name="check" value="exportImages" disabled>
+        <label class="form-check-label" for="exportImages">
+            Images
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="exportDatabaseDump" name="check" value="exportDatabaseDump"
+            disabled>
+        <label class="form-check-label" for="exportDatabaseDump">
+            Database Dump
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="delete" name="check" value="delete">
+        <label class="form-check-label" for="delete">
+            Delete
+        </label>
+    </div>
+    <div class="form-check ms-4">
+        <input class="form-check-input" type="checkbox" id="deleteImages" name="check" value="deleteImages" disabled>
+        <label class="form-check-label" for="deleteImages">
+            Images
+        </label>
+    </div>
+    <div class="form-check ms-5">
+        <input class="form-check-input" type="checkbox" id="deleteData" name="check" value="deleteData" disabled>
+        <label class="form-check-label" for="deleteData">
+            Data
+        </label>
+    </div>
+</form>
+<button class="btn btn-primary" id="processDataButton">
+    Process
+</button>
 {% endblock %}

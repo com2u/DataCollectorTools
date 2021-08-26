@@ -9,6 +9,26 @@
         location.href = "{{url_for('export.page_view')}}".concat(location.search);
     }
     $(document).ready(
+        //TODO: Fehler Finden
+        $('#pictureSelect').change(function () {
+            console.log("change")
+            switch ($('#pictureSelect').val()) {
+                case "small":
+                    $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-25");
+                    break;
+                case "medium":
+                    $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-50");
+                    break;
+                case "large":
+                    $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-75");
+                    break;
+                case "extra-large":
+                    $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-100");
+                    break;
+                default:
+                    $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-25");
+            }
+        }),
         $.ajax({
             "url": "{{url_for('table_interface.get_column_content', table_name='triggerview', column_name='image1_link')}}".concat(location.search),
             "success": function (result) {
@@ -20,49 +40,35 @@
                     image.attr("class", "w-25 p-3");
                     $('#images').append(image);
 
-                });
+                })
             }
         })
+
     )
-    function adjustImageSize() {
-        switch ($('#pictureSelect').val()) {
-            case "small":
-                $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-25")
-                break;
-            case "medium":
-                $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-50")
-                break;
-            case "large":
-                $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-75")
-                break;
-            case "extra-large":
-                $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-100")
-                break;
-            default:
-                $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-25")
-        }
-    }
+    $(document).ready(
+
+    )
+
 </script>
 {% endblock %}
 {% block content %}
 <h1 class="text-primary">View Images</h1>
-<div class="row">
-<select class="form-select col-sm" id="pictureSelect">
-    <option value="small" selected>
-        small
-    </option>
-    <option value="medium">
-        medium
-    </option>
-    <option value="large">
-        large
-    </option>
-    <option value="extra-large">
-        extra-large
-    </option>
-</select>
-<button onclick="adjustImageSize()" class="btn btn-primary col-sm">Adjust Size</button>
-</div>
+<form id="pictureSelect">
+    <select class="form-select">
+        <option value="small" selected>
+            small
+        </option>
+        <option value="medium">
+            medium
+        </option>
+        <option value="large">
+            large
+        </option>
+        <option value="extra-large">
+            extra-large
+        </option>
+    </select>
+</form>
 <div id="images" class="row">
 </div>
 <div style="float: right" class="pt-3">

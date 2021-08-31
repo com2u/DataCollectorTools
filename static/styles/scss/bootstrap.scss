@@ -1,5 +1,5 @@
 $primary: #0061ff;
-@import "static/styles/bootstrap/scss/bootstrap";
+@import "../Bootstrap/scss/bootstrap";
 
 table.dataTable tbody tr.selected {
     color: var(--bs-white) !important;

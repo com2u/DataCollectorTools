@@ -8,7 +8,7 @@ RUN apt-get update -y && \
     apt-get install -y p7zip-full && \
     apt-get install -y libpq-dev && \
     apt-get install -y postgresql-client
-    
+
 EXPOSE 5000
 
 # Keeps Python from generating .pyc files in the container
@@ -30,4 +30,4 @@ RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /
 USER appuser
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python3", "-m", "flask", "run", "--host", "0.0.0.0"]
+CMD ["python3", "-m", "flask", "run", "--host", "0.0.0.0", "--port", "5000"]

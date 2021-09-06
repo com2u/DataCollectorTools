@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.8-slim-buster
+FROM python:3.9.7-slim-buster
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
@@ -10,6 +10,8 @@ RUN apt-get update -y && \
     apt-get install -y postgresql-client
 
 EXPOSE 5000
+
+VOLUME [ "/Images" ]
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1

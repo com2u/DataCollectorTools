@@ -4,6 +4,7 @@ import os
 import subprocess
 import uuid
 import pandas as pd
+import re
 import db_actions
 from datetime import datetime
 
@@ -50,13 +51,13 @@ def process():
                     exportData = get_dump(exportData)
                 exportFile.seek(0)
 
-            #saving File in Network share
+            # saving File in Network share
             with open("parameters.json") as file:
                 data = json.load(file)
-            exportFileName = Path(data["export_path"], "Export_" + datetime.now().strftime("%Y-%m-%dT%H_%M_%S_%f") + ".7z")
+            exportFileName = Path(data["export_path"], "Export_" +
+                                  datetime.now().strftime("%Y-%m-%dT%H_%M_%S_%f") + ".7z")
             exportFileName.write_bytes(exportFile.getbuffer())
 
-        
         if 'delete' in params['check']:
             if 'deleteImages' in params['check']:
                 if 'deleteData' in params['check']:
@@ -103,7 +104,10 @@ def get_pictures(filter, zipfile):
         zip_uuid = f"{str(uuid.uuid4())}"
         with open(zip_uuid + '.txt', "w") as file:
             for picture in pathes_to_pictures:
-                file.write(picture + "\n")
+                picture = picture.replace("\\\\", "").replace("\\", "/")
+                picture = Path(re.sub(r'^.*?/', '/', picture))
+                if picture.exists():
+                    file.write(str(picture) + "\n")
         subprocess.run(["7z", "a", "-spf", "-t7z", "-m0=LZMA2:d64k:fb32", "-ms=8m", "-mmt=32",
                        "-mx=1", zip_uuid + ".7z", "@" + zip_uuid + ".txt"], stdout=subprocess.PIPE)
         with open(zip_uuid + ".7z", 'rb') as fh:
@@ -118,7 +122,7 @@ def get_pictures(filter, zipfile):
 def get_dump(zipfile):
     with open("parameters.json") as file:
         data = json.load(file)
-    command = [
+        command = [
         "pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}', '--format=c']
     output = subprocess.Popen(command, stdout=subprocess.PIPE)
     database_dump = output.stdout.read()
@@ -139,8 +143,9 @@ def delete_pictures(filter):
     deleted_files = []
     if len(pathes_to_pictures) > 0:
         for picture in pathes_to_pictures:
-            picture = Path(picture)
-            if picture.exists():
+            picture = picture.replace("\\\\", "").replace("\\", "/")
+            image_path = Path(re.sub(r'^.*?/', '/', picture))
+            if image_path.exists():
                 picture.unlink()
                 deleted_files.append(picture)
             else:

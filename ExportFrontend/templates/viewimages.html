@@ -8,9 +8,7 @@
     function toView() {
         location.href = "{{url_for('export.page_view')}}".concat(location.search);
     }
-    $(document).ready(
-        //TODO: Fehler Finden
-        $('#pictureSelect').change(function () {
+    function changeImageSize() {
             console.log("change")
             switch ($('#pictureSelect').val()) {
                 case "small":
@@ -28,7 +26,8 @@
                 default:
                     $('img').removeClass("w-25 w-50 w-75 w-100").addClass("w-25");
             }
-        }),
+    }
+    $(document).ready(
         $.ajax({
             "url": "{{url_for('table_interface.get_column_content', table_name='triggerview', column_name='image1_link')}}".concat(location.search),
             "success": function (result) {
@@ -45,16 +44,13 @@
         })
 
     )
-    $(document).ready(
-
-    )
 
 </script>
 {% endblock %}
 {% block content %}
 <h1 class="text-primary">View Images</h1>
-<form id="pictureSelect">
-    <select class="form-select">
+<form >
+    <select class="form-select" id="pictureSelect" onchange="changeImageSize()">
         <option value="small" selected>
             small
         </option>
@@ -71,8 +67,8 @@
 </form>
 <div id="images" class="row">
 </div>
-<div style="float: right" class="pt-3">
+{% endblock %}
+{% block buttomBar %}
     <button onclick="toView()" class="btn btn-secondary mb-2">View Data</button>
     <button onclick="toProcess()" class="btn btn-primary mb-2">Process Data</button>
-</div>
 {% endblock %}

@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.9.7-slim-buster
+FROM python:3.9-bullseye
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \

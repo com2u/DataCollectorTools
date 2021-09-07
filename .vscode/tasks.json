@@ -26,6 +26,9 @@
 				"volumes": [
 					{
 					  "containerPath": "/app", "localPath": "${workspaceFolder}"
+					},
+					{
+						"containerPath": "/Images", "localPath": "C:/Users/konst/PythonProjects/Images"
 					}
 				  ],
 				  "ports": [

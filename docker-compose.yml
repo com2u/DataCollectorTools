@@ -9,7 +9,7 @@ services:
     ports:
       - 5000:5000    
     volumes:
-      - C:/Users/konst/PythonProjects/Images:/Images
+      - /data/export/smb/images:/Images
     depends_on:
       - keycloak
   keycloak:

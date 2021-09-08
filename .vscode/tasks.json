@@ -39,7 +39,8 @@
 						"containerPort": 5000,
 						"hostPort": 5000
 					}
-				]
+				],
+				"remove": true
 			},
 			"python": {
 				"args": [
@@ -64,7 +65,6 @@
 					]
 				},
 				"files": [
-					"${workspaceFolder}/docker-compose.yml",
 					"${workspaceFolder}/docker-compose.debug.yml"
 				]
 			}

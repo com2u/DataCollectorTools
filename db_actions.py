@@ -107,15 +107,15 @@ class DBManagement:
 
     def delete_vision(self, filter):
         triggerheader_ids = self.get_table_column_values(
-            "trigger_image_links", "headerid", filter)
+            "trigger", "headerid", filter)
         batchheader_ids = self.get_table_column_values(
             "batch", "headerid", filter)
         trigger_delete = self.engine.execute(
-            f"DELETE FROM trigger_image_links {self.__condition_filter_to_string(filter)}")
+            f"DELETE FROM trigger {self.__condition_filter_to_string(filter)}")
         batch_delete = self.engine.execute(
             f"DELETE FROM batch {self.__condition_filter_to_string(filter)}")
         new_trigger_header_ids = self.get_table_column_values(
-            "trigger_image_links", "headerid", filter)
+            "trigger", "headerid", filter)
         new_batch_header_ids = self.get_table_column_values(
             "batch", "headerid", filter)
         for id in triggerheader_ids:
@@ -130,7 +130,7 @@ class DBManagement:
         if len(batchheader_ids) > 0:
             self.engine.execute(
                 f"DELETE FROM batchheader WHERE id in {str(batchheader_ids).replace('[','(').replace(']',')')}")
-        return {"batch": batch_delete.rowcount, "trigger_image_links": trigger_delete.rowcount}
+        return {"batch": batch_delete.rowcount, "trigger": trigger_delete.rowcount}
 
     def get_dataset_count(self, table_name, filter):
         query_string= f"""SELECT COUNT(*) as "Count" FROM {str(table_name)} {self.__condition_filter_to_string(filter)}"""

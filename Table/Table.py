@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, send_file, abort
 import db_actions
-import base64
+import re
+from pathlib import Path
 
 table_interface = Blueprint(
     'table_interface', __name__, url_prefix="/table_interface")
@@ -46,7 +47,12 @@ def get_table_length(table_name):
 def get_image():
     filename = request.values.to_dict(flat=False)["path"][0]
     if "\\Images\\Trigger-DLL\\" in filename:
-        return send_file(filename)
+        image_path = filename.replace("\\\\", "").replace("\\", "/")
+        image_path = Path(re.sub(r'^.*?/', '/', image_path))
+        if image_path.exists():
+            return send_file(image_path)
+        else:
+            abort(403)
     else:
         abort(403)
 

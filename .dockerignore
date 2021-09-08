@@ -1,43 +1,68 @@
-# Git
 .git
+Dockerfile
+.DS_Store
 .gitignore
-static\styles\bootstrap\css\bootstrap.css
+.dockerignore
 
-# CI
-.codeclimate.yml
-.travis.yml
-.taskcluster.yml
+/credentials
+/cache
+/store
 
-# Docker
-docker-compose.yml
-.docker
+/node_modules
+
+# https://github.com/github/gitignore/blob/master/Global/macOS.gitignore
+
+# General
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# https://raw.githubusercontent.com/github/gitignore/master/Python.gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*/__pycache__/
-*/*/__pycache__/
-*/*/*/__pycache__/
 *.py[cod]
-*/*.py[cod]
-*/*/*.py[cod]
-*/*/*/*.py[cod]
+*$py.class
 
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
-env/
 build/
 develop-eggs/
 dist/
 downloads/
 eggs/
-lib/
+.eggs/
 lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -56,9 +81,12 @@ pip-delete-this-directory.txt
 htmlcov/
 .tox/
 .coverage
+.coverage.*
 .cache
 nosetests.xml
 coverage.xml
+*.cover
+.hypothesis/
 
 # Translations
 *.mo
@@ -66,6 +94,14 @@ coverage.xml
 
 # Django stuff:
 *.log
+local_settings.py
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
 
 # Sphinx documentation
 docs/_build/
@@ -73,22 +109,34 @@ docs/_build/
 # PyBuilder
 target/
 
-# Virtual environment
-.env/
-.venv/
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
 venv/
+ENV/
 
-# PyCharm
-.idea
+# Spyder project settings
+.spyderproject
+.spyproject
 
-# Python mode for VIM
+# Rope project settings
 .ropeproject
-*/.ropeproject
-*/*/.ropeproject
-*/*/*/.ropeproject
 
-# Vim swap files
-*.swp
-*/*.swp
-*/*/*.swp
-*/*/*/*.swp
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/

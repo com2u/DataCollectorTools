@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  datacollectortools:
+    image: datacollectortools
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5000:5000    
+    volumes:
+      - C:/Users/konst/PythonProjects/Images:/Images
+    depends_on:
+      - keycloak
+  keycloak:
+    image: jboss/keycloak
+    container_name: keycloak
+    restart: always
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: "192.168.178.3"
+      DB_DATABASE: keycloak
+      DB_USER: ${DATABASE_USER:-postgres}
+      DB_SCHEMA: public
+      DB_PASSWORD: ${DATABASE_PASSWORD:-LX8FSRdT6r6f7UEe}
+      KEYCLOAK_USER: ${KEYCLOAK_USER:-admin}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD:-admin}
+      KEYCLOAK_IMPORT: /tmp/dbtoolsrealm.json -Dkeycloak.profile.feature.upload_scripts=enabled
+    ports:
+      - ${KEYCLOAK_PORT:-8080}:8080
+      - ${KEYCLOAK_PORT:-8443}:8443
+    volumes:
+      - ./docker/keycloak:/tmp

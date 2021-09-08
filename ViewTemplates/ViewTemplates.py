@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from db_actions import get_postgres_instance
+from Oidc_Decorators import oidc
 
 view_templates = Blueprint(
     'view_templates', __name__, url_prefix="/view_templates"
@@ -21,6 +22,7 @@ def database_initialization():
 
 
 @view_templates.route("/", methods=["GET", "POST", "DELETE"])
+@oidc.require_login
 def view_template():
     if request.method == 'GET':
         database = get_postgres_instance(dbname="dbtools")

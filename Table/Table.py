@@ -2,12 +2,13 @@ from flask import Blueprint, jsonify, request, send_file, abort
 import db_actions
 import re
 from pathlib import Path
-
+from Oidc_Decorators import oidc
 table_interface = Blueprint(
     'table_interface', __name__, url_prefix="/table_interface")
 
 
 @table_interface.route("/")
+@oidc.require_login
 def get_table_names():
     database = db_actions.get_postgres_instance()
     table_names = [*database.get_table_names()]
@@ -15,12 +16,14 @@ def get_table_names():
 
 
 @table_interface.route("/columns/<table_name>", methods=["GET"])
+@oidc.require_login
 def get_table_columns(table_name):
     database = db_actions.get_postgres_instance()
     return jsonify({"columns": [*database.get_table_columns(table_name)]})
 
 
 @table_interface.route("/column/<table_name>/<column_name>", methods=["GET"])
+@oidc.require_login
 def get_column_content(table_name, column_name):
     database = db_actions.get_postgres_instance()
     return jsonify(database.get_table_column_values(table_name, column_name, filter=request.values.to_dict(flat=False)))
@@ -28,6 +31,7 @@ def get_column_content(table_name, column_name):
 
 
 @table_interface.route("/rows/<table_name>", methods=["GET", "DELETE"])
+@oidc.require_login
 def get_table_rows(table_name):
     if request.method == "GET":
         database = db_actions.get_postgres_instance()
@@ -39,11 +43,13 @@ def get_table_rows(table_name):
         return jsonify(response)
 
 @table_interface.route("/count/<table_name>", methods=["GET"])
+@oidc.require_login
 def get_table_length(table_name):
     database = db_actions.get_postgres_instance()
     return jsonify({"table_name": table_name, "length":database.get_dataset_count(table_name, filter=request.values.to_dict(flat=False))})
 
 @table_interface.route("/image", methods=["GET"])
+@oidc.require_login
 def get_image():
     filename = request.values.to_dict(flat=False)["path"][0]
     if "\\Images\\Trigger-DLL\\" in filename:
@@ -57,5 +63,6 @@ def get_image():
         abort(403)
 
 @table_interface.route("/table/<table_name>", methods=["GET"])
+@oidc.require_login
 def get_table(table_name):
     return get_table_columns(table_name).get_json() | get_table_rows(table_name).get_json()

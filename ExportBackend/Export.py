@@ -19,6 +19,7 @@ process_interface = Blueprint(
 
 
 @process_interface.route("/", methods=["GET"])
+@oidc.require_login
 def process():
     params = request.values.to_dict(flat=False)
     if 'check' in params:

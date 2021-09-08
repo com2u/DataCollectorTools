@@ -25,7 +25,7 @@ services:
       DB_PASSWORD: ${DATABASE_PASSWORD:-LX8FSRdT6r6f7UEe}
       KEYCLOAK_USER: ${KEYCLOAK_USER:-admin}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD:-admin}
-      KEYCLOAK_IMPORT: /tmp/dbtoolsrealm.json -Dkeycloak.profile.feature.upload_scripts=enabled
+      KEYCLOAK_IMPORT: /tmp/dbtools-realm-export.json -Dkeycloak.profile.feature.upload_scripts=enabled
     ports:
       - ${KEYCLOAK_PORT:-8080}:8080
       - ${KEYCLOAK_PORT:-8443}:8443

@@ -16,7 +16,8 @@
 			"type": "docker-run",
 			"label": "docker-run: debug",
 			"dependsOn": [
-				"docker-build"
+				"docker-build",
+				"Run docker-compose up keycloak"
 			],
 			"dockerRun": {
 				"env": {
@@ -25,27 +26,47 @@
 				},
 				"volumes": [
 					{
-					  "containerPath": "/app", "localPath": "${workspaceFolder}"
+						"containerPath": "/app",
+						"localPath": "${workspaceFolder}"
 					},
 					{
-						"containerPath": "/Images", "localPath": "C:/Users/konst/PythonProjects/Images"
+						"containerPath": "/Images",
+						"localPath": "C:/Users/konst/PythonProjects/Images"
 					}
-				  ],
-				  "ports": [
+				],
+				"ports": [
 					{
-					  "containerPort": 5000,
-					  "hostPort": 5000
+						"containerPort": 5000,
+						"hostPort": 5000
 					}
-				  ]
-		  
+				]
 			},
 			"python": {
 				"args": [
 					"run",
-					"--host", "0.0.0.0",
-					"--port", "5000"
+					"--host",
+					"0.0.0.0",
+					"--port",
+					"5000"
 				],
 				"module": "flask"
+			}
+		},
+		{
+			"label": "Run docker-compose up keycloak",
+			"type": "docker-compose",
+			"dockerCompose": {
+				"up": {
+					"detached": true,
+					"build": true,
+					"services": [
+						"keycloak"
+					]
+				},
+				"files": [
+					"${workspaceFolder}/docker-compose.yml",
+					"${workspaceFolder}/docker-compose.debug.yml"
+				]
 			}
 		}
 	]

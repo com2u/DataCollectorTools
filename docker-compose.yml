@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    environment:
+      PUBLUC_ADDR: ${PUBLUC_ADDR:-"127.0.0.1"}
     ports:
       - 5000:5000    
     volumes:
@@ -18,11 +20,11 @@ services:
     restart: always
     environment:
       DB_VENDOR: POSTGRES
-      DB_ADDR: "192.168.178.3"
+      DB_ADDR: ${PUBLUC_ADDR:-"127.0.0.1"}
       DB_DATABASE: keycloak
       DB_USER: ${DATABASE_USER:-postgres}
       DB_SCHEMA: public
-      DB_PASSWORD: ${DATABASE_PASSWORD:-LX8FSRdT6r6f7UEe}
+      DB_PASSWORD: ${DATABASE_PASSWORD:-password}
       KEYCLOAK_USER: ${KEYCLOAK_USER:-admin}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD:-admin}
       KEYCLOAK_IMPORT: /tmp/dbtools-realm-export.json -Dkeycloak.profile.feature.upload_scripts=enabled

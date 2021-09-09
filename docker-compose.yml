@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      PUBLUC_ADDR: ${PUBLUC_ADDR:-"127.0.0.1"}
+      KEYCLOAK_IP: ${KEYCLOAK_IP:-"127.0.0.1"}
     ports:
       - 5000:5000    
     volumes:
@@ -15,12 +15,11 @@ services:
     depends_on:
       - keycloak
   keycloak:
-    image: jboss/keycloak
+    image: jboss/keycloak:15.0.2
     container_name: keycloak
-    restart: always
     environment:
       DB_VENDOR: POSTGRES
-      DB_ADDR: ${PUBLUC_ADDR:-"127.0.0.1"}
+      DB_ADDR: ${DATABASE_ADDR:-"127.0.0.1"}
       DB_DATABASE: keycloak
       DB_USER: ${DATABASE_USER:-postgres}
       DB_SCHEMA: public

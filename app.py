@@ -1,11 +1,10 @@
-import sass
+from local_env import generate_env
 from flask import Flask
 from flask.globals import current_app
 from flask_oidc import OpenIDConnect
 
 def init_app():
-    sass.compile(dirname=('static/styles/scss', 'static/styles/Bootstrap/css/'), output_style='compressed')
-    """Create Flask application."""
+    generate_env()
     app = Flask(__name__, static_folder='static', static_url_path='')
     app.config.from_object('config.Config')
 

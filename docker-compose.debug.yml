@@ -1,27 +1,27 @@
 version: '3'
 
-
 services:
   datacollectortools:
     image: datacollectortools
     build:
       context: .
       dockerfile: ./Dockerfile
+    environment:
+      KEYCLOAK_IP: ${KEYCLOAK_IP:-"127.0.0.1"}
     ports:
       - 5000:5000
       - 5678:5678
     command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m flask run --no-debugger --no-reload --host 0.0.0.0 --port 5000"]
   keycloak:
-    image: jboss/keycloak
+    image: jboss/keycloak:15.0.2
     container_name: keycloak
-    restart: always
     environment:
       DB_VENDOR: POSTGRES
-      DB_ADDR: "192.168.178.3"
+      DB_ADDR: ${DATABASE_ADDR:-"127.0.0.1"}
       DB_DATABASE: keycloak
       DB_USER: ${DATABASE_USER:-postgres}
       DB_SCHEMA: public
-      DB_PASSWORD: ${DATABASE_PASSWORD:-LX8FSRdT6r6f7UEe}
+      DB_PASSWORD: ${DATABASE_PASSWORD:-password}
       KEYCLOAK_USER: ${KEYCLOAK_USER:-admin}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD:-admin}
       KEYCLOAK_IMPORT: /tmp/dbtools-realm-export.json -Dkeycloak.profile.feature.upload_scripts=enabled
@@ -30,3 +30,4 @@ services:
       - ${KEYCLOAK_PORT:-8443}:8443
     volumes:
       - ./docker/keycloak:/tmp
+

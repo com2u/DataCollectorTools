@@ -3,6 +3,7 @@ import os
 import json
 import requests
 import sys
+import time
 from timeit import default_timer as timer
 
 
@@ -58,6 +59,7 @@ def configure_keycloak(timeout_seconds=300):
             if (timer() - start_time > timeout_seconds):
                 sys.exit(
                     f"could not establish connection to keycloak server after {timeout_seconds}s at {os.getenv('KEYCLOAK_IP', '127.0.0.1')}\n exiting")
+            time.sleep(2)
             pass
     access_token = response.json()["access_token"]
     headers = {"Authorization": f"Bearer {access_token}"}

@@ -24,7 +24,7 @@ def generate_client_secrets_json():
             "issuer": f"http://{os.getenv('KEYCLOAK_IP', '127.0.0.1')}:8080/auth/realms/{os.getenv('KEYCLOAK_REALM_NAME', 'DBTools')}",
             "auth_uri": f"http://{os.getenv('KEYCLOAK_IP', '127.0.0.1')}:8080/auth/realms/{os.getenv('KEYCLOAK_REALM_NAME', 'DBTools')}/protocol/openid-connect/auth",
             "client_id": f"{os.getenv('KEYCLOAK_CLIENT_NAME', 'FrontendApp')}",
-            "client_secret": f"{get_client_secret()}",
+            "client_secret": f"",
             "redirect_uris": [
                 f"http://{os.getenv('KEYCLOAK_IP', '127.0.0.1')}:5000/*"
             ],
@@ -39,10 +39,6 @@ def generate_client_secrets_json():
     with open("client_secrets.json", "w") as secrets_json_file:
         json.dump(secrets_json, secrets_json_file)
     return secrets_json
-
-
-def get_client_secret():
-    return ""
 
 
 def configure_keycloak(timeout_seconds=300):
@@ -73,7 +69,8 @@ def configure_keycloak(timeout_seconds=300):
     if os.getenv('KEYCLOAK_REALM_NAME', 'DBTools') not in realm_ids:
         # creating new realm with Client
         realm_export_json = json.loads(open(
-            "./docker/keycloak/dbtools-realm-export.json", "r").read())
+            "./docker/keycloak/dbtools-realm-export.json", "r").read().replace(f"http://localhost:5000/", f"http://{os.getenv('KEYCLOAK_IP')}:5000/"))
+
         response = requests.post(
             f"http://{os.getenv('KEYCLOAK_IP', '127.0.0.1')}:8080/auth/admin/realms", headers=headers, json=realm_export_json)
     # check for Users

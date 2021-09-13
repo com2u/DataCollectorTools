@@ -16,15 +16,8 @@ services:
     image: jboss/keycloak:15.0.2
     container_name: keycloak
     environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: ${DATABASE_ADDR:-"127.0.0.1"}
-      DB_DATABASE: keycloak
-      DB_USER: ${DATABASE_USER:-postgres}
-      DB_SCHEMA: public
-      DB_PASSWORD: ${DATABASE_PASSWORD:-password}
       KEYCLOAK_USER: ${KEYCLOAK_USER:-admin}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD:-admin}
-      KEYCLOAK_IMPORT: /tmp/dbtools-realm-export.json -Dkeycloak.profile.feature.upload_scripts=enabled
     ports:
       - ${KEYCLOAK_PORT:-8080}:8080
       - ${KEYCLOAK_PORT:-8443}:8443

@@ -51,11 +51,7 @@ def process():
                 with py7zr.SevenZipFile(exportFile, 'a', password="Pzma9T2nvz04KK1A9CU7") as exportData:
                     exportData = get_dump(exportData)
                 exportFile.seek(0)
-
-            # saving File in Network share
-            with open("parameters.json") as file:
-                data = json.load(file)
-            exportFileName = Path(data["export_path"], "Export_" +
+            exportFileName = Path(os.getenv(["EXPORT_PATH"]), "Export_" +
                                   datetime.now().strftime("%Y-%m-%dT%H_%M_%S_%f") + ".7z")
             exportFileName.write_bytes(exportFile.getbuffer())
 
@@ -121,10 +117,8 @@ def get_pictures(filter, zipfile):
 
 
 def get_dump(zipfile):
-    with open("parameters.json") as file:
-        data = json.load(file)
-        command = [
-        "pg_dump", f'--dbname=postgresql://{data["postgres_user"]}:{data["postgres_pw"]}@{data["postgres_url"]}:5432/{data["postgres_db"]}', '--format=c']
+    command = [
+    "pg_dump", f'--dbname=postgresql://{os.getenv("DATABASE_USER")}:{os.getenv("DATABASE_PASSWORD")}@{os.getenv("DATABASE_ADDR")}:5432/{os.getenv("DATABASE_PASSWORD")}', '--format=c']
     output = subprocess.Popen(command, stdout=subprocess.PIPE)
     database_dump = output.stdout.read()
     zipfile.writestr(data=database_dump, arcname="dump/dump.backup")

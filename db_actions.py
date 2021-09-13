@@ -1,20 +1,19 @@
 import json
+import os
 from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 
 
 def get_postgres_instance(username=None, password=None, url=None, dbname=None):
-    with open("parameters.json") as file:
-        data = json.load(file)
     if username == None:
-        username = data["postgres_user"]
+        username = os.getenv("DATABASE_USER")
     if password == None:
-        password = data["postgres_pw"]
+        password = os.getenv("DATABASE_PASSWORD")
     if url == None:
-        url = data["postgres_url"]
+        url = os.getenv("DATABASE_ADDR")
     if dbname == None:
-        dbname = data["postgres_db"]
+        dbname = os.getenv("DATABASE_NAME_VISION")
     database = PostgersqlDBManagement(
         username=username, password=password, url=url, dbname=dbname)
     return database

@@ -1,4 +1,6 @@
 $primary: #0061ff;
+$nav-tabs-link-active-color: $primary;
+$nav-link-color: #495057;
 @import "../Bootstrap/scss/bootstrap";
 
 table.dataTable tbody tr.selected {

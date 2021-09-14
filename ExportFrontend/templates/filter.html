@@ -46,10 +46,6 @@
             title: "to datetime explanation"
         });
     });
-    function toImages() {
-        var str = $("#filterForm").serialize();
-        location.href = "{{url_for('export.page_view_images')}}?".concat(str);
-    }
     function toView() {
         var str = $("#filterForm").serialize();
         location.href = "{{url_for('export.page_view')}}?".concat(str);
@@ -104,6 +100,5 @@
 {% endblock %}
 {% block buttomBar %}
     <button onclick="resetForm()" class="btn btn-secondary mb-2">Reset</button>
-    <button onclick="toImages()" class="btn btn-secondary mb-2">View Images</button>
     <button onclick="toView()" class="btn btn-primary mb-2">View Data</button>
 {% endblock %}

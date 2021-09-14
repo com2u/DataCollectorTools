@@ -1,13 +1,6 @@
 <!DOCTYPE html>
-{% extends "base.html" %}
-{% block scripts %}
+{% macro imagesview() %}
 <script>
-    function toProcess() {
-        location.href = "{{url_for('export.page_process')}}".concat(location.search);
-    };
-    function toView() {
-        location.href = "{{url_for('export.page_view')}}".concat(location.search);
-    }
     function changeImageSize() {
             console.log("change")
             switch ($('#pictureSelect').val()) {
@@ -46,9 +39,6 @@
     )
 
 </script>
-{% endblock %}
-{% block content %}
-<h1 class="text-primary">View Images</h1>
 <form >
     <select class="form-select" id="pictureSelect" onchange="changeImageSize()">
         <option value="small" selected>
@@ -67,8 +57,4 @@
 </form>
 <div id="images" class="row">
 </div>
-{% endblock %}
-{% block buttomBar %}
-    <button onclick="toView()" class="btn btn-secondary mb-2">View Data</button>
-    <button onclick="toProcess()" class="btn btn-primary mb-2">Process Data</button>
-{% endblock %}
+{% endmacro %}

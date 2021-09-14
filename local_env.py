@@ -4,11 +4,14 @@ import json
 import requests
 import sys
 import time
+import psycopg2
 from timeit import default_timer as timer
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 def generate_env():
     generate_css()
+    configure_pg_connection()
     configure_keycloak()
     generate_client_secrets_json()
 
@@ -95,3 +98,23 @@ def configure_keycloak(timeout_seconds=300):
         response = requests.post(
             f"http://{os.getenv('KEYCLOAK_IP', '127.0.0.1')}:8080/auth/admin/realms/{os.getenv('KEYCLOAK_REALM_NAME', 'DBTools')}/users", headers=headers, json=user_info)
     return ""
+
+
+def configure_pg_connection():
+    try:
+        conn = psycopg2.connect(
+            f"user='{os.getenv('DEFAULT_DATABASE_USER')}' host='{os.getenv('DEFAULT_DATABASE_ADDR')}' password='{os.getenv('DEFAULT_DATABASE_PASSWORD')}' connect_timeout=1 ")
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = conn.cursor()
+        cur.execute("SELECT datname FROM pg_database")
+        databases = [datname[0] for datname in cur.fetchall()]
+        if f"{os.getenv('DATABASE_NAME_DBTOOLS')}" not in databases:
+            cur.execute(f"CREATE DATABASE {os.getenv('DATABASE_NAME_DBTOOLS')}")
+        cur.close()
+        conn.close()
+    except (Exception, psycopg2.Error) as error:
+        sys.exit("Error whily trying to set up Postgres environment")
+    finally:
+        if conn:
+            cur.close()
+            conn.close()

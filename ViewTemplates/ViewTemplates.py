@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, jsonify, request
 from db_actions import get_postgres_instance
 from Oidc_Decorators import oidc
@@ -9,7 +10,7 @@ view_templates = Blueprint(
 
 @view_templates.before_app_first_request
 def database_initialization():
-    database = get_postgres_instance(dbname="dbtools")
+    database = get_postgres_instance(dbname=f"{os.getenv('DATABASE_NAME_DBTOOLS')}")
     database.engine.execute("""
     CREATE TABLE IF NOT EXISTS public.viewfilter
     (
@@ -25,7 +26,7 @@ def database_initialization():
 @oidc.require_login
 def view_template():
     if request.method == 'GET':
-        database = get_postgres_instance(dbname="dbtools")
+        database = get_postgres_instance(dbname=f"{os.getenv('DATABASE_NAME_DBTOOLS')}")
         return jsonify({"data": [dict(row) for row in database.get_table("viewfilter", filter=request.values.to_dict(flat=False))]})
     if request.method == 'POST':
         params = request.values.to_dict(flat=False)
@@ -36,7 +37,7 @@ def view_template():
             params['viewname'] = params['viewname'][0]
         params['options'] = params['options'][0]
         params['tablename'] = params['tablename'][0]
-        database = get_postgres_instance(dbname="dbtools")
+        database = get_postgres_instance(dbname=f"{os.getenv('DATABASE_NAME_DBTOOLS')}")
         querystring = f"""
         INSERT INTO viewfilter (viewname, setting, tablename)
         VALUES('{params['viewname']}', '{params["options"]}', '{params['tablename']}')
@@ -46,5 +47,5 @@ def view_template():
     if request.method == "DELETE":
         params = request.values.to_dict(flat=False)
         id = params["id"][0]
-        database = get_postgres_instance(dbname="dbtools")
+        database = get_postgres_instance(dbname=f"{os.getenv('DATABASE_NAME_DBTOOLS')}")
         return jsonify(success=database.delet_view_template(id))

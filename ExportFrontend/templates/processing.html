@@ -15,40 +15,8 @@
                     )
             }
         })
-        $('#processForm').change(function () {
-            if ($('#download').is(':checked'))
-                $('#downloadExcel').removeAttr("disabled"),
-                    $('#downloadCSV').removeAttr("disabled"),
-                    $('#downloadImages').removeAttr("disabled"),
-                    $('#downloadDatabaseDump').removeAttr("disabled");
-            else
-                $('#downloadExcel').attr("disabled", true),
-                    $('#downloadCSV').attr("disabled", true),
-                    $('#downloadImages').attr("disabled", true),
-                    $('#downloadDatabaseDump').attr("disabled", true);
-
-            if ($('#export').is(':checked'))
-                $('#exportExcel').removeAttr("disabled"),
-                    $('#exportCSV').removeAttr("disabled"),
-                    $('#exportImages').removeAttr("disabled"),
-                    $('#exportDatabaseDump').removeAttr("disabled");
-            else
-                $('#exportExcel').attr("disabled", true),
-                    $('#exportCSV').attr("disabled", true),
-                    $('#exportImages').attr("disabled", true),
-                    $('#exportDatabaseDump').attr("disabled", true);
-
-            if ($('#delete').is(':checked'))
-                $('#deleteImages').removeAttr("disabled")
-            else
-                $('#deleteImages').attr("disabled", true)
-            if ($('#deleteImages').is(':checked') && $('#delete').is(':checked'))
-                $('#deleteData').removeAttr("disabled")
-            else
-                $('#deleteData').attr("disabled", true)
-        })
         $('#processDataButton').click(function () {
-            fetch(["{{url_for('export_interface.process')}}", window.location.search, "&", $('form').serialize()].join(''))
+            fetch(["{{url_for('export_interface.process')}}","?", $('form').serialize(), "&", window.location.search.substr(1)].join(''))
                 .then(resp => resp.blob())
                 .then(blob => {
                     const url = window.URL.createObjectURL(blob);
@@ -81,89 +49,89 @@
     Records
 </div>
 <form id="processForm" class="m-3">
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="download" name="check" value="download">
-        <label class="form-check-label" for="download">
-            Download
-        </label>
+    <div class="row py-3">
+        <div class="col">
+            Icon
+        </div>
+        <div class="col">
+            Icon
+        </div>
+        <div class="col">
+            Icon
+        </div>
+        <div class="col">
+            Icon
+        </div>
     </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="downloadExcel" name="check" value="downloadExcel" disabled>
-        <label class="form-check-label" for="downloadExcel">
-            Excel
-        </label>
+    <div class="row py-3">
+        <div class="col">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="ExcelCheckbox" name="check" value="excel">
+                <label class="form-check-label" for="ExcelCheckbox">Excel</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="CSVCheckbox" name="check" value="csv">
+                <label class="form-check-label" for="CSVCheckbox">CSV</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="ImagesCheckbox" name="check" value="images">
+                <label class="form-check-label" for="ImagesCheckbox">Images</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="DumplCheckbox" name="check" value="dump">
+                <label class="form-check-label" for="DumplCheckbox">Dump</label>
+            </div>
+        </div>
     </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="downloadCSV" name="check" value="downloadCSV" disabled>
-        <label class="form-check-label" for="downloadCSV">
-            CSV
-        </label>
+    <div class="row py-3">
+        <div class="col">
+            <input type="checkbox" class="btn-check" id="DownloadChecobox" name="check" value="download" autocomplete="off">
+            <label class="btn btn-outline-primary" for="DownloadChecobox">Download</label>
+        </div>
+        <div class="col">
+            <input type="checkbox" class="btn-check" id="NetworkCheckbox" name="check" value="export" autocomplete="off">
+            <label class="btn btn-outline-primary" for="NetworkCheckbox">Network</label>
+        </div>
     </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="downloadImages" name="check" value="downloadImages"
-            disabled>
-        <label class="form-check-label" for="downloadImages">
-            Images
-        </label>
+    <hr>
+    <div class="row py-3">
+        <div class="col">
+            Icon
+        </div>
+        <div class="col">
+            Icon
+        </div>
     </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="downloadDatabaseDump" name="check"
-            value="downloadDatabaseDump" disabled>
-        <label class="form-check-label" for="downloadDatabaseDump">
-            Database Dump
-        </label>
+    <div class="row py-3">
+        <div class="col">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="DelDataCheckbox" name="check" value="deleteData">
+                <label class="form-check-label" for="DelDataCheckbox">Data</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="DelImagesCheckbox" name="check" value="deleteImages">
+                <label class="form-check-label" for="DelImagesCheckbox">Images</label>
+            </div>
+        </div>
     </div>
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="export" name="check" value="export">
-        <label class="form-check-label" for="export">
-            Export
-        </label>
+    <div class="row py-3">
+        <div class="col">
+            <input type="checkbox" class="btn-check" id="DeleteCheckbox" name="check" value="delete" autocomplete="off">
+            <label class="btn btn-outline-primary" for="DeleteCheckbox">Delete</label>
+        </div>
     </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="exportExcel" name="check" value="exportExcel" disabled>
-        <label class="form-check-label" for="exportExcel">
-            Excel
-        </label>
-    </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="exportCSV" name="check" value="exportCSV" disabled>
-        <label class="form-check-label" for="exportCSV">
-            CSV
-        </label>
-    </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="exportImages" name="check" value="exportImages" disabled>
-        <label class="form-check-label" for="exportImages">
-            Images
-        </label>
-    </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="exportDatabaseDump" name="check" value="exportDatabaseDump"
-            disabled>
-        <label class="form-check-label" for="exportDatabaseDump">
-            Database Dump
-        </label>
-    </div>
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="delete" name="check" value="delete">
-        <label class="form-check-label" for="delete">
-            Delete
-        </label>
-    </div>
-    <div class="form-check ms-4">
-        <input class="form-check-input" type="checkbox" id="deleteImages" name="check" value="deleteImages" disabled>
-        <label class="form-check-label" for="deleteImages">
-            Images
-        </label>
-    </div>
-    <div class="form-check ms-5">
-        <input class="form-check-input" type="checkbox" id="deleteData" name="check" value="deleteData" disabled>
-        <label class="form-check-label" for="deleteData">
-            Data
-        </label>
-    </div>
+
+
 </form>
-{% endblock %} 
+{% endblock %}
 {% block buttomBar %}
 <button class="btn btn-primary" id="processDataButton">
     Process

@@ -23,44 +23,33 @@ process_interface = Blueprint(
 def process():
     params = request.values.to_dict(flat=False)
     if 'check' in params:
-        if 'download' in params['check']:
-            downloadFile = BytesIO()
-            with py7zr.SevenZipFile(downloadFile, 'w') as downloadData:
-                if 'downloadExcel' in params['check']:
+        if 'download' in params['check'] or 'export' in params['check']:
+            file = BytesIO()
+            with py7zr.SevenZipFile(file, 'w') as downloadData:
+                if 'excel' in params['check']:
                     downloadData = get_excel(params, downloadData)
-                if 'downloadCSV' in params['check']:
+                if 'csv' in params['check']:
                     downloadData = get_csv(params, downloadData)
-                if 'downloadImages' in params['check']:
+                if 'images' in params['check']:
                     downloadData = get_pictures(params, downloadData)
-            downloadFile.seek(0)
-            if 'downloadDatabaseDump' in params['check']:
-                with py7zr.SevenZipFile(downloadFile, 'a', password="Pzma9T2nvz04KK1A9CU7") as downloadData:
+            file.seek(0)
+            if 'dump' in params['check']:
+                with py7zr.SevenZipFile(file, 'a', password="Pzma9T2nvz04KK1A9CU7") as downloadData:
                     downloadData = get_dump(downloadData)
-                downloadFile.seek(0)
+                file.seek(0)
         if 'export' in params['check']:
-            exportFile = BytesIO()
-            with py7zr.SevenZipFile(exportFile, 'w') as exportData:
-                if 'exportExcel' in params['check']:
-                    exportData = get_excel(params, exportData)
-                if 'exportCSV' in params['check']:
-                    exportData = get_csv(params, exportData)
-                if 'exportImages' in params['check']:
-                    exportData = get_pictures(params, exportData)
-            exportFile.seek(0)
-            if 'exportDatabaseDump' in params['check']:
-                with py7zr.SevenZipFile(exportFile, 'a', password="Pzma9T2nvz04KK1A9CU7") as exportData:
-                    exportData = get_dump(exportData)
-                exportFile.seek(0)
             exportFileName = Path(os.getenv(["EXPORT_PATH"]), "Export_" +
-                                  datetime.now().strftime("%Y-%m-%dT%H_%M_%S_%f") + ".7z")
-            exportFileName.write_bytes(exportFile.getbuffer())
+                                    datetime.now().strftime("%Y-%m-%dT%H_%M_%S_%f") + ".7z")
+            exportFileName.write_bytes(file.getbuffer())
 
         if 'delete' in params['check']:
             if 'deleteImages' in params['check']:
                 if 'deleteData' in params['check']:
                     delete_data_result = delete_db(params)
                 delete_pictures_result = delete_db(params)
-    return send_file(downloadFile, attachment_filename='download.7z', as_attachment=True)
+        if 'download' in params['check']:
+            return send_file(file, attachment_filename='download.7z', as_attachment=True)
+        return jsonify(success=True)
 
 
 def get_csv(filter, zipfile):

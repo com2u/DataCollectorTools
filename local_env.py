@@ -113,8 +113,4 @@ def configure_pg_connection():
         cur.close()
         conn.close()
     except (Exception, psycopg2.Error) as error:
-        sys.exit("Error whily trying to set up Postgres environment")
-    finally:
-        if conn:
-            cur.close()
-            conn.close()
+        sys.exit(f"Error whily trying to set up Postgres environment: {error}")

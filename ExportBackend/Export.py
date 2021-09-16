@@ -107,7 +107,7 @@ def get_pictures(filter, zipfile):
 
 def get_dump(zipfile):
     command = [
-    "pg_dump", f'--dbname=postgresql://{os.getenv("DATABASE_USER")}:{os.getenv("DATABASE_PASSWORD")}@{os.getenv("DATABASE_ADDR")}:5432/{os.getenv("DATABASE_PASSWORD")}', '--format=c']
+    "pg_dump", f'--dbname=postgresql://{os.getenv("DATABASE_USER")}:{os.getenv("DATABASE_PASSWORD")}@{os.getenv("DATABASE_ADDR")}:5432/{os.getenv("DEFAULT_DATABASE_NAME_VISION")}', '--format=c']
     output = subprocess.Popen(command, stdout=subprocess.PIPE)
     database_dump = output.stdout.read()
     zipfile.writestr(data=database_dump, arcname="dump/dump.backup")

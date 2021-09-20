@@ -33,6 +33,10 @@ class DBManagement:
             if "batchname" in filter:
                 conditions.append(
                     f"batch_inspectionid in (select batch_inspectionid from batchview where batchname IN {str(filter['batchname']).replace('[','(').replace(']',')')})")
+            if "inspectionname" in filter:
+                conditions.append(
+                    f"batch_inspectionid in (select batch_inspectionid from batchview where inspectionname IN {str(filter['inspectionname']).replace('[','(').replace(']',')')})"
+                )
 
             if "to_datetime_offset" not in filter:
                 if "to_date" in filter or "to_time" in filter:

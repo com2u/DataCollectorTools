@@ -17,7 +17,7 @@
 			"label": "docker-run: debug",
 			"dependsOn": [
 				"docker-build",
-				"Run docker-compose up keycloak"
+				"Run docker-compose up batchdata postgres keycloak"
 			],
 			"dockerRun": {
 				"env": {
@@ -54,13 +54,15 @@
 			}
 		},
 		{
-			"label": "Run docker-compose up keycloak",
+			"label": "Run docker-compose up batchdata postgres keycloak",
 			"type": "docker-compose",
 			"dockerCompose": {
 				"up": {
 					"detached": true,
 					"build": true,
 					"services": [
+						"batchdata",
+						"postgres",
 						"keycloak"
 					]
 				},

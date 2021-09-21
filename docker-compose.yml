@@ -3,6 +3,8 @@ version: '3.4'
 services:
   datacollectortools:
     image: datacollectortools
+    container_name: dbtools
+    restart: always
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -33,14 +35,56 @@ services:
       - /data/export/smb/images:/Images
     depends_on:
       - keycloak
+      - postgres
+      - batchdata
+
   keycloak:
     image: jboss/keycloak:15.0.2
+    restart: always
     container_name: keycloak
     environment:
+      DB_VENDOR: POSTGRES
+      DB_DATABASE: keycloak
+      DB_ADDR: ${DEFAULT_DATABASE_ADDR:-"127.0.0.1"}
+      DB_USER: ${DATABASE_USER:-"postgres"}
+      DB_PASSWORD: ${DATABASE_PASSWORD:-"password"}
       KEYCLOAK_USER: ${KEYCLOAK_USER:-admin}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD:-admin}
+      PROXY_ADDRESS_FORWARDING: "true"
     ports:
       - ${KEYCLOAK_PORT:-8080}:8080
       - ${KEYCLOAK_PORT:-8443}:8443
     volumes:
       - ./docker/keycloak:/tmp
+    depends_on:
+      - postgres
+
+  batchdata:
+    image: batchdata-service:0.0.1-SNAPSHOT
+    container_name: batchdata-service
+    restart: always
+    ports:
+      - 8081:8080
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/batchdata"
+      SPRING_DATASOURCE_USERNAME: ${DEFAULT_DATABASE_USER:-"postgres"}
+      SPRING_DATASOURCE_PASSWORD: ${DEFAULT_DATABASE_PASSWORD:-"password"}
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: dbtools,batchdata,inspections,keycloak
+      POSTGRES_USER: ${DEFAULT_DATABASE_USER:-"postgres"}
+      POSTGRES_PASSWORD: ${DEFAULT_DATABASE_PASSWORD:-"password"}
+    volumes:
+      - ./docker/postgres:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
